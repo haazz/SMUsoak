@@ -5,6 +5,7 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -14,7 +15,13 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.example.smu.connection.Retrofit
+import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.ActivitySingupBinding
+import org.w3c.dom.Text
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class ActivitySingup : AppCompatActivity() {
@@ -25,6 +32,8 @@ class ActivitySingup : AppCompatActivity() {
     private lateinit var pwcheckedit : EditText
     private lateinit var btnsignup : Button
     private lateinit var idedit : EditText
+    private lateinit var id : String
+    private lateinit var pw : String
 
     private var pwcheck = false
 
@@ -102,7 +111,25 @@ class ActivitySingup : AppCompatActivity() {
 
         btnsignup.setOnClickListener {
             if(pwcheck && idedit.text.length == 9){
-                CustomDialog(idedit.text.toString())
+                id = idedit.text.toString()
+                pw = pwedit.text.toString()
+                Log.d("Retrofit", id + pw)
+                val call = RetrofitObject.getRetrofitService.signup(Retrofit.signup(id, pw))
+                call.enqueue(object : Callback<Retrofit.Responsesignup> {
+                    override fun onResponse(call: Call<Retrofit.Responsesignup>, response: Response<Retrofit.Responsesignup>) {
+                        if (response.isSuccessful) {
+                            val response = response.body()
+                            if(response != null){
+                                CustomDialog(idedit.text.toString())
+                            }
+                        }
+                    }
+
+                    override fun onFailure(call: Call<Retrofit.Responsesignup>, t: Throwable) {
+                        val errorMessage = "Call Failed: ${t.message}"
+                        Log.d("Retrofit", errorMessage)
+                    }
+                })
             }else if(!pwcheck && idedit.text.length != 9){
                 Toast.makeText(this, "회원가입 양식을 다시 확인해 주세요.", Toast.LENGTH_SHORT).show()
             }else if(idedit.text.length != 9 && pwcheck){
@@ -125,7 +152,7 @@ class ActivitySingup : AppCompatActivity() {
 
         val alertDialog = builder.create()
         view.findViewById<TextView>(R.id.dialog_singup_msg_text).text = id+"@sangmyung.kr(학교 메일)로 \n인증 메일이 발송되었습니다. \n인증 후 로그인이 가능합니다."
-
+        alertDialog.setCanceledOnTouchOutside(false)
         view.findViewById<Button>(R.id.dialog_signup_msg_btn).setOnClickListener {
             alertDialog.dismiss()
             val intent = Intent(this, ActivityLogin::class.java)
