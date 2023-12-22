@@ -161,7 +161,7 @@
         app:layout_constraintStart_toStartOf="@+id/profile_image_profile" />
 
     <ImageView
-        android:id="@+id/imageView2"
+        android:id="@+id/profile_image4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="2dp"
@@ -200,5 +200,45 @@
         android:text="성별"
         app:layout_constraintBottom_toTopOf="@+id/profile_spinner_gender"
         app:layout_constraintStart_toStartOf="@+id/profile_spinner_gender" />
+
+    <ImageView
+        android:id="@+id/profile_image3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_text7"
+        app:layout_constraintStart_toEndOf="@+id/profile_text7"
+        app:layout_constraintTop_toTopOf="@+id/profile_text7"
+        app:srcCompat="@drawable/svg_red_dot" />
+
+    <Button
+        android:id="@+id/profile_btn_create"
+        android:layout_width="300dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="70dp"
+        android:background="@drawable/radius_8_stroke_black_solid_white"
+        android:text="생성하기"
+        app:layout_constraintStart_toStartOf="@+id/profile_edit_birth"
+        app:layout_constraintTop_toBottomOf="@+id/profile_spinner_mbti" />
+
+    <ImageView
+        android:id="@+id/profile_image5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="12dp"
+        app:layout_constraintBottom_toTopOf="@+id/profile_btn_create"
+        app:layout_constraintStart_toStartOf="@+id/profile_btn_create"
+        app:srcCompat="@drawable/svg_red_dot" />
+
+    <TextView
+        android:id="@+id/profile_text8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="2dp"
+        android:text="은 필수 입력사항입니다."
+        android:textSize="12sp"
+        app:layout_constraintBottom_toBottomOf="@+id/profile_image5"
+        app:layout_constraintStart_toEndOf="@+id/profile_image5"
+        app:layout_constraintTop_toTopOf="@+id/profile_image5" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

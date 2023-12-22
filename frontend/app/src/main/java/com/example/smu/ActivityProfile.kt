@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter
 import android.widget.ImageButton
 import android.widget.Spinner
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContentProviderCompat.requireContext
 import com.bumptech.glide.Glide
 import com.example.smu.databinding.ActivityProfileBinding
 import de.hdodenhof.circleimageview.CircleImageView
@@ -40,20 +41,29 @@ class ActivityProfile : AppCompatActivity() {
         }
 
         mbti = binding.profileSpinnerMbti
-        ArrayAdapter.createFromResource(this, R.array.mbti, android.R.layout.simple_spinner_dropdown_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            mbti.adapter = adapter
-        }
+        val mbtiArray = resources.getStringArray(R.array.mbti)
+        setSpinner(mbti, mbtiArray)
 
         val dpValue = 130
         val pixels = (dpValue * Resources.getSystem().displayMetrics.density).toInt()
         gender = binding.profileSpinnerGender
         gender.setDropDownWidth(pixels)
-        ArrayAdapter.createFromResource(this, R.array.gender, android.R.layout.simple_spinner_dropdown_item
-        ).also { adapter ->
-            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-            gender.adapter = adapter
+        gender = binding.profileSpinnerGender	// spinner
+        val genderArray = resources.getStringArray(R.array.gender)	// 배열
+        setSpinner(gender, genderArray)
+    }
+
+    private fun setSpinner(spinner: Spinner, array: Array<String>) {
+        val adapter = object : ArrayAdapter<String>(
+            this,
+            android.R.layout.simple_dropdown_item_1line,
+            array.toMutableList()
+        ) {
+            override fun getCount(): Int = super.getCount() - 1  // 힌트를 제외한 항목 수
         }
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.setSelection(adapter.count)  // 힌트를 선택한 상태로 설정
     }
 }

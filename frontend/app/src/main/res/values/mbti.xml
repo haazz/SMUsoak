@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="mbti">
-        <item>선택 안함</item>
         <item>ISTJ</item>
         <item>ISFJ</item>
         <item>INFJ</item>
@@ -18,5 +17,6 @@
         <item>ESFP</item>
         <item>ENFP</item>
         <item>ENTP</item>
+        <item>선택 안함</item>
     </string-array>
 </resources>

@@ -3,5 +3,6 @@
     <string-array name="gender">
         <item>남학우</item>
         <item>여학우</item>
+        <item>Gender</item>
     </string-array>
 </resources>
