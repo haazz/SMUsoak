@@ -1,0 +1,8 @@
+# DB
+
+spring:
+  profiles:
+    active: local
+  
+  message:
+    basename: errors
