@@ -1,6 +1,7 @@
 package com.smusoak.restapi.user;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,10 +19,9 @@ public class UserController {
 	private final UserService userService;
 	
 	@GetMapping("/test")
-	public HashMap<String, Object> testRestApi() {
-		HashMap<String, Object> test = new HashMap<>();
-		test.put("abcaa", "ddeeed");
-		return test;
+	public List<Users> testRestApi() {
+		
+		return userService.getAllUser();
 	}
 	@PostMapping("/test")
 	public UserCreateDto testRestApitPost(UserCreateDto userCreateDto) {
@@ -35,5 +35,6 @@ public class UserController {
 		
 		return userCreateDto;
 	}
+
 	
 }
