@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivityLogin">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/login_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:title="Login"
+        app:titleTextColor="@color/SMU" />
+
+    <View
+        android:id="@+id/login_view1"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray"
+        app:layout_constraintTop_toBottomOf="@+id/login_toolbar"
+        tools:layout_editor_absoluteX="0dp" />
+
+    <EditText
+        android:id="@+id/login_edit_id"
+        android:layout_width="300dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="300dp"
+        android:background="@drawable/radius_8_stroke_darkgray"
+        android:ems="10"
+        android:hint="학번을 입력해 주세요."
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:textColorHint="@color/gray"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/login_view1" />
+
+    <EditText
+        android:id="@+id/login_edit_pw"
+        android:layout_width="300dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/radius_8_stroke_darkgray"
+        android:ems="10"
+        android:hint="비밀번호를 입력해 주세요."
+        android:inputType="textPassword"
+        android:paddingStart="12dp"
+        android:textColorHint="@color/gray"
+        android:textSize="14sp"
+        app:layout_constraintEnd_toEndOf="@+id/login_edit_id"
+        app:layout_constraintStart_toStartOf="@+id/login_edit_id"
+        app:layout_constraintTop_toBottomOf="@+id/login_edit_id" />
+
+    <TextView
+        android:id="@+id/login_text1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="학번"
+        app:layout_constraintBottom_toTopOf="@+id/login_edit_id"
+        app:layout_constraintStart_toStartOf="@+id/login_edit_id" />
+
+    <TextView
+        android:id="@+id/login_text2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:text="비밀번호"
+        app:layout_constraintBottom_toTopOf="@+id/login_edit_pw"
+        app:layout_constraintStart_toStartOf="@+id/login_edit_pw" />
+
+    <Button
+        android:id="@+id/login_btn_signin"
+        android:layout_width="300dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="25dp"
+        android:background="@drawable/radius_8_solid_smu"
+        android:text="로그인"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="@+id/login_edit_pw"
+        app:layout_constraintStart_toStartOf="@+id/login_edit_pw"
+        app:layout_constraintTop_toBottomOf="@+id/login_edit_pw" />
+
+    <Button
+        android:id="@+id/login_btn_findpw"
+        android:layout_width="90dp"
+        android:layout_height="25dp"
+        android:background="@android:color/transparent"
+        android:text="비밀번호 찾기"
+        android:textColor="@color/dark_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/login_btn_singup"
+        app:layout_constraintEnd_toEndOf="@+id/login_btn_signin"
+        app:layout_constraintStart_toEndOf="@+id/login_text" />
+
+    <CheckBox
+        android:id="@+id/login_check"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginTop="10dp"
+        android:text="자동 로그인"
+        app:layout_constraintStart_toStartOf="@+id/login_btn_signin"
+        app:layout_constraintTop_toBottomOf="@+id/login_btn_signin" />
+
+    <Button
+        android:id="@+id/login_btn_singup"
+        android:layout_width="90dp"
+        android:layout_height="25dp"
+        android:layout_marginTop="12dp"
+        android:background="@android:color/transparent"
+        android:text="회원가입 하기"
+        android:textColor="@color/dark_gray"
+        app:layout_constraintEnd_toStartOf="@+id/login_text"
+        app:layout_constraintHorizontal_chainStyle="packed"
+        app:layout_constraintStart_toStartOf="@+id/login_btn_signin"
+        app:layout_constraintTop_toBottomOf="@+id/login_check" />
+
+    <TextView
+        android:id="@+id/login_text"
+        android:layout_width="10dp"
+        android:layout_height="25dp"
+        android:gravity="center"
+        android:text="|"
+        android:textColor="@color/dark_gray"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@+id/login_btn_singup"
+        app:layout_constraintEnd_toStartOf="@+id/login_btn_findpw"
+        app:layout_constraintStart_toEndOf="@+id/login_btn_singup" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
