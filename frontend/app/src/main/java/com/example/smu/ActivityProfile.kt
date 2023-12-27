@@ -1,10 +1,12 @@
 package com.example.smu
 
+import android.content.Intent
 import android.content.res.Resources
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ArrayAdapter
+import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Spinner
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +19,7 @@ class ActivityProfile : AppCompatActivity() {
 
     private val binding: ActivityProfileBinding by lazy { ActivityProfileBinding.inflate(layoutInflater) }
     private lateinit var changeprofileimage: ImageButton
+    private lateinit var makeprofilebtb: Button
     private lateinit var profile: CircleImageView
     private lateinit var mbti: Spinner
     private lateinit var gender: Spinner
@@ -51,6 +54,13 @@ class ActivityProfile : AppCompatActivity() {
         gender = binding.profileSpinnerGender	// spinner
         val genderArray = resources.getStringArray(R.array.gender)	// 배열
         setSpinner(gender, genderArray)
+
+        makeprofilebtb = binding.profileBtnCreate
+        makeprofilebtb.setOnClickListener {
+            val intent = Intent(this, ActivityMain::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 
     private fun setSpinner(spinner: Spinner, array: Array<String>) {

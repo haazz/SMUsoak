@@ -27,7 +27,7 @@ class ActivityLogin : AppCompatActivity() {
         }
 
         btn_singin.setOnClickListener {
-            val intent = Intent(this, ActivityProfile::class.java)
+            val intent = Intent(this, ActivityMain::class.java)
             startActivity(intent)
             finish()
         }
