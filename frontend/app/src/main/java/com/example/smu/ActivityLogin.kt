@@ -4,6 +4,7 @@ import android.content.Intent
 import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.WindowManager
 import com.example.smu.databinding.ActivityLoginBinding
 
 class ActivityLogin : AppCompatActivity() {

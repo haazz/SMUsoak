@@ -1,5 +1,6 @@
 package com.example.smu
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -17,6 +18,10 @@ class FragmentChat : Fragment() {
     ): View? {
         binding = FragmentChatBinding.inflate(layoutInflater)
 
+        binding.chatBtn.setOnClickListener {
+            val intent = Intent(activity, ActivityChat::class.java)
+            startActivity(intent)
+        }
         return binding.root
     }
 }

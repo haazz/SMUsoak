@@ -32,12 +32,21 @@
         app:title="SMU들다"
         app:titleTextColor="@color/SMU" />
 
+    <View
+        android:id="@+id/main_view"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/light_gray"
+        app:layout_constraintBottom_toBottomOf="@+id/main_toolbar"
+        app:layout_constraintTop_toBottomOf="@+id/main_toolbar" />
+
     <FrameLayout
         android:id="@+id/main_frame"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@+id/main_bottom"
-        app:layout_constraintTop_toBottomOf="@+id/main_toolbar">
+        app:layout_constraintTop_toBottomOf="@+id/main_view"
+        tools:layout_editor_absoluteX="0dp">
 
     </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

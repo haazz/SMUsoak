@@ -27,129 +27,147 @@
         app:layout_constraintTop_toBottomOf="@+id/signup_toolbar"
         tools:layout_editor_absoluteX="0dp" />
 
-    <EditText
-        android:id="@+id/signup_edit_id"
-        android:layout_width="190dp"
-        android:layout_height="36dp"
-        android:background="@drawable/radius_8_stroke_darkgray"
-        android:ems="10"
-        android:hint="학번을 입력해 주세요.  "
-        android:inputType="text"
-        android:paddingStart="12dp"
-        android:textColorHint="@color/gray"
-        android:textSize="14sp"
-        android:maxLength="9"
-        app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw"
-        app:layout_constraintStart_toStartOf="@+id/signup_edit_pw"
-        app:layout_constraintTop_toBottomOf="@+id/signup_view1"
-        app:layout_constraintVertical_chainStyle="packed" />
-
-    <TextView
-        android:id="@+id/signup_text1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="학번"
-        app:layout_constraintBottom_toTopOf="@+id/signup_edit_id"
-        app:layout_constraintStart_toStartOf="@+id/signup_edit_id" />
-
-    <EditText
-        android:id="@+id/signup_edit_pw"
-        android:layout_width="300dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="3dp"
-        android:background="@drawable/radius_8_stroke_darkgray"
-        android:ems="10"
-        android:hint="6~20자리 비밀번호를 입력해 주세요.  "
-        android:inputType="textPassword"
-        android:paddingStart="12dp"
-        android:textColorHint="@color/gray"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw_check"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_edit_id" />
-
-    <TextView
-        android:id="@+id/signup_text2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="비밀번호"
-        app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw"
-        app:layout_constraintStart_toStartOf="@+id/signup_edit_pw" />
-
-    <EditText
-        android:id="@+id/signup_edit_pw_check"
-        android:layout_width="300dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="60dp"
-        android:layout_marginBottom="3dp"
-        android:background="@drawable/radius_8_stroke_darkgray"
-        android:ems="10"
-        android:hint="다시 한번 비밀번호를 입력해 주세요."
-        android:inputType="textPassword"
-        android:paddingStart="12dp"
-        android:textColorHint="@color/gray"
-        android:textSize="14sp"
-        app:layout_constraintBottom_toTopOf="@+id/signup_btn_signup"
-        app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw"
-        app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw" />
-
-    <TextView
-        android:id="@+id/signup_text3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:text="비밀번호 재입력"
-        app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw_check"
-        app:layout_constraintStart_toStartOf="@+id/signup_edit_pw_check" />
-
-    <TextView
-        android:id="@+id/signup_text_pw"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="3dp"
-        android:text="TextView"
-        android:textSize="12sp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/signup_edit_pw"
-        app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw" />
-
-    <Button
-        android:id="@+id/signup_btn_signup"
-        android:layout_width="0dp"
-        android:layout_height="36dp"
-        android:layout_marginTop="60dp"
-        android:background="@drawable/radius_8_solid_smu"
-        android:text="가입하기"
-        android:textColor="@color/white"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw_check"
-        app:layout_constraintStart_toStartOf="@+id/signup_edit_pw_check"
-        app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw_check" />
+        app:layout_constraintTop_toBottomOf="@+id/signup_view1">
 
-    <TextView
-        android:id="@+id/signup_text_pwcheck"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="3dp"
-        android:layout_marginTop="3dp"
-        android:text="TextView"
-        android:textSize="12sp"
-        android:visibility="invisible"
-        app:layout_constraintStart_toStartOf="@+id/signup_edit_pw_check"
-        app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw_check" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center">
 
-    <TextView
-        android:id="@+id/signup_text4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="\@sangmyung.kr"
-        app:layout_constraintBottom_toBottomOf="@+id/signup_edit_id"
-        app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw"
-        app:layout_constraintTop_toTopOf="@+id/signup_edit_id" />
+            <EditText
+                android:id="@+id/signup_edit_id"
+                android:layout_width="190dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="50dp"
+                android:background="@drawable/radius_8_stroke_darkgray"
+                android:ems="10"
+                android:hint="학번을 입력해 주세요.  "
+                android:inputType="text"
+                android:maxLength="9"
+                android:paddingStart="12dp"
+                android:textColorHint="@color/gray"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_pw"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/signup_text1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="학번"
+                app:layout_constraintBottom_toTopOf="@+id/signup_edit_id"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_id" />
+
+            <EditText
+                android:id="@+id/signup_edit_pw"
+                android:layout_width="300dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/radius_8_stroke_darkgray"
+                android:ems="10"
+                android:hint="6~20자리 비밀번호를 입력해 주세요.  "
+                android:inputType="textPassword"
+                android:paddingStart="12dp"
+                android:textColorHint="@color/gray"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw_check"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/signup_edit_id" />
+
+            <TextView
+                android:id="@+id/signup_text2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="비밀번호"
+                app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_pw" />
+
+            <EditText
+                android:id="@+id/signup_edit_pw_check"
+                android:layout_width="300dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="3dp"
+                android:background="@drawable/radius_8_stroke_darkgray"
+                android:ems="10"
+                android:hint="다시 한번 비밀번호를 입력해 주세요."
+                android:inputType="textPassword"
+                android:paddingStart="12dp"
+                android:textColorHint="@color/gray"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toTopOf="@+id/signup_btn_signup"
+                app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw"
+                app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw" />
+
+            <TextView
+                android:id="@+id/signup_text3"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="비밀번호 재입력"
+                app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw_check"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_pw_check" />
+
+            <TextView
+                android:id="@+id/signup_text_pw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:text="TextView"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_pw"
+                app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw" />
+
+            <Button
+                android:id="@+id/signup_btn_signup"
+                android:layout_width="0dp"
+                android:layout_height="36dp"
+                android:layout_marginTop="60dp"
+                android:layout_marginBottom="30dp"
+                android:background="@drawable/radius_8_solid_smu"
+                android:text="가입하기"
+                android:textColor="@color/white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw_check"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_pw_check"
+                app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw_check" />
+
+            <TextView
+                android:id="@+id/signup_text_pwcheck"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:text="TextView"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_pw_check"
+                app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw_check" />
+
+            <TextView
+                android:id="@+id/signup_text4"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="\@sangmyung.kr"
+                app:layout_constraintBottom_toBottomOf="@+id/signup_edit_id"
+                app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw"
+                app:layout_constraintTop_toTopOf="@+id/signup_edit_id" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    </ScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
