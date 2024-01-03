@@ -20,4 +20,8 @@ public class Users {
 	private String studentid;
 	
 	private String password;
+	
+	private String mail_code;
+	
+	private boolean mail_auth;
 }

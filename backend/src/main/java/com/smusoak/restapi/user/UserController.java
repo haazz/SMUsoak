@@ -3,6 +3,7 @@ package com.smusoak.restapi.user;
 import java.util.HashMap;
 import java.util.List;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.RequiredArgsConstructor;
 
+@Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/user")
@@ -25,13 +27,15 @@ public class UserController {
 		return userService.getAllUser();
 	}
 	@PostMapping("/test")
-	public UserCreateDto testRestApitPost(@RequestBody UserCreateDto userCreateDto) {
+	public UserCreateDto testRestApiPost(@RequestBody UserCreateDto userCreateDto) {
 		try {
 			userService.create(userCreateDto);
 		} catch(DataIntegrityViolationException e) {
-			e.getMessage();
+			log.debug("UserController.TestRestApiPost exception occur studentid: " +
+					userCreateDto.getStudentid() + e.getMessage());
 		} catch (Exception e) {
-			e.getMessage();
+			log.debug("UserController.TestRestApiPost exception occur studentid: " +
+					userCreateDto.getStudentid() + e.getMessage());
 		}
 		
 		return userCreateDto;
