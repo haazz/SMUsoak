@@ -29,6 +29,7 @@ public class MailConfig {
     @Value("${spring.mail.properties.mail.smtp.starttls.enable}")
     private boolean starttlsEnable;
 
+    /*
     @Value("${spring.mail.properties.mail.smtp.starttls.required}")
     private boolean starttlsRequired;
 
@@ -40,17 +41,19 @@ public class MailConfig {
 
     @Value("${spring.mail.properties.mail.smtp.writetimeout}")
     private int writeTimeout;
-
+*/
     @Bean
     public JavaMailSender javaMailSender() {
         Properties mailProperties = new Properties();
         mailProperties.put("mail.transport.protocol", "smtp");
         mailProperties.put("mail.smtp.auth", auth);
         mailProperties.put("mail.smtp.starttls.enable", starttlsEnable);
+        /*
         mailProperties.put("mail.smtp.starttls.required", starttlsRequired);
         mailProperties.put("mail.smtp.connectiontimeout", connectionTimeout);
         mailProperties.put("mail.smtp.timeout", timeout);
         mailProperties.put("mail.smtp.writetimeout", writeTimeout);
+         */
         mailProperties.put("mail.smtp.ssl.protocols", "TLSv1.2");
     	
     	JavaMailSenderImpl mailSender = new JavaMailSenderImpl();

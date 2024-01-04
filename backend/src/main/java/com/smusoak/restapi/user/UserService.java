@@ -2,11 +2,16 @@ package com.smusoak.restapi.user;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import com.smusoak.restapi.mail.MailService;
+import com.smusoak.restapi.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -16,7 +21,11 @@ import lombok.RequiredArgsConstructor;
 @Service
 public class UserService {
 	private final UserRepository userRepository;
-	
+	private final MailService mailService;
+	private final RedisService redisService;
+	@Value("${spring.mail.auth-code-expiration-millis}")
+	private long authCodeExpirationMillis;
+
 	public Users create(UserCreateDto userCreateDto) {
 		Users user = new Users();
 
@@ -37,6 +46,21 @@ public class UserService {
 		return users;
 	}
 
+	public void sendCodeToMail(String studentid) {
+
+		log.debug("UserService.sendCodeToMail studentid: " + studentid);
+		this.checkDuplicatiedStudentid(studentid);
+		String title = "SMUsoak 이메일 인증 번호";
+		String authCode = this.createCode();
+		String toMail = this.studentidToMail(studentid);
+		mailService.sendMail(toMail, title, authCode);
+		//redisService.setValues(toMail, authCode, Duration.ofMillis(this.authCodeExpirationMillis));
+	}
+
+	private String studentidToMail(String studentid) {
+		return studentid + "@sangmyung.kr";
+	}
+
 	private String createCode() {
 		int length = 6;
 		try {
@@ -52,9 +76,7 @@ public class UserService {
 		}
 	}
 
-	private void sendCodeToMail(String toMail) {
 
-	}
 
 	private void checkDuplicatiedStudentid(String studentid) {
 		Optional<Users> users = userRepository.findByStudentid(studentid);
