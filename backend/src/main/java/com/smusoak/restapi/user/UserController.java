@@ -3,6 +3,8 @@ package com.smusoak.restapi.user;
 import java.util.HashMap;
 import java.util.List;
 
+import com.smusoak.restapi.BusinessLogicException;
+import com.smusoak.restapi.ExceptionCode;
 import com.smusoak.restapi.redis.RedisService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -38,12 +40,14 @@ public class UserController {
 		} catch(DataIntegrityViolationException e) {
 			log.debug("UserController.TestRestApiPost exception occur mail: " +
 					userCreateDto.getMail() + e.getMessage());
+			return e.getMessage();
 		} catch (Exception e) {
 			log.debug("UserController.TestRestApiPost exception occur mail: " +
 					userCreateDto.getMail() + e.getMessage());
+			throw new BusinessLogicException(ExceptionCode.USER_MAIL_DUPLICATE);
 		}
 
-		return "I can do this all day!";
+		//return "I can do this all day!";
 	}
 
 	@GetMapping("/mailVerification")

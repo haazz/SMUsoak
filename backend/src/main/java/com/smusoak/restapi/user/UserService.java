@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import com.smusoak.restapi.BusinessLogicException;
+import com.smusoak.restapi.ExceptionCode;
 import com.smusoak.restapi.mail.MailService;
 import com.smusoak.restapi.redis.RedisService;
 import jakarta.mail.MessagingException;
@@ -40,6 +42,7 @@ public class UserService {
 			user.setPassword(password);
 			user.setMailAuth(true);
 			this.userRepository.save(user);
+			redisService.deleteByKey(mail);
 			return true;
 		}
 		return false;
@@ -69,7 +72,9 @@ public class UserService {
 				"' target='_blank'>이메일 인증 확인</a>";
 		this.checkDuplicatiedMail(toMail);
 		mailService.sendMail(toMail, title, htmlContent);
+		redisService.deleteByKey(toMail);
 		redisService.setListOps(toMail, authCode, userCreateDto.getPassword());
+		redisService.setExpire(toMail, authCodeExpirationMillis);
 	}
 
 	public boolean verifiedCode(String mail, String authCode) {
@@ -97,7 +102,7 @@ public class UserService {
 		Optional<Users> users = userRepository.findByMail(mail);
 		if (users.isPresent()) {
 			log.debug("UserService.checkDuplicatedMail exception occur mail: " + mail);
-			// throw 추가 필요
+			throw new BusinessLogicException(ExceptionCode.USER_MAIL_DUPLICATE);
 		}
 	}
 }	

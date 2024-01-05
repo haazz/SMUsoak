@@ -43,7 +43,7 @@ public class RedisService {
         redisTemplate.delete(key);
     }
 
-    public void setExpire(String key, int ttl) {
+    public void setExpire(String key, long ttl) {
         redisTemplate.expire(key, ttl, TimeUnit.MILLISECONDS);
     }
 
