@@ -8,11 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import lombok.RequiredArgsConstructor;
 
@@ -32,25 +28,31 @@ public class UserController {
 
 	@GetMapping("/redisAllUsers")
 	public String redisAllUsers(@RequestBody UserCreateDto userCreateDto) {
-		return redisService.getValues(userCreateDto.getStudentid());
+		return redisService.getValues(userCreateDto.getMail());
 	}
-	@PostMapping("/test")
-	public String testRestApiPost(@RequestBody UserCreateDto userCreateDto) {
+	@PostMapping("/sendAuthCode")
+	public String sendAuthCode(@RequestBody UserCreateDto userCreateDto) {
 		try {
-			userService.sendCodeToMail(userCreateDto.getStudentid());
-			// userService.create(userCreateDto);
-			// return new ResponseEntity<>(HttpStatus.OK);
+			userService.sendCodeToMail(userCreateDto);
 			return "Finally I'm win";
 		} catch(DataIntegrityViolationException e) {
-			log.debug("UserController.TestRestApiPost exception occur studentid: " +
-					userCreateDto.getStudentid() + e.getMessage());
+			log.debug("UserController.TestRestApiPost exception occur mail: " +
+					userCreateDto.getMail() + e.getMessage());
 		} catch (Exception e) {
-			log.debug("UserController.TestRestApiPost exception occur studentid: " +
-					userCreateDto.getStudentid() + e.getMessage());
+			log.debug("UserController.TestRestApiPost exception occur mail: " +
+					userCreateDto.getMail() + e.getMessage());
 		}
 
 		return "I can do this all day!";
 	}
 
+	@GetMapping("/mailVerification")
+	public String mailVerification(@RequestParam("mail") String mail, @RequestParam("authCode") String authCode) {
+		boolean verificationResult = userService.verifiedCode(mail, authCode);
+		if (verificationResult && userService.createUser(mail)) {
+			return "축하합니다! 회원가입을 완료했습니다!";
+		}
+		return "이메일 인증을 재시도 해주세요!";
+	}
 	
 }
