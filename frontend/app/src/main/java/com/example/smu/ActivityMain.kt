@@ -40,6 +40,7 @@ class ActivityMain : AppCompatActivity() {
                         .beginTransaction()
                         .replace(binding.mainFrame.id, FragmentChat())
                         .commitAllowingStateLoss()
+                    binding.mainToolbar.title = "채팅"
                     true
                 }
                 R.id.bnv_profile -> {
@@ -47,6 +48,7 @@ class ActivityMain : AppCompatActivity() {
                         .beginTransaction()
                         .replace(binding.mainFrame.id, FragmentProfile())
                         .commitAllowingStateLoss()
+                    binding.mainToolbar.title = "프로필"
                     true
                 }
                 else -> false

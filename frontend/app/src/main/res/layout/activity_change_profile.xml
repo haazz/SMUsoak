@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivityChangeProfile">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/changeprofile_image_profile"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="40dp"
+        android:src="@drawable/svg_profile"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageButton
+        android:id="@+id/changeprofile_btn_profile"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintBottom_toBottomOf="@+id/changeprofile_image_profile"
+        app:layout_constraintEnd_toEndOf="@+id/changeprofile_image_profile"
+        app:srcCompat="@drawable/svg_profile_btn" />
+
+    <EditText
+        android:id="@+id/changeprofile_edit_nickname"
+        android:layout_width="250dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="60dp"
+        android:background="@drawable/radius_8_stroke_darkgray"
+        android:ems="10"
+        android:hint="2-8자리 닉네임을 설정해주세요."
+        android:inputType="text"
+        android:paddingStart="12dp"
+        android:textColorHint="@color/gray"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeprofile_image_profile" />
+
+    <Button
+        android:id="@+id/button"
+        android:layout_width="wrap_content"
+        android:layout_height="36dp"
+        android:layout_marginEnd="30dp"
+        android:background="@drawable/radius_8_solid_smu"
+        android:text="중복확인"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="@+id/changeprofile_edit_nickname"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/changeprofile_edit_nickname" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="3dp"
+        android:text="닉네임"
+        app:layout_constraintBottom_toTopOf="@+id/changeprofile_edit_nickname"
+        app:layout_constraintStart_toStartOf="@+id/changeprofile_edit_nickname" />
+
+    <Button
+        android:id="@+id/changeprofile_btn_change"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginEnd="30dp"
+        android:layout_marginBottom="50dp"
+        android:background="@drawable/radius_8_stroke_black_solid_white"
+        android:text="수정하기"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
