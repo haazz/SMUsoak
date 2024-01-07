@@ -7,16 +7,4 @@ spring:
   message:
     basename: errors
 
-  mail:
-    host: smtp.gmail.com
-    port: 587
-    username: "smusoak@gmail.com"
-    password: "daiz jwwm okyi bupk"
-    properties:
-      mail:
-        smtp:
-          auth: true
-          starttls:
-            enable: true
 
-    auth-code-expiration-millis: 1800000
