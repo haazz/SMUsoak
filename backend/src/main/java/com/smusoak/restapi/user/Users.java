@@ -17,7 +17,9 @@ public class Users {
 	private Long id;
 	
 	@Column(unique = true)
-	private String studentid;
+	private String mail;
 	
 	private String password;
+	
+	private boolean mailAuth;
 }
