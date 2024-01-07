@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/chat_layout"
     tools:context=".ActivityChat">
 
     <androidx.appcompat.widget.Toolbar
@@ -36,16 +37,15 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/chat_main_const"
         android:layout_width="match_parent"
-        android:layout_height="40dp"
-        android:layout_marginTop="5dp"
+        android:layout_height="50dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/chat_rv"
         tools:layout_editor_absoluteX="0dp">
 
         <ImageButton
             android:id="@+id/chat_btn_plus"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_marginStart="3dp"
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -56,7 +56,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chat_const"
             android:layout_width="0dp"
-            android:layout_height="30dp"
+            android:layout_height="40dp"
             android:layout_marginStart="5dp"
             android:layout_marginEnd="5dp"
             android:background="@drawable/radius_30_solid_chat_gray"
@@ -68,8 +68,8 @@
 
             <ImageButton
                 android:id="@+id/chat_btn_send"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_marginEnd="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -79,14 +79,14 @@
             <EditText
                 android:id="@+id/chat_edit"
                 android:layout_width="0dp"
-                android:layout_height="20dp"
+                android:layout_height="30dp"
                 android:layout_marginStart="15dp"
                 android:layout_marginEnd="5dp"
                 android:background="@android:color/transparent"
                 android:ems="10"
                 android:inputType="textMultiLine"
                 android:scrollHorizontally="false"
-                android:textSize="16sp"
+                android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="@+id/chat_btn_send"
                 app:layout_constraintEnd_toStartOf="@+id/chat_btn_send"
                 app:layout_constraintStart_toStartOf="parent"
