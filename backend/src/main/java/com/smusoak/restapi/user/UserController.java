@@ -28,10 +28,6 @@ public class UserController {
 		return userService.getAllUser();
 	}
 
-	@GetMapping("/redisAllUsers")
-	public String redisAllUsers(@RequestBody UserCreateDto userCreateDto) {
-		return redisService.getValues(userCreateDto.getMail());
-	}
 	@PostMapping("/sendAuthCode")
 	public String sendAuthCode(@RequestBody UserCreateDto userCreateDto) {
 		try {
@@ -46,10 +42,7 @@ public class UserController {
 					userCreateDto.getMail() + e.getMessage());
 			throw new BusinessLogicException(ExceptionCode.USER_MAIL_DUPLICATE);
 		}
-
-		//return "I can do this all day!";
 	}
-
 	@GetMapping("/mailVerification")
 	public String mailVerification(@RequestParam("mail") String mail, @RequestParam("authCode") String authCode) {
 		boolean verificationResult = userService.verifiedCode(mail, authCode);
@@ -58,5 +51,13 @@ public class UserController {
 		}
 		return "이메일 인증을 재시도 해주세요!";
 	}
-	
+
+	@PostMapping("/updateUserDetails")
+	public String updateUserDetails(@RequestBody UserDetailsDto userDetailsDto) {
+		boolean updateUserDetailsResult = userService.updateUserDetails(userDetailsDto);
+		if(updateUserDetailsResult) {
+			return "유저 디테일 정보 업데이트 성공";
+		}
+		return "유저 디테일 정보 업데이트 실패 exception 만들기";
+	}
 }

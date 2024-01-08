@@ -27,3 +27,5 @@ replay_pid*
 # yml
 **/application-local.yml
 **/*.db
+
+**/.DS_Store

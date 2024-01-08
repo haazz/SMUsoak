@@ -105,5 +105,19 @@ public class UserService {
 			throw new BusinessLogicException(ExceptionCode.USER_MAIL_DUPLICATE);
 		}
 	}
+
+	public boolean updateUserDetails(UserDetailsDto userDetailsDto) {
+		try {
+			Optional<Users> users = userRepository.findByMail(userDetailsDto.getMail());
+			users.get().setAge(userDetailsDto.getAge());
+			users.get().setGender(userDetailsDto.getGender());
+			users.get().setMajor(userDetailsDto.getMajor());
+			this.userRepository.save(users.get());
+			return true;
+		} catch (Exception e) {
+			log.debug("userService.updateUserDetails() exception occur");
+			return false; // throw exception 필요
+		}
+	}
 }	
 

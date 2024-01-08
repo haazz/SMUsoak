@@ -22,4 +22,10 @@ public class Users {
 	private String password;
 	
 	private boolean mailAuth;
+
+	private Integer age;
+
+	private String major;
+
+	private Character gender;
 }

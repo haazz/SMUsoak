@@ -28,3 +28,4 @@ spring:
             enable: true
 
     auth-code-expiration-millis: ${MAIL_EXPIRATION}
+
