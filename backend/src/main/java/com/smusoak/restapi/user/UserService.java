@@ -2,25 +2,24 @@ package com.smusoak.restapi.user;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.time.Duration;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
-import com.smusoak.restapi.BusinessLogicException;
-import com.smusoak.restapi.ExceptionCode;
+import com.smusoak.restapi.response.ApiResponseEntity;
+import com.smusoak.restapi.response.CustomException;
+import com.smusoak.restapi.response.ErrorCode;
 import com.smusoak.restapi.mail.MailService;
 import com.smusoak.restapi.redis.RedisService;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-
-import javax.swing.text.html.Option;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -34,34 +33,38 @@ public class UserService {
 	@Value("${spring.mail.auth-code-expiration-millis}")
 	private long authCodeExpirationMillis;
 
-	public boolean createUser(String mail) {
+	public void createUser(String mail) {
 		Users user = new Users();
 		String password = redisService.getListOpsByIndex(mail, PASSWORD_INDEX);
-		if(password != null) {
-			user.setMail(mail);
-			user.setPassword(password);
-			user.setMailAuth(true);
-			this.userRepository.save(user);
-			redisService.deleteByKey(mail);
-			return true;
+		if (password.isEmpty()) {
+			throw new CustomException(ErrorCode.REDIS_DATA_NOT_FOUND);
 		}
-		return false;
+		user.setMail(mail);
+		user.setPassword(password);
+		user.setMailAuth(true);
+		this.userRepository.save(user);
+		redisService.deleteByKey(mail);
 	}
 	
-	public Users getUser(String mail) {
+	public UserDetailsDto getUser(String mail) {
 		Optional<Users> user = this.userRepository.findByMail(mail);
-		return user.get();
+		return UserDetailsDto.builder()
+				.mail(user.get().getMail())
+				.age(user.get().getAge())
+				.gender(user.get().getGender())
+				.major(user.get().getMajor())
+				.build();
 	}
 	
-	public List<Users> getAllUser() {
+	public ResponseEntity<ApiResponseEntity> getAllUser() {
 		List<Users> users = this.userRepository.findAll();
-		
-		return users;
+		return ApiResponseEntity.toResponseEntity(users);
 	}
 
 
-	public void sendCodeToMail(UserCreateDto userCreateDto) throws Exception {
+	public ResponseEntity<ApiResponseEntity> sendCodeToMail(UserCreateDto userCreateDto) throws MessagingException {
 		String toMail = userCreateDto.getMail();
+		this.checkDuplicatiedMail(toMail);
 		String title = "SMUsoak 이메일 인증 번호";
 		String authCode = this.createCode();
 		String htmlContent = "<h1>SMUsoak 메일인증</h1>" +
@@ -70,16 +73,21 @@ public class UserService {
 				"<br><a href='http://localhost:8080/user/mailVerification?mail=" +
 				toMail + "&authCode=" + authCode +
 				"' target='_blank'>이메일 인증 확인</a>";
-		this.checkDuplicatiedMail(toMail);
 		mailService.sendMail(toMail, title, htmlContent);
 		redisService.deleteByKey(toMail);
 		redisService.setListOps(toMail, authCode, userCreateDto.getPassword());
 		redisService.setExpire(toMail, authCodeExpirationMillis);
+		return ApiResponseEntity.toResponseEntity();
 	}
 
 	public boolean verifiedCode(String mail, String authCode) {
+		this.checkDuplicatiedMail(mail);
 		String redisAuthCode = redisService.getListOpsByIndex(mail, AUTH_CODE_INDEX);
-		boolean authResult = redisAuthCode != null && redisAuthCode.equals(authCode);
+
+		if(redisAuthCode.isEmpty()) {
+			throw new CustomException(ErrorCode.REDIS_DATA_NOT_FOUND);
+		}
+		boolean authResult = redisAuthCode.equals(authCode);
 		return authResult;
 	}
 
@@ -94,7 +102,7 @@ public class UserService {
 			return builder.toString();
 		} catch (NoSuchAlgorithmException e) {
 			log.debug("userService.createCode() exception occur");
-			return null;	// throw로 변경 필요
+			throw new CustomException(ErrorCode.NO_SUCH_ALGORITHM);
 		}
 	}
 
@@ -102,22 +110,20 @@ public class UserService {
 		Optional<Users> users = userRepository.findByMail(mail);
 		if (users.isPresent()) {
 			log.debug("UserService.checkDuplicatedMail exception occur mail: " + mail);
-			throw new BusinessLogicException(ExceptionCode.USER_MAIL_DUPLICATE);
+			throw new CustomException(ErrorCode.USER_MAIL_DUPLICATE);
 		}
 	}
 
-	public boolean updateUserDetails(UserDetailsDto userDetailsDto) {
-		try {
-			Optional<Users> users = userRepository.findByMail(userDetailsDto.getMail());
+	public ResponseEntity<ApiResponseEntity> updateUserDetails(UserDetailsDto userDetailsDto) {
+		Optional<Users> users = userRepository.findByMail(userDetailsDto.getMail());
+		if (users.isPresent()) {
 			users.get().setAge(userDetailsDto.getAge());
 			users.get().setGender(userDetailsDto.getGender());
 			users.get().setMajor(userDetailsDto.getMajor());
 			this.userRepository.save(users.get());
-			return true;
-		} catch (Exception e) {
-			log.debug("userService.updateUserDetails() exception occur");
-			return false; // throw exception 필요
+			return ApiResponseEntity.toResponseEntity();
 		}
+		throw new CustomException(ErrorCode.USER_NOT_FOUND);
 	}
 }	
 
