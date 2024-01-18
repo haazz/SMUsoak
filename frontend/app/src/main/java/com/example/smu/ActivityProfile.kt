@@ -8,8 +8,10 @@ import android.os.Bundle
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Spinner
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContentProviderCompat.requireContext
 import com.bumptech.glide.Glide
 import com.example.smu.databinding.ActivityProfileBinding
@@ -30,6 +32,14 @@ class ActivityProfile : AppCompatActivity() {
             Glide.with(this)
                 .load(uri)
                 .into(profile)
+        }
+
+        profile.setOnClickListener {
+            if(uri != null){
+                val intent = Intent(this, ActivityImage::class.java)
+                intent.putExtra("image_uri", uri.toString())
+                startActivity(intent)
+            }
         }
     }
 

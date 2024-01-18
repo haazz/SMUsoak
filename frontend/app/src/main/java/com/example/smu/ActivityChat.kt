@@ -4,16 +4,23 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.Resources
 import android.graphics.Rect
+import android.graphics.drawable.ColorDrawable
+import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewTreeObserver
+import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -33,6 +40,7 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var send: ImageButton
     private lateinit var recyclerViewChat: RecyclerView
     private lateinit var chatAdapter: AdapterChat
+    private lateinit var plusbtn: ImageButton
     private var chatlist = mutableListOf<ChatList>()
     private var isKeyboardOpened = false
     private lateinit var sharedPreferences: SharedPreferences
@@ -74,6 +82,19 @@ class ActivityChat : AppCompatActivity() {
         override fun afterTextChanged(s: Editable?) {}
     }
 
+    val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            chatlist.add(ChatList(uri.toString(), "", 4))
+            recyclerViewChat.adapter?.notifyDataSetChanged()
+            recyclerViewChat.post {
+                val layoutManager = recyclerViewChat.layoutManager as LinearLayoutManager
+                val position = chatAdapter.itemCount - 1
+                val totalHeight = layoutManager.findViewByPosition(position)?.height ?: 0
+                layoutManager.scrollToPositionWithOffset(position, totalHeight)
+            }
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -86,9 +107,10 @@ class ActivityChat : AppCompatActivity() {
         recyclerViewChat = binding.chatRv
         recyclerViewChat.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        chatAdapter = AdapterChat(chatlist)
+        chatAdapter = AdapterChat(chatlist, this)
         recyclerViewChat.adapter = chatAdapter
 
+        plusbtn = binding.chatBtnPlus
         send = binding.chatBtnSend
         const = binding.chatMainConst
         chatconst = binding.chatConst
@@ -127,9 +149,19 @@ class ActivityChat : AppCompatActivity() {
                 }
 
                 recyclerViewChat.adapter?.notifyDataSetChanged()
-                recyclerViewChat.layoutManager?.scrollToPosition(chatAdapter.itemCount - 1)
+                Log.d("chat", chatAdapter.itemCount.toString())
+                recyclerViewChat.post {
+                    val layoutManager = recyclerViewChat.layoutManager as LinearLayoutManager
+                    val position = chatAdapter.itemCount - 1
+                    val totalHeight = layoutManager.findViewByPosition(position)?.height ?: 0
+                    layoutManager.scrollToPositionWithOffset(position, totalHeight)
+                }
                 chatedit.setText("")
             }
+        }
+
+        plusbtn.setOnClickListener {
+            getContent.launch("image/*")
         }
     }
 

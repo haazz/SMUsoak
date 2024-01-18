@@ -33,6 +33,7 @@ class ActivityMain : AppCompatActivity() {
                         .beginTransaction()
                         .replace(binding.mainFrame.id, FragmentHome()) // Replace with your fragment
                         .commitAllowingStateLoss()
+                    binding.mainToolbar.title = "SMU들다"
                     true
                 }
                 R.id.bnv_chat -> {
