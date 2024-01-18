@@ -6,12 +6,42 @@
     android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rv_chatting_myimage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="5dp"
+        android:background="@drawable/radius_5_solid_chatcolor"
+        android:maxWidth="250dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/rv_chatting_my_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
+            android:layout_marginTop="3dp"
+            android:layout_marginEnd="3dp"
+            android:layout_marginBottom="3dp"
+            android:maxWidth="200dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/svg_profile"
+            android:adjustViewBounds="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rv_chatting_mychat_const"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="5dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -19,14 +49,14 @@
             android:id="@+id/rv_chatting_mytext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/radius_20_solid_chatcolor"
+            android:background="@drawable/radius_15_solid_chatcolor"
             android:inputType="textMultiLine"
             android:maxWidth="215dp"
             android:maxLines="5"
             android:paddingStart="10dp"
             android:paddingTop="2dp"
             android:paddingEnd="10dp"
-            android:paddingBottom="2dp"
+            android:paddingBottom="3dp"
             android:text="MyChat"
             android:textColor="@color/white"
             android:textSize="18sp"
@@ -53,7 +83,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
         android:layout_marginTop="2dp"
-        android:visibility="invisible"
+        android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
@@ -66,7 +96,7 @@
             android:paddingStart="10dp"
             android:paddingTop="2dp"
             android:paddingEnd="10dp"
-            android:paddingBottom="2dp"
+            android:paddingBottom="3dp"
             android:text="YourChat"
             android:textSize="18sp"
             app:layout_constraintStart_toStartOf="parent"
@@ -88,9 +118,9 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/rv_chatting_day"
         android:layout_width="match_parent"
-        android:layout_height="22dp"
+        android:layout_height="25dp"
         android:layout_marginTop="2dp"
-        android:visibility="visible"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
