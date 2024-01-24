@@ -1,22 +1,29 @@
-package com.smusoak.restapi.user;
+package com.smusoak.restapi.services;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
+import com.smusoak.restapi.dto.JwtAuthenticationResponse;
 import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.response.CustomException;
 import com.smusoak.restapi.response.ErrorCode;
-import com.smusoak.restapi.mail.MailService;
-import com.smusoak.restapi.redis.RedisService;
+import com.smusoak.restapi.dto.UserCreateDto;
+import com.smusoak.restapi.dto.UserDetailsDto;
+import com.smusoak.restapi.repositories.UserRepository;
+import com.smusoak.restapi.models.Users;
 import jakarta.mail.MessagingException;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -30,6 +37,9 @@ public class UserService {
 	private final UserRepository userRepository;
 	private final MailService mailService;
 	private final RedisService redisService;
+	private final JwtService jwtService;
+	private final AuthenticationManager authenticationManager;
+
 	@Value("${spring.mail.auth-code-expiration-millis}")
 	private long authCodeExpirationMillis;
 
@@ -42,6 +52,7 @@ public class UserService {
 		user.setMail(mail);
 		user.setPassword(password);
 		user.setMailAuth(true);
+		user.setCreatedAt(LocalDateTime.now());
 		this.userRepository.save(user);
 		redisService.deleteByKey(mail);
 	}
@@ -114,6 +125,17 @@ public class UserService {
 		}
 	}
 
+	public ResponseEntity<ApiResponseEntity> signin(UserCreateDto userCreateDto) {
+		authenticationManager.authenticate(
+				new UsernamePasswordAuthenticationToken(userCreateDto.getMail(), userCreateDto.getPassword()));
+		Users user = userRepository.findByMail(userCreateDto.getMail())
+				.orElseThrow(() -> new CustomException(ErrorCode.WRONG_MAIL_OR_PASSWORD));
+
+		var token = jwtService.generateToken(user);
+		return ApiResponseEntity.toResponseEntity(
+				JwtAuthenticationResponse.builder().token(token).build());
+	}
+
 	public ResponseEntity<ApiResponseEntity> updateUserDetails(UserDetailsDto userDetailsDto) {
 		Optional<Users> users = userRepository.findByMail(userDetailsDto.getMail());
 		if (users.isPresent()) {
@@ -124,6 +146,16 @@ public class UserService {
 			return ApiResponseEntity.toResponseEntity();
 		}
 		throw new CustomException(ErrorCode.USER_NOT_FOUND);
+	}
+
+	public UserDetailsService userDetailsService() {
+		return new UserDetailsService() {
+			@Override
+			public UserDetails loadUserByUsername(String username) {
+				return userRepository.findByMail(username)
+						.orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+			}
+		};
 	}
 }	
 

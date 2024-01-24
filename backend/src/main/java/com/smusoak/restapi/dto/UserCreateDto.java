@@ -1,4 +1,4 @@
-package com.smusoak.restapi.user;
+package com.smusoak.restapi.dto;
 
 import lombok.Getter;
 import lombok.Setter;

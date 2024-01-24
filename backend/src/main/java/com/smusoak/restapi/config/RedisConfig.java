@@ -1,4 +1,4 @@
-package com.smusoak.restapi.redis;
+package com.smusoak.restapi.config;
 
 
 import org.springframework.beans.factory.annotation.Value;

@@ -1,4 +1,4 @@
-package com.smusoak.restapi.mail;
+package com.smusoak.restapi.config;
 
 import java.util.Properties;
 

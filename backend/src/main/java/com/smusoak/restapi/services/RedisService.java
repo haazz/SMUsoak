@@ -1,4 +1,4 @@
-package com.smusoak.restapi.redis;
+package com.smusoak.restapi.services;
 
 
 import lombok.RequiredArgsConstructor;

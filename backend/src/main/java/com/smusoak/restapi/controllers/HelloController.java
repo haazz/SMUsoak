@@ -1,4 +1,4 @@
-package com.smusoak.restapi;
+package com.smusoak.restapi.controllers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
