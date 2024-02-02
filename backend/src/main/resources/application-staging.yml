@@ -41,3 +41,7 @@ token:
     key: ${TOKEN_SECRET_KEY}
   # 1hour
   expirationms: ${TOKEN_EXPIRATION}
+
+admin:
+  mail: ${ADMIN_MAIL}
+  password: ${ADMIN_PASSWORD}

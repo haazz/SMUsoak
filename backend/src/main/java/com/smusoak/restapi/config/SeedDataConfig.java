@@ -6,6 +6,7 @@ import com.smusoak.restapi.repositories.UserRepository;
 import com.smusoak.restapi.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -19,6 +20,11 @@ public class SeedDataConfig implements CommandLineRunner {
     private final PasswordEncoder passwordEncoder;
     private final UserService userService;
 
+    @Value("${admin.mail}")
+    private String adminMail;
+    @Value("${admin.password}")
+    private String adminPassword;
+
     @Override
     public void run(String... args) throws Exception {
 
@@ -26,8 +32,8 @@ public class SeedDataConfig implements CommandLineRunner {
 
             User admin = User
                     .builder()
-                    .mail("admin@admin.com")
-                    .password(passwordEncoder.encode("password"))
+                    .mail(adminMail)
+                    .password(passwordEncoder.encode(adminPassword))
                     .role(Role.ROLE_ADMIN)
                     .build();
 
