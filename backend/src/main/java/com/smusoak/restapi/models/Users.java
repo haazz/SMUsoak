@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Getter
@@ -41,15 +42,7 @@ public class Users implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		Collection<GrantedAuthority> authorities = new ArrayList<>();
-		// 관리자 및 권한 추가시 수정 필요
-		if (mail.equals("admin")) {
-			authorities.add(new SimpleGrantedAuthority(role.name()));
-		}
-		else {
-			authorities.add(new SimpleGrantedAuthority(role.name()));
-		}
-		return authorities;
+		return List.of(new SimpleGrantedAuthority(role.name()));
 	}
 
 	@Override

@@ -1,10 +1,11 @@
 package com.smusoak.restapi.repositories;
 
-import java.util.Optional;
 
-import com.smusoak.restapi.models.Users;
+import com.smusoak.restapi.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserRepository extends JpaRepository<Users, Long>{
-	Optional<Users> findByMail(String mail);
+import java.util.Optional;
+
+public interface UserRepository extends JpaRepository<User, Long> {
+    Optional<User> findByMail(String mail);
 }

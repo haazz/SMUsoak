@@ -13,7 +13,12 @@ spring:
   jpa:
     database: mysql
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
+
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT}
 
   mail:
     host: ${MAIL_HOST}
@@ -27,5 +32,12 @@ spring:
           starttls:
             enable: true
 
-    auth-code-expiration-millis: ${MAIL_EXPIRATION}
+    auth-code-expirationms: ${MAIL_EXPIRATION}
 
+token:
+  secret:
+    # Generate by
+    # node -e "console.log(require('crypto').randomBytes(32).toString('hex'))"
+    key: ${TOKEN_SECRET_KEY}
+  # 1hour
+  expirationms: ${TOKEN_EXPIRATION}

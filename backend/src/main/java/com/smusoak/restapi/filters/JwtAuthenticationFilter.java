@@ -6,8 +6,10 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -18,27 +20,34 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 
-@RequiredArgsConstructor
 @Component
-public class JwtAuthenticFilter extends OncePerRequestFilter {
-    private JwtService jwtService;
-    private UserService userService;
+@RequiredArgsConstructor
+@Slf4j
+public class JwtAuthenticationFilter  extends OncePerRequestFilter {
+    private final JwtService jwtService;
+    private final UserService userService;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
-        final String header = request.getHeader(HttpHeaders.AUTHORIZATION);
-        final String token;
+    protected void doFilterInternal(@NonNull HttpServletRequest request,
+                                    @NonNull HttpServletResponse response,
+                                    @NonNull FilterChain filterChain)
+    throws ServletException, IOException {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwt;
         final String userMail;
-        if (header.isEmpty() || !header.startsWith("Bearer ")) {
+
+        if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
             filterChain.doFilter(request, response);
-            return ;
+            return;
         }
-        token = header.split(" ")[1].trim();
-        userMail = jwtService.getUserNameByToken(token);
-        if (!userMail.isEmpty() && SecurityContextHolder.getContext().getAuthentication() == null) {
+
+        jwt = authHeader.substring(7);
+        log.debug("JWT -{}", jwt.toString());
+        userMail = jwtService.extractUserName(jwt);
+        if(StringUtils.isNotEmpty(userMail) && SecurityContextHolder.getContext().getAuthentication() == null) {
             UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userMail);
-            if (jwtService.isTokenValid(token, userDetails)) {
+            if (jwtService.isTokenValid(jwt, userDetails)) {
+                log.debug("User - {}", userDetails);
                 SecurityContext context = SecurityContextHolder.createEmptyContext();
                 UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

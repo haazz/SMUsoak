@@ -6,23 +6,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/test")
 public class TestController {
-
-    @GetMapping("/anon")
-    public String anonEndPoint() {
-        return "everyone can see this";
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World!";
     }
 
-    @GetMapping("/users")
+    @GetMapping("/user")
     @PreAuthorize("hasRole('USER')")
-    public String usersEndPoint() {
-        return "ONLY users can see this";
-    }
+    public String userEndPoint() { return "ONLY user can see this"; }
 
-    @GetMapping("/admins")
+    @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public String adminsEndPoint() {
-        return "ONLY admins can see this";
-    }
+    public String adminEndPoint() { return "ONLY admin can see this"; }
 }
