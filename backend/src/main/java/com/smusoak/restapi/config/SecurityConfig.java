@@ -53,6 +53,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.POST, "/user/updateUserDetails").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/authentication/sendAuthCode", "/authentication/signin").permitAll()
                         .requestMatchers(HttpMethod.GET, "/test/**", "/authentication/mailVerification").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/test/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
