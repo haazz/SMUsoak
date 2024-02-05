@@ -71,6 +71,9 @@ public class AuthenticationService {
 
     public ResponseEntity<ApiResponseEntity> sendCodeToMail(SignUpRequest request) throws MessagingException {
         String toMail = request.getMail();
+        if (!toMail.endsWith("@sangmyung.kr")) {
+            throw new CustomException(ErrorCode.WRONG_MAIL_ADDRESS);
+        }
         this.checkDuplicatiedMail(toMail);
         String title = "SMUsoak 이메일 인증 번호";
         String authCode = this.createCode();
