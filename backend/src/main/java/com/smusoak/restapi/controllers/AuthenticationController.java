@@ -15,7 +15,7 @@ public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/sendAuthCode")
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponseEntity> sendAuthCode(@RequestBody SignUpRequest request) throws Exception{
         return authenticationService.sendCodeToMail(request);
     }
