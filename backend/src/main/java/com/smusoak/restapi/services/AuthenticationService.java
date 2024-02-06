@@ -31,12 +31,14 @@ import java.util.Random;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
-    private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
     private final RedisService redisService;
     private final MailService mailService;
+
+    @Value("${mail.verification-url}")
+    private String mailVerificationUrl;
 
     private static final int AUTH_CODE_INDEX = 0;
     private static final int PASSWORD_INDEX = 1;
@@ -80,7 +82,7 @@ public class AuthenticationService {
         String htmlContent = "<h1>SMUsoak 메일인증</h1>" +
                 "<br>SMUsoak에 오신것을 환영합니다!" +
                 "<br>아래 [이메일 인증 확인]을 눌러주세요." +
-                "<br><a href='http://localhost:8080/authentication/mailVerification?mail=" +
+                "<br><a href='" + mailVerificationUrl +
                 toMail + "&authCode=" + authCode +
                 "' target='_blank'>이메일 인증 확인</a>";
         mailService.sendMail(toMail, title, htmlContent);
