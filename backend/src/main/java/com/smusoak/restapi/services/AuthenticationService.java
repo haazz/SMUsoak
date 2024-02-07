@@ -37,7 +37,7 @@ public class AuthenticationService {
     private final RedisService redisService;
     private final MailService mailService;
 
-    @Value("${mail.verification-url}")
+    @Value("${spring.mail.verification-url}")
     private String mailVerificationUrl;
 
     private static final int AUTH_CODE_INDEX = 0;
