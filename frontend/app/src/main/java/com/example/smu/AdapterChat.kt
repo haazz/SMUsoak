@@ -41,7 +41,7 @@ class AdapterChat(
         }
 
         fun bind(list : ChatList) {
-            if(list.user == 1){
+            if(list.type == 1){
                 visibleMy()
                 invisibleYour()
                 binding.rvChattingDay.visibility = View.GONE
@@ -49,28 +49,28 @@ class AdapterChat(
                 binding.rvChattingMytext.text = list.text
                 binding.rvChattingMyTime.text = list.time
             }
-            else if(list.user == 0){
+            else if(list.type == 0){
                 visibleYour()
                 invisibleMy()
                 binding.rvChattingDay.visibility = View.GONE
                 binding.rvChattingMyimage.visibility = View.GONE
                 binding.rvChattingYourtext.text = list.text
                 binding.rvChattingYourTime.text = list.time
-            }else if(list.user == 2){
+            }else if(list.type == 2){
                 binding.rvChattingDay.visibility = View.VISIBLE
                 binding.rvChattingMyimage.visibility = View.GONE
                 binding.rvChattingDayText.text = getCurrentDate()
                 invisibleMy()
                 invisibleYour()
-            }else if(list.user == 4){
+            }else if(list.type == 4){
                 binding.rvChattingDay.visibility = View.GONE
                 binding.rvChattingMyimage.visibility = View.VISIBLE
                 invisibleMy()
                 invisibleYour()
                 Glide.with(context)
                     .load(list.text)
-                    .into(binding.rvChattingMyImage)
-                binding.rvChattingMyImage.setOnClickListener {
+                    .into(binding.rvChattingMyimage)
+                binding.rvChattingMyimage.setOnClickListener {
                     val intent = Intent(context, ActivityImage::class.java)
                     intent.putExtra("image_uri", list.text)
                     context.startActivity(intent)
