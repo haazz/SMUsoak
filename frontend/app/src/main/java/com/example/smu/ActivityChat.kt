@@ -143,7 +143,7 @@ class ActivityChat : AppCompatActivity() {
                 chatlist.add(ChatList(chatedit.text.toString(), currentTime, 1))
 
                 if(chatlist.size >= 2){
-                    if(chatlist[chatlist.size-2].user == chatlist[chatlist.size-1].user && chatlist[chatlist.size-2].time == chatlist[chatlist.size-1].time){
+                    if(chatlist[chatlist.size-2].type == chatlist[chatlist.size-1].type && chatlist[chatlist.size-2].time == chatlist[chatlist.size-1].time){
                         chatlist[chatlist.size-2].time = ""
                     }
                 }
