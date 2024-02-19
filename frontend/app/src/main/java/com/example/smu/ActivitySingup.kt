@@ -113,23 +113,6 @@ class ActivitySingup : AppCompatActivity() {
             if(pwcheck && idedit.text.length == 9){
                 id = idedit.text.toString()
                 pw = pwedit.text.toString()
-                Log.d("Retrofit", id + pw)
-                val call = RetrofitObject.getRetrofitService.signup(Retrofit.signup(id, pw))
-                call.enqueue(object : Callback<Retrofit.Responsesignup> {
-                    override fun onResponse(call: Call<Retrofit.Responsesignup>, response: Response<Retrofit.Responsesignup>) {
-                        if (response.isSuccessful) {
-                            val response = response.body()
-                            if(response != null){
-                                CustomDialog(idedit.text.toString())
-                            }
-                        }
-                    }
-
-                    override fun onFailure(call: Call<Retrofit.Responsesignup>, t: Throwable) {
-                        val errorMessage = "Call Failed: ${t.message}"
-                        Log.d("Retrofit", errorMessage)
-                    }
-                })
             }else if(!pwcheck && idedit.text.length != 9){
                 Toast.makeText(this, "회원가입 양식을 다시 확인해 주세요.", Toast.LENGTH_SHORT).show()
             }else if(idedit.text.length != 9 && pwcheck){
