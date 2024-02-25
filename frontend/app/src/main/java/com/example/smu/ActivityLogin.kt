@@ -56,7 +56,7 @@ class ActivityLogin : AppCompatActivity() {
                         val response = response.body()
                         if(response != null){
                             if(response.success) {
-                                val token = response.data.toString()
+                                val token = response.data.token
                                 editor.putString("id", id)
                                 editor.putString("jwt", token)
                                 editor.putString("pw", pw)

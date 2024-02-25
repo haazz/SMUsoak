@@ -136,17 +136,21 @@ class ActivitySingup : AppCompatActivity() {
                 val call = RetrofitObject.getRetrofitService.signup(Retrofit.Requestsignup(id+"@sangmyung.kr", pw))
                 call.enqueue(object : Callback<Retrofit.Responsesignup> {
                     override fun onResponse(call: Call<Retrofit.Responsesignup>, response: Response<Retrofit.Responsesignup>) {
-                        Log.d("Retrofit", "성공")
-                        if (response.isSuccessful) {
+                        if (response.code()==200) {
                             val response = response.body()
-                            if(response != null){
-                                if(response.success){
+                            Log.d("Retrofit", response.toString())
+                            if(response != null) {
+                                if(response.success)
                                     CustomDialog(id)
-                                }
                             }
+                        }else if(response.code()==400){
+                            val response = response.body()
+                            Log.d("Retrofit", response.toString())
+                            Toast.makeText(this@ActivitySingup,"이미 가입된 이메일 입니다.",Toast.LENGTH_SHORT).show()
                         }
                         else{
-                            Toast.makeText(this@ActivitySingup,"다시 시도해 주세요.",Toast.LENGTH_SHORT).show()
+                            val errorCode = response.code()
+                            Log.d("Retrofit", "HTTP Error: $errorCode")
                         }
                     }
 

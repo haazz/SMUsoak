@@ -35,6 +35,15 @@ class Retrofit {
         @SerializedName("success")
         val success: Boolean,
         @SerializedName("data")
-        val data: Objects
+        val data: signup
+    )
+
+    data class signup(
+        @SerializedName("status")
+        val status:Int,
+        @SerializedName("code")
+        val code:String,
+        @SerializedName("message")
+        val message:String
     )
 }
