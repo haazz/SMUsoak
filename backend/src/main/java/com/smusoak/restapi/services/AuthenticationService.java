@@ -85,10 +85,10 @@ public class AuthenticationService {
                 "<br><a href='" + mailVerificationUrl +
                 toMail + "&authCode=" + authCode +
                 "' target='_blank'>이메일 인증 확인</a>";
-        mailService.sendMail(toMail, title, htmlContent);
         redisService.deleteByKey(toMail);
         redisService.setListOps(toMail, authCode, request.getPassword());
         redisService.setExpire(toMail, authCodeExpirationMillis);
+        mailService.sendMail(toMail, title, htmlContent);
         return ApiResponseEntity.toResponseEntity();
     }
 
