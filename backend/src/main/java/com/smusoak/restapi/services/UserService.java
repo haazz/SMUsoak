@@ -1,6 +1,6 @@
 package com.smusoak.restapi.services;
 
-import com.smusoak.restapi.dto.UserDetailsDto;
+import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.models.User;
 import com.smusoak.restapi.repositories.UserRepository;
 import com.smusoak.restapi.response.ApiResponseEntity;
@@ -21,12 +21,12 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
 
-    public ResponseEntity<ApiResponseEntity> updateUserDetails(UserDetailsDto userDetailsDto) {
-        Optional<User> users = userRepository.findByMail(userDetailsDto.getMail());
+    public ResponseEntity<ApiResponseEntity> updateUserDetails(UserDto.updateUserDetailsDto request) {
+        Optional<User> users = userRepository.findByMail(request.getMail());
         if (users.isPresent()) {
-            users.get().setAge(userDetailsDto.getAge());
-            users.get().setGender(userDetailsDto.getGender());
-            users.get().setMajor(userDetailsDto.getMajor());
+            users.get().setAge(request.getAge());
+            users.get().setGender(request.getGender());
+            users.get().setMajor(request.getMajor());
             this.userRepository.save(users.get());
             return ApiResponseEntity.toResponseEntity();
         }

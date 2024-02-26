@@ -1,6 +1,6 @@
 package com.smusoak.restapi.controllers;
 
-import com.smusoak.restapi.dto.UserDetailsDto;
+import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.services.UserService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/updateUserDetails")
-    public ResponseEntity<ApiResponseEntity> updateUserDetails(@RequestBody UserDetailsDto request) {
+    public ResponseEntity<ApiResponseEntity> updateUserDetails(@RequestBody UserDto.updateUserDetailsDto request) {
         return userService.updateUserDetails(request);
     }
 }

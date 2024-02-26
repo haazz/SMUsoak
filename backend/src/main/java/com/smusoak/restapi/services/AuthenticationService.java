@@ -1,8 +1,7 @@
 package com.smusoak.restapi.services;
 
 import com.smusoak.restapi.dto.JwtAuthenticationResponse;
-import com.smusoak.restapi.dto.SignInRequest;
-import com.smusoak.restapi.dto.SignUpRequest;
+import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.models.Role;
 import com.smusoak.restapi.models.User;
 import com.smusoak.restapi.repositories.UserRepository;
@@ -46,7 +45,7 @@ public class AuthenticationService {
     @Value("${spring.mail.auth-code-expirationms}")
     private long authCodeExpirationMillis;
 
-    public ResponseEntity<ApiResponseEntity> signin(SignInRequest request) {
+    public ResponseEntity<ApiResponseEntity> signin(UserDto.signinDto request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getMail(), request.getPassword()));
@@ -60,7 +59,7 @@ public class AuthenticationService {
                 JwtAuthenticationResponse.builder().token(jwt).build());
     }
 
-    public void createUser(String mail) {
+    public void createUser(UserDto.createUserDto request) {
         User user = new User();
         String password = redisService.getListOpsByIndex(mail, PASSWORD_INDEX);
         if (password.isEmpty()) {
@@ -75,7 +74,7 @@ public class AuthenticationService {
         redisService.deleteByKey(mail);
     }
 
-    public ResponseEntity<ApiResponseEntity> sendCodeToMail(SignUpRequest request) throws MessagingException {
+    public ResponseEntity<ApiResponseEntity> sendCodeToMail(UserDto.sendAuthCodeDto request) throws MessagingException {
         String toMail = request.getMail();
         if (!toMail.endsWith("@sangmyung.kr")) {
             throw new CustomException(ErrorCode.WRONG_MAIL_ADDRESS);
@@ -96,7 +95,7 @@ public class AuthenticationService {
         return ApiResponseEntity.toResponseEntity();
     }
 
-    public boolean verifiedCode(String mail, String authCode) {
+    public boolean verifiedCode(UserDto.mailVerificationDto request) {
         this.checkDuplicatiedMail(mail);
         String redisAuthCode = redisService.getListOpsByIndex(mail, AUTH_CODE_INDEX);
 
