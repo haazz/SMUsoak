@@ -47,8 +47,12 @@ public class AuthenticationService {
     private long authCodeExpirationMillis;
 
     public ResponseEntity<ApiResponseEntity> signin(SignInRequest request) {
-        authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(request.getMail(), request.getPassword()));
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(request.getMail(), request.getPassword()));
+        } catch (Exception e) {
+            throw new CustomException(ErrorCode.WRONG_MAIL_OR_PASSWORD);
+        }
         var user = userRepository.findByMail(request.getMail())
                 .orElseThrow(() -> new CustomException(ErrorCode.WRONG_MAIL_OR_PASSWORD));
         var jwt = jwtService.generateToken(user);
