@@ -13,7 +13,7 @@ public class UserDto {
     @NoArgsConstructor
     public static class mailVerificationDto {
         private String mail;
-        private String token;
+        private String authCode;
     }
 
     @Data
