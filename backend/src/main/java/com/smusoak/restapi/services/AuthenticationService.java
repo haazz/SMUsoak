@@ -58,7 +58,7 @@ public class AuthenticationService {
     public ResponseEntity<ApiResponseEntity> createUser(UserDto.createUserDto request) {
         User user = new User();
         String auth = redisService.getListOpsByIndex(request.getMail(), AUTH_CODE_INDEX);
-        if (auth.isEmpty()) {
+        if (auth == null || auth.isEmpty()) {
             throw new CustomException(ErrorCode.REDIS_DATA_NOT_FOUND);
         }
         // verifiedCode를 거치면 "true"가 redis에 저장되어 있어야 함
@@ -105,7 +105,7 @@ public class AuthenticationService {
         this.checkDuplicatiedMail(request.getMail());
         String redisAuthCode = redisService.getListOpsByIndex(request.getMail(), AUTH_CODE_INDEX);
 
-        if(redisAuthCode.isEmpty()) {
+        if(redisAuthCode == null || redisAuthCode.isEmpty()) {
             throw new CustomException(ErrorCode.REDIS_DATA_NOT_FOUND);
         }
         else if(!redisAuthCode.equals(request.getAuthCode()) && !redisAuthCode.equals("true")) {

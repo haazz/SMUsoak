@@ -15,7 +15,8 @@ public enum ErrorCode {
     REDIS_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "Redis 데이터가 존재하지 않거나 만료되었습니다."),
     WRONG_AUTH_CODE(HttpStatus.BAD_REQUEST, "잘못된 인증코드입니다. 인증을 재시도 해주세요!"),
     JWT_TOKEN_EXPIRED(HttpStatus.FORBIDDEN, "JWT 토큰이 만료되었습니다."),
-    JWT_TOKEN_INVALID(HttpStatus.FORBIDDEN, "잘못된 JWT 토큰입니다.")
+    JWT_TOKEN_INVALID(HttpStatus.FORBIDDEN, "잘못된 JWT 토큰입니다."),
+    BAD_REQUEST(HttpStatus.BAD_REQUEST, "request 필수 항목을 확인하세요.")
     ;
 
     private final HttpStatus httpStatus;
