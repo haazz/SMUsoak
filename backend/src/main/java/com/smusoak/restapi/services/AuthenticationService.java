@@ -65,6 +65,9 @@ public class AuthenticationService {
         else if (!auth.equals("true")) {
             throw new CustomException(ErrorCode.WRONG_AUTH_CODE);
         }
+        this.checkDuplicatiedMail(request.getMail());
+        this.checkPasswordRule(request.getPassword());
+
         // 유저 DB에 저장
         user.setMail(request.getMail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
@@ -137,6 +140,15 @@ public class AuthenticationService {
         if (users.isPresent()) {
             log.debug("UserService.checkDuplicatedMail exception occur mail: " + mail);
             throw new CustomException(ErrorCode.USER_MAIL_DUPLICATE);
+        }
+    }
+
+    private void checkPasswordRule(String password) {
+        //정규표현식 숫자최소1개,대소문자 최소1개, 길이 8~20자
+        String regExp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d~!@#$%^&*()+|=]{8,20}$";
+
+        if (!password.matches(regExp)) {
+            throw new CustomException(ErrorCode.WRONG_PASSWORD_RULE);
         }
     }
 }
