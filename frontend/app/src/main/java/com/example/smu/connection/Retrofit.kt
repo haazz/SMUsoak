@@ -18,11 +18,11 @@ class Retrofit {
         @SerializedName("data")
         val data: token
     )
-
     data class token(
         @SerializedName("token")
         val token:String
     )
+
     //회원가입 요청
     data class Requestsignup(
         @SerializedName("mail")
@@ -37,7 +37,6 @@ class Retrofit {
         @SerializedName("data")
         val data: signup
     )
-
     data class signup(
         @SerializedName("status")
         val status:Int,
@@ -45,5 +44,29 @@ class Retrofit {
         val code:String,
         @SerializedName("message")
         val message:String
+    )
+
+    //메일에 인증 번호 전송 요청
+    data class Requestsendnum(
+        @SerializedName("mail")
+        val mail: String
+    )
+    //메일에 인증 번호 전송 응답
+    data class Responsesendnum(
+        @SerializedName("success")
+        val success: Boolean
+    )
+
+    //인증 번호 확인 요청
+    data class Requestchecknum(
+        @SerializedName("mail")
+        val mail: String,
+        @SerializedName("authCode")
+        val authCode: String
+    )
+    //인증 번호 확인 응답
+    data class Responsechecknum(
+        @SerializedName("success")
+        val success: Boolean
     )
 }

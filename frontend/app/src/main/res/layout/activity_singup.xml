@@ -30,27 +30,29 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="0dp"
+        android:fillViewport="true"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/signup_view1">
+        app:layout_constraintTop_toBottomOf="@+id/signup_view1"
+        app:layout_constraintVertical_bias="0.0">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="center">
 
             <EditText
                 android:id="@+id/signup_edit_id"
                 android:layout_width="190dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="50dp"
+                android:layout_marginTop="40dp"
                 android:background="@drawable/radius_8_stroke_darkgray"
                 android:ems="10"
-                android:hint="학번을 입력해 주세요.  "
-                android:inputType="text"
+                android:hint="학번을 입력해 주세요."
+                android:inputType="number"
                 android:maxLength="9"
                 android:paddingStart="12dp"
                 android:textColorHint="@color/gray"
-                android:textSize="14sp"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw"
                 app:layout_constraintStart_toStartOf="@+id/signup_edit_pw"
                 app:layout_constraintTop_toTopOf="parent"
@@ -69,7 +71,7 @@
                 android:id="@+id/signup_edit_pw"
                 android:layout_width="300dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="90dp"
                 android:layout_marginBottom="3dp"
                 android:background="@drawable/radius_8_stroke_darkgray"
                 android:ems="10"
@@ -80,6 +82,7 @@
                 android:textSize="14sp"
                 app:layout_constraintBottom_toTopOf="@+id/signup_edit_pw_check"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.504"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/signup_edit_id" />
 
@@ -96,7 +99,7 @@
                 android:id="@+id/signup_edit_pw_check"
                 android:layout_width="300dp"
                 android:layout_height="36dp"
-                android:layout_marginTop="60dp"
+                android:layout_marginTop="90dp"
                 android:layout_marginBottom="3dp"
                 android:background="@drawable/radius_8_stroke_darkgray"
                 android:ems="10"
@@ -105,7 +108,7 @@
                 android:paddingStart="12dp"
                 android:textColorHint="@color/gray"
                 android:textSize="14sp"
-                app:layout_constraintBottom_toTopOf="@+id/signup_btn_signup"
+                app:layout_constraintBottom_toTopOf="@+id/signup_btn_next"
                 app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw"
                 app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw" />
 
@@ -131,13 +134,13 @@
                 app:layout_constraintTop_toBottomOf="@+id/signup_edit_pw" />
 
             <Button
-                android:id="@+id/signup_btn_signup"
+                android:id="@+id/signup_btn_next"
                 android:layout_width="0dp"
                 android:layout_height="36dp"
                 android:layout_marginTop="60dp"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="10dp"
                 android:background="@drawable/radius_8_solid_smu"
-                android:text="가입하기"
+                android:text="프로필 생성하러 가기"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw_check"
@@ -164,6 +167,70 @@
                 app:layout_constraintBottom_toBottomOf="@+id/signup_edit_id"
                 app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw"
                 app:layout_constraintTop_toTopOf="@+id/signup_edit_id" />
+
+            <Button
+                android:id="@+id/signup_btn_sendnum"
+                android:layout_width="90dp"
+                android:layout_height="25dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/radius_8_solid_smu"
+                android:text="인증번호 전송"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_id"
+                app:layout_constraintTop_toBottomOf="@+id/signup_edit_id" />
+
+            <EditText
+                android:id="@+id/signup_edit_emailnum"
+                android:layout_width="150dp"
+                android:layout_height="25dp"
+                android:layout_marginStart="5dp"
+                android:background="@drawable/radius_8_stroke_darkgray"
+                android:ems="10"
+                android:hint="인증번호 입력"
+                android:inputType="number"
+                android:paddingStart="12dp"
+                android:textColorHint="@color/gray"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/signup_btn_sendnum"
+                app:layout_constraintStart_toEndOf="@+id/signup_btn_sendnum"
+                app:layout_constraintTop_toTopOf="@+id/signup_btn_sendnum" />
+
+            <Button
+                android:id="@+id/signup_btn_checknum"
+                android:layout_width="50dp"
+                android:layout_height="25dp"
+                android:alpha="0.5"
+                android:background="@drawable/radius_8_solid_smu"
+                android:text="확인"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="@+id/signup_edit_emailnum"
+                app:layout_constraintEnd_toEndOf="@+id/signup_edit_pw"
+                app:layout_constraintTop_toTopOf="@+id/signup_edit_emailnum" />
+
+            <TextView
+                android:id="@+id/signup_text_fail"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="인증에 실패하였습니다."
+                android:textColor="@android:color/holo_red_light"
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="@+id/signup_btn_sendnum"
+                app:layout_constraintTop_toBottomOf="@+id/signup_btn_sendnum" />
+
+            <TextView
+                android:id="@+id/signup_text_success"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:text="인증에 성공하였습니다."
+                android:textSize="12sp"
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_id"
+                app:layout_constraintTop_toBottomOf="@+id/signup_edit_id" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

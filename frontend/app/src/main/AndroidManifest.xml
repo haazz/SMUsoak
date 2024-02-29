@@ -3,8 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-
+    <!--  android:usesCleartextTraffic="true"  개발중에만 이렇게 하고 https로 바꿔야함-->
     <application
+        android:usesCleartextTraffic="true"
         android:name=".MySharedPreference"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"

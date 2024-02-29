@@ -5,7 +5,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitObject {
-    private const val BASE_URL = "https://port-0-smusoak-hkty2alq6s0aio.sel4.cloudtype.app"
+    private const val BASE_URL = "http://ec2-43-200-30-120.ap-northeast-2.compute.amazonaws.com:8080"
 
     private val getRetrofit by lazy {
 

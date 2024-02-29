@@ -61,8 +61,7 @@ class ActivityLogin : AppCompatActivity() {
                                 editor.putString("jwt", token)
                                 editor.putString("pw", pw)
                                 editor.apply()
-                                val intent =
-                                    Intent(this@ActivityLogin, ActivityMain::class.java)
+                                val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
                                 startActivity(intent)
                             }else{
                                 Toast.makeText(this@ActivityLogin,"로그인 정보가 없습니다.",Toast.LENGTH_SHORT).show()

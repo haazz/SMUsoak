@@ -8,6 +8,10 @@ interface RetrofitAPI {
     @POST("/authentication/signin")
     fun signin(@Body request: Retrofit.Requestsignin): Call<Retrofit.Responsesignin>
 
-    @POST("/authentication/signup")
-    fun signup(@Body request: Retrofit.Requestsignup): Call<Retrofit.Responsesignup>
+    //인증 메일 전송
+    @POST("/authentication/sendAuthCode ")
+    fun sendnum(@Body request: Retrofit.Requestsendnum): Call<Retrofit.Responsesendnum>
+    //인증 번호 확인
+    @POST("/authentication/mailVerification")
+    fun checknum(@Body request: Retrofit.Requestchecknum): Call<Retrofit.Responsechecknum>
 }
