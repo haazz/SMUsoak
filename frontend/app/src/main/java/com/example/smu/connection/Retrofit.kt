@@ -69,4 +69,17 @@ class Retrofit {
         @SerializedName("success")
         val success: Boolean
     )
+
+    //채팅 요청
+    data class Requestchat(
+        @SerializedName("message")
+        val message: String,
+        @SerializedName("senderMail")
+        val sendMail: String
+    )
+    //채팅 응답
+    data class Responsechat(
+        @SerializedName("success")
+        val success: Boolean
+    )
 }

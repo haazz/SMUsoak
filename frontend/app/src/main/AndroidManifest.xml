@@ -3,9 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <!--  android:usesCleartextTraffic="true"  개발중에만 이렇게 하고 https로 바꿔야함-->
+
     <application
-        android:usesCleartextTraffic="true"
         android:name=".MySharedPreference"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
@@ -15,7 +14,11 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.SMU"
+        android:usesCleartextTraffic="true"
         tools:targetApi="31">
+        <activity
+            android:name=".ActivityTest"
+            android:exported="false" />
         <activity
             android:name=".ActivityImage"
             android:exported="false" />

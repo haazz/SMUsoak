@@ -227,10 +227,12 @@ class ActivitySingup : AppCompatActivity() {
         }
         //프로필 생성으로 넘어가기 버튼
         btn_signup.setOnClickListener {
-            val intent = Intent(this, ActivityProfile::class.java)
-            intent.putExtra("id", email)
-            intent.putExtra("pw", pw)
-            startActivity(intent)
+            if (emailcheck && pwcheck){
+                val intent = Intent(this, ActivityProfile::class.java)
+                intent.putExtra("id", email)
+                intent.putExtra("pw", pw)
+                startActivity(intent)
+            }
         }
     }
 
