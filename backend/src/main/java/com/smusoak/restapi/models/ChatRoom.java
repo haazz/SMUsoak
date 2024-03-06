@@ -22,7 +22,7 @@ public class ChatRoom {
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_chatroom")
-    private List<User> user = new ArrayList<>();
+    private List<User> userList = new ArrayList<>();
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
     private List<Message> messageList = new ArrayList<>();
