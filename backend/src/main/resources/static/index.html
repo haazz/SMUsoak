@@ -9,15 +9,17 @@
         stompClient = Stomp.over(socket);
         stompClient.connect({}, function(frame) {
             console.log(frame);
-            stompClient.subscribe('/topic/chat', function(result) {
+            stompClient.subscribe('/topic/1', function(result) {
                 show(JSON.parse(result.body));
             });
         });
 
         function sendMessage() {
             var text = document.getElementById('text').value;
+            var roomid = document.getElementById('roomid').value;
+            var sender = document.getElementById('sender').value;
             stompClient.send("/app/send", {},
-                JSON.stringify({'message':text, 'senderMail': 'jiwon'}));
+                JSON.stringify({'message':text, 'senderMail': sender, 'roomId': roomid}));
         }
 
         function show(message) {
@@ -33,6 +35,8 @@
     <div>
         <button id="sendMessage" onclick="sendMessage();">Send</button>
         <input type="text" id="text" placeholder="Text"/>
+        <input type="text" id="roomid" placeholder="roomid"/>
+        <input type="text" id="sender" placeholder="sender"/>
     </div>
     <br />
     <br />

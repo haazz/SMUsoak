@@ -21,16 +21,11 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
     @Column(unique = true)
     String mail;
-
     String password;
-
     LocalDateTime createdAt;
-
     private boolean mailAuth;
-
     @Enumerated(EnumType.STRING)
     Role role;
 
