@@ -202,6 +202,7 @@
                 android:layout_height="25dp"
                 android:alpha="0.5"
                 android:background="@drawable/radius_8_solid_smu"
+                android:enabled="false"
                 android:text="확인"
                 android:textColor="@color/white"
                 android:textSize="12sp"
