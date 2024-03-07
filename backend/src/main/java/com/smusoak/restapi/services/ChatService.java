@@ -64,7 +64,13 @@ public class ChatService {
                 .build());
         // return chatRoomRepository.findListByMemberId(memberId).stream().map(ChatRoomDto.Response::of).collect(Collectors.toList());
     }
-//
+
+    public ResponseEntity<ApiResponseEntity> getRoomMessages(ChatDto.chatRoomMessagesDto request) {
+        return ApiResponseEntity.toResponseEntity(ChatDto.messageListResponse.builder()
+                .messageList(messageRepository.findByChatRoomId(request.getChatRoomId()))
+                .build());
+    }
+
 //    @Transactional(readOnly = true)
 //    public ChatRoomDto.Detail getRoomDetail(Long roomId) {
 //        Optional<ChatRoomDto.Detail> room = chatRoomRepository.findById(roomId).map(ChatRoomDto.Detail::of);

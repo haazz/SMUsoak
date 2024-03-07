@@ -1,5 +1,6 @@
 package com.smusoak.restapi.dto;
 import com.smusoak.restapi.models.ChatRoom;
+import com.smusoak.restapi.models.Message;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Data;
@@ -32,5 +33,17 @@ public class ChatDto {
     @Builder
     public static class chatRoomListResponse {
         private List<ChatRoom> chatRoomList;
+    }
+
+    @Data
+    public static class chatRoomMessagesDto {
+        @NotBlank
+        private Long chatRoomId;
+    }
+
+    @Data
+    @Builder
+    public static class messageListResponse {
+        private List<Message> messageList;
     }
 }

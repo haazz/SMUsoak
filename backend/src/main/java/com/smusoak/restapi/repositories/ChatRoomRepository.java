@@ -1,6 +1,7 @@
 package com.smusoak.restapi.repositories;
 
 import com.smusoak.restapi.models.ChatRoom;
+import com.smusoak.restapi.models.Message;
 import com.smusoak.restapi.models.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 

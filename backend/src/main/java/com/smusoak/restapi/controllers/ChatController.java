@@ -9,10 +9,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
+import org.springframework.messaging.simp.user.SimpUserRegistry;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequiredArgsConstructor
@@ -24,14 +28,18 @@ public class ChatController {
 
     // Mapped as app/send
     @MessageMapping("/send")
-    public ChatDto.SendMessage send(@Payload ChatDto.SendMessage request) {
+    public ResponseEntity<ApiResponseEntity> send(@Payload ChatDto.SendMessage request) {
         messagingTemplate.convertAndSend("/topic/" + request.getRoomId(), request);
-        return request;
-//         chatService.sendMessage(request);
+        return ApiResponseEntity.toResponseEntity();
     }
 
-    @GetMapping("/chatRoomList")
+    @GetMapping("/roomList")
     public ResponseEntity<ApiResponseEntity> chatRoomList(ChatDto.chatRoomListDto request) {
         return chatService.getChatRoomList(request);
+    }
+
+    @GetMapping("/roomMessages")
+    public ResponseEntity<ApiResponseEntity> getChatRoomMessages(ChatDto.chatRoomMessagesDto request) {
+        return chatService.getRoomMessages(request);
     }
 }
