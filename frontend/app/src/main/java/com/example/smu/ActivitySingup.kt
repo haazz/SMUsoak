@@ -107,6 +107,13 @@ class ActivitySingup : AppCompatActivity() {
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             val inputText = s.toString()
             idcheck = inputText.toIntOrNull() != null
+            if(idcheck && s!!.length==9) {
+                btn_sendnum.isEnabled = true
+                btn_sendnum.alpha = 1f
+            }else{
+                btn_sendnum.isEnabled = false
+                btn_sendnum.alpha = 0.5f
+            }
         }
 
         override fun afterTextChanged(s: Editable?) {}
