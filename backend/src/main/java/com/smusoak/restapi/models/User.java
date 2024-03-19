@@ -31,9 +31,10 @@ public class User implements UserDetails {
     Role role;
 
     // User detail info
+    private String nickname;
     private Integer age;
-    private String major;
     private Character gender;
+    private String mbti;
 
     // Join
     @ManyToMany(mappedBy = "userList")

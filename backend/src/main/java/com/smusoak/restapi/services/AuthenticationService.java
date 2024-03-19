@@ -76,7 +76,6 @@ public class AuthenticationService {
         user.setRole(Role.ROLE_USER);
         user.setAge(request.getAge());
         user.setGender(Character.toUpperCase(request.getGender()));
-        user.setMajor(request.getMajor());
         this.userRepository.save(user);
         redisService.deleteByKey(request.getMail());
         // JWT Token 생성
