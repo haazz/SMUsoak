@@ -2,6 +2,7 @@ package com.smusoak.restapi.services;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
@@ -17,8 +18,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URLEncoder;
 
 @Service
@@ -30,14 +34,14 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public ResponseEntity<ApiResponseEntity> updateS3Img(UserDto.updateUserImg request) {
+    public ResponseEntity<ApiResponseEntity> updateS3Img(String key, MultipartFile file, String contentType) {
         try {
-            System.out.println(request.getMail());
+            System.out.println(key);
             ObjectMetadata metadata= new ObjectMetadata();
-            metadata.setContentType(request.getFile().getContentType());
-            metadata.setContentLength(request.getFile().getSize());
-            amazonS3Client.deleteObject(bucket, request.getMail());
-            amazonS3Client.putObject(bucket, request.getMail(), request.getFile().getInputStream(),metadata);
+            metadata.setContentType(contentType);
+            metadata.setContentLength(file.getSize());
+            amazonS3Client.deleteObject(bucket, key);
+            amazonS3Client.putObject(bucket, key, file.getInputStream(),metadata);
         }
         catch (Exception e) {
             throw new CustomException(ErrorCode.NO_SUCH_ALGORITHM);
