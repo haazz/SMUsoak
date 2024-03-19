@@ -31,7 +31,7 @@ public class User implements UserDetails {
     Role role;
 
     // User detail info
-    private String nickName;
+    private String nickname;
     private Integer age;
     private Character gender;
     private String mbti;

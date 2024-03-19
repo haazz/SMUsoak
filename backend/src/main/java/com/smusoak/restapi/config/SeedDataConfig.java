@@ -37,7 +37,7 @@ public class SeedDataConfig implements CommandLineRunner {
                     .role(Role.ROLE_ADMIN)
                     .build();
 
-            userService.save(admin);
+            userRepository.save(admin);
             log.debug("created ADMIN user - {}", admin);
         }
     }
