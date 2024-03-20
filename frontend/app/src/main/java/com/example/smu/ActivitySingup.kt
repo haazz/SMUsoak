@@ -1,14 +1,17 @@
 package com.example.smu
 
 import android.content.Intent
+import android.content.res.Resources
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +34,9 @@ class ActivitySingup : AppCompatActivity() {
     private lateinit var btn_signup : Button
     private lateinit var btn_sendnum : Button
     private lateinit var btn_checknum : Button
+    private lateinit var spinner_mbti: Spinner
+    private lateinit var spinner_gender: Spinner
+    private lateinit var spinner_age: Spinner
 
     private lateinit var id : String
     private lateinit var pw : String
@@ -153,6 +159,9 @@ class ActivitySingup : AppCompatActivity() {
         btn_signup = binding.signupBtnNext
         btn_sendnum = binding.signupBtnSendnum
         btn_checknum = binding.signupBtnChecknum
+        spinner_mbti = binding.signupSpinnerMbti
+        spinner_age = binding.signupSpinnerAge
+        spinner_gender = binding.signupSpinnerGender
 
         edit_pw.addTextChangedListener(pwwatcherListener)
         edit_pwcheck.addTextChangedListener(pwcheckwatcherListener)
@@ -241,6 +250,21 @@ class ActivitySingup : AppCompatActivity() {
                 startActivity(intent)
             }
         }
+
+        //mbti 스피너 설정
+        val mbtiArray = resources.getStringArray(R.array.mbti)
+        setSpinner(spinner_mbti, mbtiArray)
+
+        //age 스피너 설정
+        val ageArray = resources.getStringArray(R.array.age)
+        setSpinner(spinner_age, ageArray)
+
+        //gender 스피너 설정
+        val dpValue = 90
+        val pixels = (dpValue * Resources.getSystem().displayMetrics.density).toInt()
+        spinner_gender.setDropDownWidth(pixels)
+        val genderArray = resources.getStringArray(R.array.gender)	// 배열
+        setSpinner(spinner_gender, genderArray)
     }
 
     //<-누르면 로그인 화면으로 넘어감
@@ -254,5 +278,19 @@ class ActivitySingup : AppCompatActivity() {
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun setSpinner(spinner: Spinner, array: Array<String>) {
+        val adapter = object : ArrayAdapter<String>(
+            this,
+            R.layout.spinner_text,
+            array.toMutableList()
+        ) {
+            override fun getCount(): Int = super.getCount() - 1  // 힌트를 제외한 항목 수
+        }
+
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner.adapter = adapter
+        spinner.setSelection(adapter.count)  // 힌트를 선택한 상태로 설정
     }
 }

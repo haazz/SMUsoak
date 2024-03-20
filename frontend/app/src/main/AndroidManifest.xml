@@ -40,8 +40,7 @@
             android:exported="false" />
         <activity
             android:name=".ActivitySingup"
-            android:exported="false"
-            android:windowSoftInputMode="adjustResize" />
+            android:exported="false" />
         <activity
             android:name=".ActivityLogin"
             android:exported="true"
