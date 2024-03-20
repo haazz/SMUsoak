@@ -81,7 +81,7 @@ class ActivityLogin : AppCompatActivity() {
         }
 
         btn_findpw.setOnClickListener {
-            val intent = Intent(this, ActivityProfile::class.java)
+            val intent = Intent(this, ActivityTest2::class.java)
             startActivity(intent)
             finish()
         }

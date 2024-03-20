@@ -4,55 +4,81 @@ import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import com.beust.klaxon.Klaxon
 import com.example.smu.databinding.ActivityTestBinding
 import com.gmail.bishoybasily.stomp.lib.Event
 import com.gmail.bishoybasily.stomp.lib.StompClient
-import com.google.ai.client.generativeai.Chat
+import org.json.JSONObject
 import io.reactivex.disposables.Disposable
-
 import okhttp3.OkHttpClient
+
 
 class ActivityTest : AppCompatActivity() {
 
     private val binding: ActivityTestBinding by lazy { ActivityTestBinding.inflate(layoutInflater) }
     var stompConnection: Disposable? = null
-    lateinit var topic: Disposable
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val url = "ws://ec2-43-200-30-120.ap-northeast-2.compute.amazonaws.com:8080/send"
+        val url = "ws://ec2-43-200-30-120.ap-northeast-2.compute.amazonaws.com:8080/ws/websocket"
         val intervalMillis = 1000L
-        val client = OkHttpClient()
+        val client = OkHttpClient.Builder()
+            .addInterceptor { chain ->
+                val originalRequest = chain.request()
+                val token = "201910911"
+                val requestWithToken = originalRequest.newBuilder()
+                    .header("Authorization", token)
+                    .build()
+                chain.proceed(requestWithToken)
+            }
+            .build()
 
-        val stomp = StompClient(client, intervalMillis)
-        stomp.url=url
+        val stomp = StompClient(client, intervalMillis).apply { this@apply.url=url }
+        val jsonObject = JSONObject()
 
-        val checktext = binding.testtext
-
-        stompConnection = stomp.connect().subscribe {
+        stompConnection = stomp.connect().subscribe ({
             when (it.type) {
 
                 Event.Type.OPENED -> {
-                    checktext.text="연결되었습니다."
-                    stomp.join("topic/1234").subscribe { stompMessage ->
-                        val result = Klaxon().parse<Chat>(stompMessage)
-                        if(result != null){
-                            Log.d("web", result.toString())
+                    val topic = "/topic/1234"
+                    binding.sendtext.setOnClickListener{
+
+                        val text=binding.editexts.text.toString()
+                        jsonObject.put("message", text)
+                        val sendObservable = stomp.send(topic, jsonObject.toString())
+
+                        sendObservable.subscribe { success ->
+                            if (success) {
+                                binding.send.text=text
+                            } else {
+                                binding.send.text="전송 실패"
+                            }
                         }
                     }
+                    val messageObservable = stomp.join(topic)
+                    messageObservable.subscribe({it->
+                        val text = JSONObject(it).getString("message")
+                        runOnUiThread {
+                            binding.receive.text = text
+                        }
+                    }, { error ->
+                        // 구독 중 오류가 발생한 경우 처리
+                        Log.e("StompConnections", "Error in subscription: ${error.message}", error)
+                    })
+
+
                 }
-                Event.Type.CLOSED -> {}
-                Event.Type.ERROR -> {}
+                Event.Type.CLOSED -> {
+                    Log.d("StompConnections", "close")
+                }
+                Event.Type.ERROR -> {
+                }
                 else -> {}
             }
-        }
-
-        topic=stomp.join("/topic/12345").subscribe{
-
-        }
+        },{ error ->
+            Log.d("StompConnections", "Error: ${error.message ?: "Unknown error"}", error)
+        })
     }
 }
