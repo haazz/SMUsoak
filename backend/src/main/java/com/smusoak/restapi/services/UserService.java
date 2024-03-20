@@ -52,10 +52,6 @@ public class UserService {
     public ResponseEntity<ApiResponseEntity> updateUserImg(UserDto.updateUserImg request) {
         System.out.println(request.getMail());
         System.out.println(request.getFile().getSize());
-        if(request.getFile().getSize() > imgLimitSize) {
-            System.out.println("UserService/updateUserImg: 파일이 사이즈 제한을 초과하였습니다.");
-            throw new CustomException(ErrorCode.FILE_OVER_SIZE_LIMIT);
-        }
         MultipartFile multipartFile = resizeImg(request.getFile());
         return s3Service.updateS3Img(request.getMail(), multipartFile, request.getFile().getContentType());
     }
