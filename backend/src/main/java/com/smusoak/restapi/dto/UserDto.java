@@ -2,6 +2,9 @@ package com.smusoak.restapi.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 public class UserDto {
     @Data
@@ -27,6 +30,7 @@ public class UserDto {
         private String mail;
         @NotBlank
         private String password;
+        private String nickname;
         private Integer age;
         private char gender;
         private String major;
@@ -48,6 +52,31 @@ public class UserDto {
         private String mail;
         private Integer age;
         private char gender;
-        private String major;
+        private String mbti;
     }
+
+    @Data
+    @NoArgsConstructor
+    public static class updateUserImg {
+        @NotBlank
+        private String mail;
+        private MultipartFile file;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class getUserImg {
+        @NotBlank
+        private String mail;
+        private List<String> mailList;
+    }
+
+    @Data
+    @Builder
+    public static class userImageResponse {
+        private String mail;
+        private String url;
+        private String type;
+    }
+
 }
