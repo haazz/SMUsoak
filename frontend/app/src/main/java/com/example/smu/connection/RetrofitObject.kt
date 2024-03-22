@@ -1,12 +1,11 @@
 package com.example.smu.connection
 
+import com.example.smu.BaseUrl
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitObject {
-    private const val BASE_URL = "http://ec2-43-200-30-120.ap-northeast-2.compute.amazonaws.com:8080"
-
     private val getRetrofit by lazy {
 
         val clientBuilder = OkHttpClient.Builder()
@@ -14,7 +13,7 @@ object RetrofitObject {
         val client = clientBuilder.build()
 
         Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(BaseUrl.BASE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

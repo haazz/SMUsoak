@@ -34,7 +34,9 @@ class ActivityChat : AppCompatActivity() {
     private var isKeyboardOpened = false
     private lateinit var sharedPreferences: SharedPreferences
     private lateinit var editor: SharedPreferences.Editor
+    private val url = BaseUrl.BASE_URL+"/ws/websocket"
 
+    //채팅 줄 수가 늘어났을 때 edittext크기도 같이 변동 되도록 해주는 textwatcher
     private val chatline = object : TextWatcher {
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -71,6 +73,7 @@ class ActivityChat : AppCompatActivity() {
         override fun afterTextChanged(s: Editable?) {}
     }
 
+    //이미지 불러오는 코드 웹소켓으로 할 수 있도록 수정 필요
     val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         if (uri != null) {
             chatlist.add(ChatList(uri.toString(), "", 4))
@@ -88,7 +91,7 @@ class ActivityChat : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        setupView()
+        setupView() //키보드가 열려있는지 항시 체크
 
         sharedPreferences = getSharedPreferences("Time", Context.MODE_PRIVATE)
         editor = sharedPreferences.edit()
@@ -158,14 +161,16 @@ class ActivityChat : AppCompatActivity() {
         return (this * Resources.getSystem().displayMetrics.density).toInt()
     }
 
+    //오전 or 오후 몇시인지 변환
     fun getCurrentTime(): String {
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("a hh:mm")
         return dateFormat.format(calendar.time)
     }
 
+    //키보드가 열렸는지 확인
     private fun setupView() {
-        // 키보드 Open/Close 체크
+        // 키보드 Open/Close 체크 addOnGlobalLayoutListener을 통해서 레이아웃에 변화가 있을 때 마다 호출 됨
         binding.chatLayout.viewTreeObserver.addOnGlobalLayoutListener {
             val rect = Rect()
             binding.chatLayout.getWindowVisibleDisplayFrame(rect)
@@ -185,6 +190,7 @@ class ActivityChat : AppCompatActivity() {
         }
     }
 
+    //날짜를 yyyy년 mm월 dd일로 가져옴
     fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()
         val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일")

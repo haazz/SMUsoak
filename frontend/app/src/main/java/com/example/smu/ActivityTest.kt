@@ -22,7 +22,7 @@ class ActivityTest : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val url = "ws://ec2-43-200-30-120.ap-northeast-2.compute.amazonaws.com:8080/ws/websocket"
+        val url = BaseUrl.BASE_URL+"/ws/websocket"
         val intervalMillis = 1000L
         val client = OkHttpClient.Builder()
             .addInterceptor { chain ->
