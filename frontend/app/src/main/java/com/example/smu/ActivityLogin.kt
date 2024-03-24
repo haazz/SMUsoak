@@ -30,12 +30,15 @@ class ActivityLogin : AppCompatActivity() {
         val btn_findpw = binding.loginBtnFindpw
         val btn_signup = binding.loginBtnSingup
         val checkauto = binding.loginCheck
+        var autologin = false
 
         checkauto.setOnCheckedChangeListener { check, isChecked ->
             if (isChecked) {
                 editor.putBoolean("autologin", true)
+                autologin = true
             } else {
                 editor.putBoolean("autologin", false)
+                autologin = false
             }
             editor.apply()
         }
@@ -50,30 +53,30 @@ class ActivityLogin : AppCompatActivity() {
             id = binding.loginEditId.text.toString()+"@sangmyung.kr"
             pw = binding.loginEditPw.text.toString()
             val call = RetrofitObject.getRetrofitService.signin(Retrofit.Requestsignin(id, pw))
-            call.enqueue(object : Callback<Retrofit.Responsesignin> {
-                override fun onResponse(call: Call<Retrofit.Responsesignin>, response: Response<Retrofit.Responsesignin>) {
+            call.enqueue(object : Callback<Retrofit.Responsetoken> {
+                override fun onResponse(call: Call<Retrofit.Responsetoken>, response: Response<Retrofit.Responsetoken>) {
                     if (response.isSuccessful) {
                         val response = response.body()
                         if(response != null){
                             if(response.success) {
                                 val token = response.data.token
-                                editor.putString("id", id)
                                 editor.putString("jwt", token)
-                                editor.putString("pw", pw)
+                                if(autologin){
+                                    editor.putString("id", id)
+                                    editor.putString("pw", pw)
+                                }
                                 editor.apply()
                                 val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
                                 startActivity(intent)
-                            }else{
-                                Toast.makeText(this@ActivityLogin,"로그인 정보가 없습니다.",Toast.LENGTH_SHORT).show()
                             }
                         }
                     }
                     else{
-                        Toast.makeText(this@ActivityLogin,"api연결 실패",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ActivityLogin,"학번 및 비밀번호를 다시 확인해주세요.",Toast.LENGTH_SHORT).show()
                     }
                 }
 
-                override fun onFailure(call: Call<Retrofit.Responsesignin>, t: Throwable) {
+                override fun onFailure(call: Call<Retrofit.Responsetoken>, t: Throwable) {
                     val errorMessage = "Call Failed: ${t.message}"
                     Log.d("Retrofit", errorMessage)
                 }

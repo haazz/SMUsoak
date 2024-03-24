@@ -1,38 +1,47 @@
 package com.example.smu
 
+import android.annotation.SuppressLint
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import com.example.smu.databinding.ActivityTest2Binding
 import io.reactivex.disposables.Disposable
+import org.json.JSONObject
 import ua.naiksoftware.stomp.Stomp
+import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 
 class ActivityTest2 : AppCompatActivity() {
 
     private val binding: ActivityTest2Binding by lazy { ActivityTest2Binding.inflate(layoutInflater) }
-    lateinit var topic: Disposable
+    lateinit var stompClient: StompClient
+    lateinit var disposable: Disposable
 
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        val url = BaseUrl.BASE_URL+"/ws/websocket"
-        val stompClient =  Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
-        val headers = listOf(StompHeader("Authorization", "1234"), StompHeader("authorization", "1234"))
+        var open = false
+        val url = BaseUrl.Socket_URL+"/ws/websocket"
+        stompClient =  Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
+        val headers = listOf(StompHeader("Authorization", "Baerer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbXVzb2FrQGdtYWlsLmNvbSIsImlhdCI6MTcxMTIwMzUwMywiZXhwIjoxNzExMjA3MTAzfQ.ZJQbKuHj_h3Brg0gVOOPQLu5uCMrlmvucpZ3zlp6TaY"))
         stompClient.withServerHeartbeat(10000)
-        stompClient.withClientHeartbeat(10000)
         stompClient.connect(headers)
 
-        topic = stompClient.lifecycle().subscribe { lifecycleEvent ->
+        disposable = stompClient.topic("/topic/1234").subscribe()
+
+        stompClient.lifecycle().subscribe { lifecycleEvent ->
             when (lifecycleEvent.type) {
                 LifecycleEvent.Type.OPENED -> {
-                    Log.d("StompConnections", "open")
+                    open=true
                 }
                 LifecycleEvent.Type.CLOSED -> {
+                    open=false
                 }
                 LifecycleEvent.Type.ERROR -> {
+                    open=false
                 }
                 else->{
 
@@ -40,10 +49,25 @@ class ActivityTest2 : AppCompatActivity() {
             }
         }
 
+        binding.sendtext.setOnClickListener {
+            if(open){
+                val text = binding.editexts.text.toString()
+                val data = JSONObject()
+                data.put("message", text)
+                stompClient.send("/topic/1234", data.toString()).subscribe(
+                    {
+                        Log.d("StompMessage", "Message sent successfully: $text")
+                    },
+                    { throwable ->
+                        Log.e("StompMessage", "Error sending message", throwable)
+                    }
+                )
+            }
+        }
+
+        binding.cancel.setOnClickListener{
+            disposable.dispose()
+        }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        topic.dispose() // Disposable 객체를 dispose
-    }
 }

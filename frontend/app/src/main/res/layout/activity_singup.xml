@@ -143,10 +143,10 @@
                 android:layout_marginTop="60dp"
                 android:layout_marginBottom="20dp"
                 android:background="@drawable/radius_8_solid_smu"
-                android:text="프로필 생성하러 가기"
+                android:text="회원가입 하기"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="@+id/profile_btn_checknick"
+                app:layout_constraintEnd_toEndOf="@+id/signup_btn_checknick"
                 app:layout_constraintStart_toStartOf="@+id/signup_edit_nickname"
                 app:layout_constraintTop_toBottomOf="@+id/signup_spinner_mbti" />
 
@@ -179,6 +179,7 @@
                 android:alpha="0.5"
                 android:background="@drawable/radius_8_solid_smu"
                 android:text="인증번호 전송"
+                android:enabled="false"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/signup_edit_id"
@@ -264,10 +265,12 @@
                 app:layout_constraintStart_toStartOf="@+id/signup_edit_nickname" />
 
             <Button
-                android:id="@+id/profile_btn_checknick"
+                android:id="@+id/signup_btn_checknick"
                 android:layout_width="80dp"
                 android:layout_height="36dp"
+                android:alpha="0.5"
                 android:background="@drawable/radius_8_solid_smu"
+                android:enabled="false"
                 android:text="중복확인"
                 android:textColor="@color/white"
                 app:layout_constraintBottom_toBottomOf="@+id/signup_edit_nickname"
@@ -296,7 +299,7 @@
                 android:overlapAnchor="false"
                 android:popupBackground="@drawable/custom_spinner_popup_box"
                 app:layout_constraintBottom_toBottomOf="@+id/signup_spinner_mbti"
-                app:layout_constraintEnd_toEndOf="@+id/profile_btn_checknick" />
+                app:layout_constraintEnd_toEndOf="@+id/signup_btn_checknick" />
 
             <Spinner
                 android:id="@+id/signup_spinner_age"
