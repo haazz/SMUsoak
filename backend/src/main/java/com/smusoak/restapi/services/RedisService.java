@@ -8,7 +8,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -49,8 +53,28 @@ public class RedisService {
         }
     }
 
+    public void setListOps(String key, List<String> values) {
+        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+        for (String value : values) {
+            listOperations.rightPush(key, value);
+        }
+    }
+
     public String getListOpsByIndex(String key, long index) {
         ListOperations<String, Object> listOperations = redisTemplate.opsForList();
         return (String) listOperations.index(key, index);
+    }
+
+    public List<String> getListOps(String key) {
+        ListOperations<String, Object> listOperations = redisTemplate.opsForList();
+        Long len = listOperations.size(key);
+        if(len == 0) {
+            return new ArrayList<>();
+        }
+        // List<Object>를 List<String>으로 변환
+        return listOperations.range(key, 0, len-1)
+                .stream()
+                .map(object -> Objects.toString(object, null))
+                .collect(Collectors.toList());
     }
 }
