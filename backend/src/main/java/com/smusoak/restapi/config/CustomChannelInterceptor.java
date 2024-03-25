@@ -5,6 +5,7 @@ import com.smusoak.restapi.response.ErrorCode;
 import com.smusoak.restapi.services.JwtService;
 import com.smusoak.restapi.services.RedisService;
 import com.smusoak.restapi.services.UserService;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -18,10 +19,12 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 @RequiredArgsConstructor
 public class CustomChannelInterceptor implements ChannelInterceptor {
 
@@ -36,12 +39,11 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
         System.out.println("command: " + accessor.getCommand());
-        System.out.println("user: " + accessor.getUser());
-        System.out.println("Authorization: " + accessor.getFirstNativeHeader("Authorization"));
+        System.out.println("sessionId: " + accessor.getSessionId());
         System.out.println("destination: " + accessor.getDestination());
+        System.out.println("Authorization: " + accessor.getFirstNativeHeader("Authorization"));
 
-
-        if(accessor.getCommand().equals("CONNECT")) {
+        if(accessor.getCommand().equals(StompCommand.CONNECT)) {
             // Authorization header 가져오고 검증
             String authHeader = accessor.getFirstNativeHeader("Authorization");
             if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
@@ -68,10 +70,10 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             redisService.setValues(sessionId, userMail);
             redisService.setExpire(sessionId, sessionExpirationms);
         }
-        else if(accessor.getCommand().equals("DISCONNECT")) {
+        else if(accessor.getCommand().equals(StompCommand.DISCONNECT)) {
             redisService.deleteByKey(accessor.getSessionId());
         }
-        else if(accessor.getCommand().equals("SUBSCRIBE")) {
+        else if(accessor.getCommand().equals(StompCommand.SUBSCRIBE)) {
             List<String> sessionList = redisService.getListOps(accessor.getDestination());
             // 현제 sessionId가 redis에 저장 안돼 있다면 sessionList에 add
             if(!sessionList.contains(accessor.getSessionId())) {
@@ -80,9 +82,11 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             // redis data 업데이트
             redisService.deleteByKey(accessor.getDestination());
             redisService.setListOps(accessor.getDestination(), sessionList);
+            redisService.setExpire(accessor.getDestination(), sessionExpirationms);
         }
-        else if(accessor.getCommand().equals("UNSUBSCRIBE")) {
+        else if(accessor.getCommand().equals(StompCommand.UNSUBSCRIBE)) {
             List<String> sessionList = redisService.getListOps(accessor.getDestination());
+            System.out.println(sessionList);
             // 현제 sessionId가 redis에 저장 안돼 있다면 sessionList에 add
             if(!sessionList.contains(accessor.getSessionId())) {
                 return;
@@ -91,9 +95,11 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             // redis data 업데이트
             redisService.deleteByKey(accessor.getDestination());
             redisService.setListOps(accessor.getDestination(), sessionList);
+            redisService.setExpire(accessor.getDestination(), sessionExpirationms);
         }
-        else if(accessor.getCommand().equals("SEND")) {
+        else if(accessor.getCommand().equals(StompCommand.SEND)) {
             List<String> sessionList = redisService.getListOps(accessor.getDestination());
+            System.out.println(sessionList);
             // chatroomService.getChatroom()을 해서 같은 채팅창 유저 리스트 가져오기
             // 본인을 제외한 유저가 websocket 같은 room에 접속중인지 session 조회 비교
             // 만약 없다면 Firebase로 알림 보내기
