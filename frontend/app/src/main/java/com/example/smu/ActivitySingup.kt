@@ -232,8 +232,8 @@ class ActivitySingup : AppCompatActivity() {
             btn_checknum.isEnabled = false
             val num = edit_checknum.text.toString()
             val call = RetrofitObject.getRetrofitService.checknum(Retrofit.Requestchecknum(email,num))
-            call.enqueue(object : Callback<Retrofit.Responsechecknum> {
-                override fun onResponse(call: Call<Retrofit.Responsechecknum>, response: Response<Retrofit.Responsechecknum>) {
+            call.enqueue(object : Callback<Retrofit.Responsesuccess> {
+                override fun onResponse(call: Call<Retrofit.Responsesuccess>, response: Response<Retrofit.Responsesuccess>) {
                     if (response.isSuccessful) {
                         val response = response.body()
                         if (response != null) {
@@ -252,7 +252,7 @@ class ActivitySingup : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<Retrofit.Responsechecknum>, t: Throwable) {
+                override fun onFailure(call: Call<Retrofit.Responsesuccess>, t: Throwable) {
                     btn_checknum.isEnabled = true
                     val errorMessage = "Call Failed: ${t.message}"
                     Log.d("Retrofit", errorMessage)

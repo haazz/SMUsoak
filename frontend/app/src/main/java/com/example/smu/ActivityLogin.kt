@@ -66,7 +66,7 @@ class ActivityLogin : AppCompatActivity() {
                                     editor.putString("pw", pw)
                                 }
                                 editor.apply()
-                                val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
+                                val intent = Intent(this@ActivityLogin, ActivityProfile::class.java)
                                 startActivity(intent)
                             }
                         }

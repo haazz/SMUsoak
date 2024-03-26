@@ -20,9 +20,6 @@
             android:name=".ActivityTest2"
             android:exported="false" />
         <activity
-            android:name=".ActivityTest"
-            android:exported="false" />
-        <activity
             android:name=".ActivityImage"
             android:exported="false" />
         <activity
