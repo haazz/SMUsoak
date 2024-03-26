@@ -50,10 +50,9 @@ public class SecurityConfig {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/user/updateUserDetails").hasRole("ADMIN")
                         .requestMatchers(HttpMethod.POST, "/authentication/**").permitAll()
-                        .requestMatchers(HttpMethod.GET, "/test/**").permitAll()
-                        .requestMatchers(HttpMethod.POST, "/test/**").permitAll()
+                        .requestMatchers("/test/**").permitAll()
+                        .requestMatchers("/ws/**", "app/send").permitAll()
                         .anyRequest().authenticated()
                 )
                 .authenticationProvider(authenticationProvider())
