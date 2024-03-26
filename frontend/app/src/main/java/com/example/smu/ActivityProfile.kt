@@ -21,10 +21,7 @@ class ActivityProfile : AppCompatActivity() {
 
     private val binding: ActivityProfileBinding by lazy { ActivityProfileBinding.inflate(layoutInflater) }
     private lateinit var changeprofileimage: ImageButton
-    private lateinit var makeprofilebtb: Button
     private lateinit var profile: CircleImageView
-    private lateinit var mbti: Spinner
-    private lateinit var gender: Spinner
 
     val getContent = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         profile = binding.profileImageProfile
@@ -52,38 +49,5 @@ class ActivityProfile : AppCompatActivity() {
         changeprofileimage.setOnClickListener{
             getContent.launch("image/*")
         }
-
-        mbti = binding.profileSpinnerMbti
-        val mbtiArray = resources.getStringArray(R.array.mbti)
-        setSpinner(mbti, mbtiArray)
-
-        val dpValue = 130
-        val pixels = (dpValue * Resources.getSystem().displayMetrics.density).toInt()
-        gender = binding.profileSpinnerGender
-        gender.setDropDownWidth(pixels)
-        gender = binding.profileSpinnerGender	// spinner
-        val genderArray = resources.getStringArray(R.array.gender)	// 배열
-        setSpinner(gender, genderArray)
-
-        makeprofilebtb = binding.profileBtnCreate
-        makeprofilebtb.setOnClickListener {
-            val intent = Intent(this, ActivityMain::class.java)
-            startActivity(intent)
-            finish()
-        }
-    }
-
-    private fun setSpinner(spinner: Spinner, array: Array<String>) {
-        val adapter = object : ArrayAdapter<String>(
-            this,
-            android.R.layout.simple_dropdown_item_1line,
-            array.toMutableList()
-        ) {
-            override fun getCount(): Int = super.getCount() - 1  // 힌트를 제외한 항목 수
-        }
-
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.adapter = adapter
-        spinner.setSelection(adapter.count)  // 힌트를 선택한 상태로 설정
     }
 }

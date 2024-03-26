@@ -14,6 +14,7 @@ import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
@@ -56,13 +57,6 @@ class ActivitySingup : AppCompatActivity() {
     //닉네임 중복 체크
     private var nickcheck= false
 
-    //뒤로가기 버튼 누르면 로그인 화면으로 감
-    override fun onBackPressed() {
-        val intent = Intent(this, ActivityLogin::class.java)
-        startActivity(intent)
-        finish()
-    }
-
     //비밀번호 일치하는지 확인
     private val pwcheckwatcherListener = object : TextWatcher {
 
@@ -99,7 +93,7 @@ class ActivitySingup : AppCompatActivity() {
             } else {
                 text_pw.visibility = View.VISIBLE
 
-                if (inputText.length in 6..20) {
+                if (inputText.length in 8..20) {
                     text_pw.visibility = View.INVISIBLE
                 } else {
                     text_pw.text = "비밀번호 형식이 올바르지 않습니다."
@@ -205,7 +199,6 @@ class ActivitySingup : AppCompatActivity() {
             btn_sendnum.isEnabled = false
             if (idcheck && edit_id.text.length==9) {
                 id = edit_id.text.toString()
-                pw = edit_pw.text.toString()
                 email = id + "@sangmyung.kr"
                 val call = RetrofitObject.getRetrofitService.sendnum(Retrofit.Requestsendnum(email))
                 call.enqueue(object : Callback<Retrofit.Responsesendnum> {
@@ -276,9 +269,6 @@ class ActivitySingup : AppCompatActivity() {
         setSpinner(spinner_age, ageArray)
 
         //gender 스피너 설정
-        val dpValue = 90
-        val pixels = (dpValue * Resources.getSystem().displayMetrics.density).toInt()
-        spinner_gender.setDropDownWidth(pixels)
         val genderArray = resources.getStringArray(R.array.gender)	// 배열
         setSpinner(spinner_gender, genderArray)
 
@@ -286,13 +276,19 @@ class ActivitySingup : AppCompatActivity() {
         btn_nextpage.setOnClickListener {
             val age = ageArray[spinner_age.selectedItemPosition]
             var mbti = mbtiArray[spinner_mbti.selectedItemPosition].toString()
-            val gender = genderArray[spinner_gender.selectedItemPosition].toString()
+            var gender = genderArray[spinner_gender.selectedItemPosition].toString()
+            pw = edit_pw.text.toString()
+            if(gender=="남학우")
+                gender="M"
+            else
+                gender="W"
             nickname = edit_nickname.text.toString()
-            if(pwcheck && emailcheck && nickcheck && gender!="Gender" && age!="출생 연도"){
+            if(pwcheck && emailcheck && gender!="Gender" && age!="출생 연도"){
                 var call = RetrofitObject.getRetrofitService.signup(Retrofit.Requestsignup(email,pw,age.toInt(),gender,mbti,nickname))
                 if(mbti=="선택 안함"){
                     call = RetrofitObject.getRetrofitService.signup(Retrofit.Requestsignup(email,pw,age.toInt(),gender,null,nickname))
                 }
+                Log.d("signup", age+gender+mbti+email+pw+nickname)
                 call.enqueue(object : Callback<Retrofit.Responsetoken> {
                     override fun onResponse(call: Call<Retrofit.Responsetoken>, response: Response<Retrofit.Responsetoken>) {
                         if (response.isSuccessful) {
@@ -306,6 +302,9 @@ class ActivitySingup : AppCompatActivity() {
                                     finish()
                                 }
                             }
+                        }else{
+                            Log.d("signup", response.toString())
+                            Log.d("signup", response.body().toString())
                         }
                     }
 
@@ -314,8 +313,13 @@ class ActivitySingup : AppCompatActivity() {
                         Log.d("Retrofit", errorMessage)
                     }
                 })
+            }else{
+                Toast.makeText(this@ActivitySingup, "회원가입 양식을 다시 확인해 주세요.", Toast.LENGTH_SHORT).show()
             }
         }
+
+        //뒤로가기 버튼 눌렀을 때
+        onBackPressedDispatcher.addCallback(this, onBackPressedCallback)
     }
 
     //<-누르면 로그인 화면으로 넘어감
@@ -343,5 +347,14 @@ class ActivitySingup : AppCompatActivity() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner.adapter = adapter
         spinner.setSelection(adapter.count)  // 힌트를 선택한 상태로 설정
+    }
+
+    //뒤로가기 눌렀을 때
+    private val onBackPressedCallback = object : OnBackPressedCallback(true) {
+        override fun handleOnBackPressed() {
+            val intent = Intent(this@ActivitySingup, ActivityLogin::class.java)
+            startActivity(intent)
+            finish()
+        }
     }
 }

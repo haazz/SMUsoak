@@ -26,7 +26,7 @@ class ActivityTest2 : AppCompatActivity() {
         var open = false
         val url = BaseUrl.Socket_URL+"/ws/websocket"
         stompClient =  Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
-        val headers = listOf(StompHeader("Authorization", "Baerer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzbXVzb2FrQGdtYWlsLmNvbSIsImlhdCI6MTcxMTIwMzUwMywiZXhwIjoxNzExMjA3MTAzfQ.ZJQbKuHj_h3Brg0gVOOPQLu5uCMrlmvucpZ3zlp6TaY"))
+        val headers = listOf(StompHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDE5MTA5MTJAc2FuZ215dW5nLmtyIiwiaWF0IjoxNzExMzQ0NjA0LCJleHAiOjE3MTEzNDgyMDR9.irjamT0dFosS_XlePk8cI-lB1-CQzsUfHz0bcltk9kI"))
         stompClient.withServerHeartbeat(10000)
         stompClient.connect(headers)
 
