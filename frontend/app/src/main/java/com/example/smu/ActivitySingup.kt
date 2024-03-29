@@ -298,6 +298,7 @@ class ActivitySingup : AppCompatActivity() {
                                     val token = response.data.token
                                     val intent = Intent(this@ActivitySingup, ActivityProfile::class.java)
                                     intent.putExtra("token", token)
+                                    intent.putExtra("mail", email)
                                     startActivity(intent)
                                     finish()
                                 }

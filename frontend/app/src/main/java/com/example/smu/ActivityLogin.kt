@@ -61,6 +61,7 @@ class ActivityLogin : AppCompatActivity() {
                             if(response.success) {
                                 val token = response.data.token
                                 editor.putString("jwt", token)
+                                editor.putString("mail", id)
                                 if(autologin){
                                     editor.putString("id", id)
                                     editor.putString("pw", pw)
