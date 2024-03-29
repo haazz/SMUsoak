@@ -1,9 +1,11 @@
 package com.example.smu.connection
 
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Header
+import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 
@@ -25,11 +27,12 @@ interface RetrofitAPI {
     fun signup(@Body request: Retrofit.Requestsignup): Call<Retrofit.Responsetoken>
 
     //프로필 업데이트
+    @Multipart
     @POST("/user/update/img")
     fun profile(
         @Header("Authorization") token: String,
         @Part file: MultipartBody.Part,
-        @Body request: Retrofit.Requestprofile): Call<Retrofit.Responsesuccess>
+        @Part("info") info: RequestBody): Call<Retrofit.Responsesuccess>
 
     //프로필 가져오기
     @POST("/user/imgs")
