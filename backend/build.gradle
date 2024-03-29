@@ -79,13 +79,13 @@ tasks.named('test') {
 
 // For Rest-docs
 ext {
-	set('snippetsDir', file('build/generated-snippets'))
+	snippetsDir = file('build/generated-snippets')
 }
 
 asciidoctor {
 	configurations 'asciidoctorExt' // (7)
 	baseDirFollowsSourceFile() // (8)
-	inputs.dir snippetsDir // (9)
+	inputs.dir(snippetsDir)  // (9)
 	dependsOn test // (10)
 }
 
@@ -97,7 +97,7 @@ asciidoctor.doFirst {
 task createDocument(type: Copy) { // (12)
 	dependsOn asciidoctor
 	from file("build/docs/asciidoc")
-	into file("src/main/resources/static/docs")
+	into file("src/main/resources/static")
 }
 
 bootJar {

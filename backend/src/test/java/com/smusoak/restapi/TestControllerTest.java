@@ -21,7 +21,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 })
 public class TestControllerTest extends AbstractRestDocsTests {
     @Test
-    void RestDocsTest() throws Exception {
+    void HelloTest() throws Exception {
         mockMvc.perform(get("/test/hello")).andExpect(status().isOk());
     }
 }

@@ -1,0 +1,9 @@
+= SMUsoak API Document
+
+:doctype: book
+:source-highlighter: hilightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+
+include::test.adoc[]
