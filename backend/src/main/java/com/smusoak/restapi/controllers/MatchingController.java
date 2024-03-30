@@ -19,12 +19,12 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/matching")
+@RequestMapping("api/v1/match")
 
 public class MatchingController {
     private final MatchingService matchingService;
 
-    @PostMapping("/match")
+    @PostMapping("/onetoone")
     public ResponseEntity<String> matchUsers(@RequestBody MatchingInfo matchingInfo) {
         try {
             matchingService.matchUsers(matchingInfo);

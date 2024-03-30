@@ -9,23 +9,23 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/authentication")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/sendAuthCode")
+    @PostMapping("/mail/send-code")
     public ResponseEntity<ApiResponseEntity> sendAuthCode(@Valid @RequestBody UserDto.sendAuthCodeDto request) throws Exception{
         return authenticationService.sendCodeToMail(request);
     }
 
-    @PostMapping("/mailVerification")
+    @PostMapping("/mail/verification")
     public ResponseEntity<ApiResponseEntity> mailVerification(@Valid @RequestBody UserDto.mailVerificationDto request) throws Exception{
         return authenticationService.verifiedCode(request);
     }
 
-    @PostMapping("/createUser")
+    @PostMapping("/signup")
     public ResponseEntity<ApiResponseEntity> createUser(@RequestBody @Valid UserDto.createUserDto request) throws Exception{
         return authenticationService.createUser(request);
     }
