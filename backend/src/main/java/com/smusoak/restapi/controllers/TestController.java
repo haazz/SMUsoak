@@ -11,12 +11,6 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
-    @GetMapping()
-    public ResponseEntity<ApiResponseEntity> test() {
-        return ApiResponseEntity.toResponseEntity(
-                TestDto.responseAuth.builder().message("Test").build());
-    }
-
     @GetMapping("/hello")
     public ResponseEntity<ApiResponseEntity> hello() {
         return ApiResponseEntity.toResponseEntity(

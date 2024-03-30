@@ -478,11 +478,63 @@ Content-Length: 65
 </div>
 <div class="sect2">
 <h3 id="_테스트_user"><a class="link" href="#_테스트_user">테스트 User</a></h3>
+<div class="sect3">
+<h4 id="_테스트_user_http_request"><a class="link" href="#_테스트_user_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /test/user HTTP/1.1
+Authorization: Bearer null
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_테스트_user_http_response"><a class="link" href="#_테스트_user_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 81
 
+{
+  "success" : true,
+  "data" : {
+    "message" : "ONLY user can see this"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_테스트_admin"><a class="link" href="#_테스트_admin">테스트 Admin</a></h3>
+<div class="sect3">
+<h4 id="_테스트_admin_http_request"><a class="link" href="#_테스트_admin_http_request">HTTP request</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /test/admin HTTP/1.1
+Authorization: Bearer null
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_테스트_admin_http_response"><a class="link" href="#_테스트_admin_http_response">HTTP response</a></h4>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 82
 
+{
+  "success" : true,
+  "data" : {
+    "message" : "ONLY admin can see this"
+  }
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
