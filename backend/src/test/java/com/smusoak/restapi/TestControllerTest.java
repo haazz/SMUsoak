@@ -29,13 +29,13 @@ public class TestControllerTest extends AbstractRestDocsTests {
 
     @Test
     void HelloTest() throws Exception {
-        mockMvc.perform(get("/test/hello"))
+        mockMvc.perform(get("/api/v1/test/hello"))
                 .andExpect(status().isOk());
     }
 
     @Test
     void UserTest() throws Exception {
-        mockMvc.perform(get("/test/user")
+        mockMvc.perform(get("/api/v1/test/user")
                 .header("Authorization", "Bearer " +
                         jwtService.generateToken(User
                                 .builder()
@@ -47,7 +47,7 @@ public class TestControllerTest extends AbstractRestDocsTests {
 
     @Test
     void AdminTest() throws Exception {
-        mockMvc.perform(get("/test/admin")
+        mockMvc.perform(get("/api/v1/test/admin")
                         .header("Authorization", "Bearer " +
                                 jwtService.generateToken(User.builder()
                                         .mail("tmp")
