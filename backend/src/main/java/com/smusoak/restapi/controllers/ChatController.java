@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-@RequestMapping("api/v1/chat")
+@RequestMapping("/api/v1/chat")
 public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;

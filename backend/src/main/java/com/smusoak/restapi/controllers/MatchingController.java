@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("api/v1/match")
+@RequestMapping("/api/v1/match")
 
 public class MatchingController {
     private final MatchingService matchingService;
