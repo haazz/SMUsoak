@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Authentication</title>
+<title>이미지 다운로드</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -441,112 +441,21 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_authentication">Authentication</h2>
+<h2 id="_이미지_다운로드">이미지 다운로드</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_메일_인증코드_보내기">메일 인증코드 보내기</h3>
+<h3 id="_image_download">Image Download</h3>
 <div class="sect3">
-<h4 id="_메일_인증코드_보내기_http_request">HTTP request</h4>
+<h4 id="_image_download_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/mail/send-code HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 33
-Host: localhost:8080
-
-{
-  "mail" : "tmp@sangmyung.kr"
-}</code></pre>
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/download/img/2019 HTTP/1.1
+Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_메일_인증코드_보내기_http_response">HTTP response</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_메일_인증">메일 인증</h3>
-<div class="sect3">
-<h4 id="_메일_인증_http_request">HTTP request</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/mail/verification HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 55
-Host: localhost:8080
-
-{
-  "mail" : "tmp@sangmyung.kr",
-  "authCode" : "tmp"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_메일_인증_http_response">HTTP response</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_유저생성">유저생성</h3>
-<div class="sect3">
-<h4 id="_유저생성_http_request">HTTP request</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/signup HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 130
-Host: localhost:8080
-
-{
-  "mail" : "tmp@sangmyung.kr",
-  "password" : "tmptmp",
-  "nickname" : "tmp",
-  "age" : 20,
-  "gender" : "M",
-  "major" : null
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_유저생성_http_response">HTTP response</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_로그인">로그인</h3>
-<div class="sect3">
-<h4 id="_로그인_http_request">HTTP request</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/signin HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Content-Length: 58
-Host: localhost:8080
-
-{
-  "mail" : "tmp@sangmyung.kr",
-  "password" : "tmptmp"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_로그인_http_response">HTTP response</h4>
+<h4 id="_image_download_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
@@ -560,7 +469,7 @@ Host: localhost:8080
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-02 00:16:27 +0900
+Last updated 2024-04-02 00:18:09 +0900
 </div>
 </div>
 </body>

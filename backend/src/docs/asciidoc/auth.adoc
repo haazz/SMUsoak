@@ -1,0 +1,13 @@
+== Authentication
+
+=== 메일 인증코드 보내기
+operation::authentication-controller-test/mail-send-test[snippets='http-request,http-response']
+
+=== 메일 인증
+operation::authentication-controller-test/mail-verification-test[snippets='http-request,http-response']
+
+=== 유저생성
+operation::authentication-controller-test/signup-test[snippets='http-request,http-response']
+
+=== 로그인
+operation::authentication-controller-test/signin-test[snippets='http-request,http-response']

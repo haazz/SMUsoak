@@ -1,0 +1,4 @@
+== 이미지 다운로드
+
+=== Image Download
+operation::s3-controller-test/download-img[snippets='http-request,http-response']

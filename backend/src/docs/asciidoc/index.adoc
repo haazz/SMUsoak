@@ -1,9 +1,10 @@
 = SMUsoak API Document
-
 :doctype: book
-:source-highlighter: hilightjs
+:source-highlighter: highlightjs
 :toc: left
 :toclevels: 2
 :sectlinks:
 
+include::auth.adoc[]
+include::s3.adoc[]
 include::test.adoc[]
