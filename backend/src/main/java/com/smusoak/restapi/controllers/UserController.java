@@ -1,5 +1,6 @@
 package com.smusoak.restapi.controllers;
 
+import com.smusoak.restapi.dto.ImgDto;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.services.UserService;
@@ -22,13 +23,13 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping("/update/info")
-    public ResponseEntity<ApiResponseEntity> updateUserDetails(@RequestBody UserDto.updateUserDetailsDto request) {
+    public ResponseEntity<ApiResponseEntity> updateUserDetails(@RequestBody UserDto.UpdateUserDetailsRequest request) {
         userService.updateUserDetails(request);
         return ApiResponseEntity.toResponseEntity();
     }
 
     @PostMapping(value = "/update/img", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
-    public ResponseEntity<ApiResponseEntity> updateUserImg(@RequestPart(value="info", required=true) UserDto.updateUserImg request,
+    public ResponseEntity<ApiResponseEntity> updateUserImg(@RequestPart(value="info", required=true) ImgDto.UpdateUserImgRequest request,
                                                            @RequestPart(value="file", required=true) MultipartFile file) {
         request.setFile(file);
         userService.updateUserImg(request);
@@ -36,8 +37,8 @@ public class UserController {
     }
 
     @GetMapping(value = "/imgs")
-    public ResponseEntity<ApiResponseEntity> getUserImg(@RequestBody UserDto.getUserImg request) {
-        List<UserDto.userImageResponse> userImageResponses =  userService.getUserImg(request);
+    public ResponseEntity<ApiResponseEntity> getUserImg(@RequestBody ImgDto.UserImgRequest request) {
+        List<ImgDto.UserImageResponse> userImageResponses =  userService.getUserImg(request);
         return ApiResponseEntity.toResponseEntity(userImageResponses);
     }
 }

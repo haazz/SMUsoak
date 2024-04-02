@@ -17,26 +17,26 @@ public class AuthenticationController {
     private final AuthenticationService authenticationService;
 
     @PostMapping("/mail/send-code")
-    public ResponseEntity<ApiResponseEntity> sendAuthCode(@Valid @RequestBody UserDto.sendAuthCodeDto request) throws Exception{
+    public ResponseEntity<ApiResponseEntity> sendAuthCode(@Valid @RequestBody UserDto.SendCodeRequest request) throws Exception{
         authenticationService.sendCodeToMail(request);
         return ApiResponseEntity.toResponseEntity();
     }
 
     @PostMapping("/mail/verification")
-    public ResponseEntity<ApiResponseEntity> mailVerification(@Valid @RequestBody UserDto.mailVerificationDto request) throws Exception{
+    public ResponseEntity<ApiResponseEntity> mailVerification(@Valid @RequestBody UserDto.MailVerificationRequest request) throws Exception{
         authenticationService.verifiedCode(request);
         return ApiResponseEntity.toResponseEntity();
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponseEntity> createUser(@RequestBody @Valid UserDto.createUserDto request) throws Exception{
+    public ResponseEntity<ApiResponseEntity> createUser(@RequestBody @Valid UserDto.SignupRequest request) throws Exception{
         String token =  authenticationService.createUser(request);
         return ApiResponseEntity.toResponseEntity(
                 JwtAuthenticationResponse.builder().token(token).build());
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponseEntity> signin(@Valid @RequestBody UserDto.signinDto request) throws Exception {
+    public ResponseEntity<ApiResponseEntity> signin(@Valid @RequestBody UserDto.SigninRequest request) throws Exception {
         String token =  authenticationService.signin(request);
         return ApiResponseEntity.toResponseEntity(
                 JwtAuthenticationResponse.builder().token(token).build());

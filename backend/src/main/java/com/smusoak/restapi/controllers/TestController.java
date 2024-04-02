@@ -14,20 +14,20 @@ public class TestController {
     @GetMapping("/hello")
     public ResponseEntity<ApiResponseEntity> hello() {
         return ApiResponseEntity.toResponseEntity(
-                TestDto.responseAuth.builder().message("Hello!").build());
+                TestDto.TestResponse.builder().message("Hello!").build());
     }
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<ApiResponseEntity> userEndPoint() {
         return ApiResponseEntity.toResponseEntity(
-                TestDto.responseAuth.builder().message("ONLY user can see this").build());
+                TestDto.TestResponse.builder().message("ONLY user can see this").build());
     }
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponseEntity> adminEndPoint() {
         return ApiResponseEntity.toResponseEntity(
-                TestDto.responseAuth.builder().message("ONLY admin can see this").build());
+                TestDto.TestResponse.builder().message("ONLY admin can see this").build());
     }
 }

@@ -28,7 +28,7 @@ public class AuthenticationControllerTest extends AbstractRestDocsTests {
 
     @Test
     void MailSendTest() throws Exception {
-        UserDto.sendAuthCodeDto sendAuthCodeDto = new UserDto.sendAuthCodeDto();
+        UserDto.SendCodeRequest sendAuthCodeDto = new UserDto.SendCodeRequest();
         sendAuthCodeDto.setMail("tmp@sangmyung.kr");
 
         mockMvc.perform(post("/api/v1/auth/mail/send-code")
@@ -39,7 +39,7 @@ public class AuthenticationControllerTest extends AbstractRestDocsTests {
 
     @Test
     void MailVerificationTest() throws Exception {
-        UserDto.mailVerificationDto  mailVerificationDto = new UserDto.mailVerificationDto();
+        UserDto.MailVerificationRequest  mailVerificationDto = new UserDto.MailVerificationRequest();
         mailVerificationDto.setMail("tmp@sangmyung.kr");
         mailVerificationDto.setAuthCode("tmp");
 
@@ -51,7 +51,7 @@ public class AuthenticationControllerTest extends AbstractRestDocsTests {
 
     @Test
     void SignupTest() throws Exception {
-        UserDto.createUserDto createUserDto = new UserDto.createUserDto();
+        UserDto.SignupRequest createUserDto = new UserDto.SignupRequest();
         createUserDto.setMail("tmp@sangmyung.kr");
         createUserDto.setPassword("tmptmp");
         createUserDto.setNickname("tmp");
@@ -67,7 +67,7 @@ public class AuthenticationControllerTest extends AbstractRestDocsTests {
 
     @Test
     void SigninTest() throws Exception {
-        UserDto.signinDto signinDto = new UserDto.signinDto();
+        UserDto.SigninRequest signinDto = new UserDto.SigninRequest();
         signinDto.setMail("tmp@sangmyung.kr");
         signinDto.setPassword("tmptmp");;
 

@@ -40,7 +40,7 @@ public class AuthenticationService {
     @Value("${spring.mail.auth-code-expirationms}")
     private long authCodeExpirationMillis;
 
-    public String signin(UserDto.signinDto request) {
+    public String signin(UserDto.SigninRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getMail(), request.getPassword()));
@@ -54,7 +54,7 @@ public class AuthenticationService {
         return jwt;
     }
 
-    public String createUser(UserDto.createUserDto request) {
+    public String createUser(UserDto.SignupRequest request) {
         User user = new User();
         String auth = redisService.getListOpsByIndex(request.getMail(), AUTH_CODE_INDEX);
         if (auth == null || auth.isEmpty()) {
@@ -82,7 +82,7 @@ public class AuthenticationService {
         return jwt;
     }
 
-    public void sendCodeToMail(UserDto.sendAuthCodeDto request) throws MessagingException {
+    public void sendCodeToMail(UserDto.SendCodeRequest request) throws MessagingException {
         String toMail = request.getMail();
         if (!toMail.endsWith("@sangmyung.kr")) {
             throw new CustomException(ErrorCode.WRONG_MAIL_ADDRESS);
@@ -100,7 +100,7 @@ public class AuthenticationService {
         mailService.sendMail(toMail, title, htmlContent);
     }
 
-    public void verifiedCode(UserDto.mailVerificationDto request) {
+    public void verifiedCode(UserDto.MailVerificationRequest request) {
         this.checkDuplicatiedMail(request.getMail());
         String redisAuthCode = redisService.getListOpsByIndex(request.getMail(), AUTH_CODE_INDEX);
 

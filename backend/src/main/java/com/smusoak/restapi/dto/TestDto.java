@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 public class TestDto {
     @Data
     @Builder
-    public static class responseAuth {
+    public static class TestResponse {
         private String message;
     }
 }
