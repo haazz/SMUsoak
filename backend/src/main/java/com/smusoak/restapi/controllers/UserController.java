@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 
 @Slf4j
 @RequiredArgsConstructor
@@ -21,19 +23,22 @@ public class UserController {
 
     @PostMapping("/update/info")
     public ResponseEntity<ApiResponseEntity> updateUserDetails(@RequestBody UserDto.updateUserDetailsDto request) {
-        return userService.updateUserDetails(request);
+        userService.updateUserDetails(request);
+        return ApiResponseEntity.toResponseEntity();
     }
 
     @PostMapping(value = "/update/img", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponseEntity> updateUserImg(@RequestPart(value="info", required=true) UserDto.updateUserImg request,
                                                            @RequestPart(value="file", required=true) MultipartFile file) {
         request.setFile(file);
-        return userService.updateUserImg(request);
+        userService.updateUserImg(request);
+        return ApiResponseEntity.toResponseEntity();
     }
 
     @GetMapping(value = "/imgs")
     public ResponseEntity<ApiResponseEntity> getUserImg(@RequestBody UserDto.getUserImg request) {
-        return userService.getUserImg(request);
+        List<UserDto.userImageResponse> userImageResponses =  userService.getUserImg(request);
+        return ApiResponseEntity.toResponseEntity(userImageResponses);
     }
 }
 

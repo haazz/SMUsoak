@@ -1,5 +1,6 @@
 package com.smusoak.restapi.controllers;
 
+import com.smusoak.restapi.dto.JwtAuthenticationResponse;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.services.AuthenticationService;
@@ -17,21 +18,27 @@ public class AuthenticationController {
 
     @PostMapping("/mail/send-code")
     public ResponseEntity<ApiResponseEntity> sendAuthCode(@Valid @RequestBody UserDto.sendAuthCodeDto request) throws Exception{
-        return authenticationService.sendCodeToMail(request);
+        authenticationService.sendCodeToMail(request);
+        return ApiResponseEntity.toResponseEntity();
     }
 
     @PostMapping("/mail/verification")
     public ResponseEntity<ApiResponseEntity> mailVerification(@Valid @RequestBody UserDto.mailVerificationDto request) throws Exception{
-        return authenticationService.verifiedCode(request);
+        authenticationService.verifiedCode(request);
+        return ApiResponseEntity.toResponseEntity();
     }
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseEntity> createUser(@RequestBody @Valid UserDto.createUserDto request) throws Exception{
-        return authenticationService.createUser(request);
+        String token =  authenticationService.createUser(request);
+        return ApiResponseEntity.toResponseEntity(
+                JwtAuthenticationResponse.builder().token(token).build());
     }
 
     @PostMapping("/signin")
     public ResponseEntity<ApiResponseEntity> signin(@Valid @RequestBody UserDto.signinDto request) throws Exception {
-        return authenticationService.signin(request);
+        String token =  authenticationService.signin(request);
+        return ApiResponseEntity.toResponseEntity(
+                JwtAuthenticationResponse.builder().token(token).build());
     }
 }

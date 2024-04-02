@@ -38,25 +38,24 @@ public class UserService {
     @Value("${cloud.aws.s3.limit-size}")
     private Integer imgLimitSize;
 
-    public ResponseEntity<ApiResponseEntity> updateUserDetails(UserDto.updateUserDetailsDto request) {
+    public void updateUserDetails(UserDto.updateUserDetailsDto request) {
         Optional<User> users = userRepository.findByMail(request.getMail());
         if (users.isPresent()) {
             users.get().setAge(request.getAge());
             users.get().setGender(request.getGender());
             this.userRepository.save(users.get());
-            return ApiResponseEntity.toResponseEntity();
         }
         throw new CustomException(ErrorCode.USER_NOT_FOUND);
     }
 
-    public ResponseEntity<ApiResponseEntity> updateUserImg(UserDto.updateUserImg request) {
+    public void updateUserImg(UserDto.updateUserImg request) {
         System.out.println(request.getMail());
         System.out.println(request.getFile().getSize());
         MultipartFile multipartFile = resizeImg(request.getFile());
-        return s3Service.updateS3Img(request.getMail(), multipartFile, request.getFile().getContentType());
+        s3Service.updateS3Img(request.getMail(), multipartFile, request.getFile().getContentType());
     }
 
-    public ResponseEntity<ApiResponseEntity> getUserImg(UserDto.getUserImg request) {
+    public List<UserDto.userImageResponse> getUserImg(UserDto.getUserImg request) {
         List<UserDto.userImageResponse> userImageResponses = new ArrayList<>();
         for(String mail : request.getMailList()) {
             S3Object o = s3Service.getObject(mail);
@@ -81,7 +80,7 @@ public class UserService {
                                     .type(type)
                                     .build());
         }
-        return ApiResponseEntity.toResponseEntity(userImageResponses);
+        return userImageResponses;
     }
 
     private MultipartFile resizeImg(MultipartFile multipartFile) {

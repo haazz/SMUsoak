@@ -435,12 +435,38 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 </head>
-<body class="article">
+<body class="book toc2 toc-left">
 <div id="header">
 <h1>SMUsoak API Document</h1>
 <div class="details">
 <span id="revnumber">version 0.0.1-SNAPSHOT</span>
+</div>
+<div id="toc" class="toc2">
+<div id="toctitle">Table of Contents</div>
+<ul class="sectlevel1">
+<li><a href="#_authentication">Authentication</a>
+<ul class="sectlevel2">
+<li><a href="#_메일_인증코드_보내기">메일 인증코드 보내기</a></li>
+<li><a href="#_메일_인증">메일 인증</a></li>
+<li><a href="#_유저생성">유저생성</a></li>
+<li><a href="#_로그인">로그인</a></li>
+</ul>
+</li>
+<li><a href="#_이미지_다운로드">이미지 다운로드</a>
+<ul class="sectlevel2">
+<li><a href="#_image_download">Image Download</a></li>
+</ul>
+</li>
+<li><a href="#_test">Test</a>
+<ul class="sectlevel2">
+<li><a href="#_테스트_hello">테스트 Hello</a></li>
+<li><a href="#_테스트_user">테스트 User</a></li>
+<li><a href="#_테스트_admin">테스트 Admin</a></li>
+</ul>
+</li>
+</ul>
 </div>
 </div>
 <div id="content">
@@ -453,7 +479,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h4 id="_메일_인증코드_보내기_http_request"><a class="link" href="#_메일_인증코드_보내기_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/mail/send-code HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/auth/mail/send-code HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 33
 Host: localhost:8080
@@ -468,7 +494,14 @@ Host: localhost:8080
 <h4 id="_메일_인증코드_보내기_http_response"><a class="link" href="#_메일_인증코드_보내기_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 39
+
+{
+  "success" : true,
+  "data" : null
+}</code></pre>
 </div>
 </div>
 </div>
@@ -479,7 +512,7 @@ Host: localhost:8080
 <h4 id="_메일_인증_http_request"><a class="link" href="#_메일_인증_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/mail/verification HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/auth/mail/verification HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 55
 Host: localhost:8080
@@ -495,7 +528,14 @@ Host: localhost:8080
 <h4 id="_메일_인증_http_response"><a class="link" href="#_메일_인증_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 39
+
+{
+  "success" : true,
+  "data" : null
+}</code></pre>
 </div>
 </div>
 </div>
@@ -506,7 +546,7 @@ Host: localhost:8080
 <h4 id="_유저생성_http_request"><a class="link" href="#_유저생성_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/signup HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/auth/signup HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 130
 Host: localhost:8080
@@ -526,7 +566,16 @@ Host: localhost:8080
 <h4 id="_유저생성_http_response"><a class="link" href="#_유저생성_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 59
+
+{
+  "success" : true,
+  "data" : {
+    "token" : null
+  }
+}</code></pre>
 </div>
 </div>
 </div>
@@ -537,7 +586,7 @@ Host: localhost:8080
 <h4 id="_로그인_http_request"><a class="link" href="#_로그인_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/signin HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/auth/signin HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 58
 Host: localhost:8080
@@ -553,7 +602,16 @@ Host: localhost:8080
 <h4 id="_로그인_http_response"><a class="link" href="#_로그인_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 59
+
+{
+  "success" : true,
+  "data" : {
+    "token" : null
+  }
+}</code></pre>
 </div>
 </div>
 </div>
@@ -569,7 +627,7 @@ Host: localhost:8080
 <h4 id="_image_download_http_request"><a class="link" href="#_image_download_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/download/img/2019 HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/download/img/2019 HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -578,7 +636,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_image_download_http_response"><a class="link" href="#_image_download_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK</code></pre>
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
 </div>
 </div>
 </div>
@@ -594,7 +652,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_테스트_hello_http_request"><a class="link" href="#_테스트_hello_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/test/hello HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/test/hello HTTP/1.1
 Host: localhost:8080</code></pre>
 </div>
 </div>
@@ -603,7 +661,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_테스트_hello_http_response"><a class="link" href="#_테스트_hello_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Content-Length: 65
 
@@ -623,7 +681,7 @@ Content-Length: 65
 <h4 id="_테스트_user_http_request"><a class="link" href="#_테스트_user_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/test/user HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/test/user HTTP/1.1
 Authorization: Bearer null
 Host: localhost:8080</code></pre>
 </div>
@@ -633,7 +691,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_테스트_user_http_response"><a class="link" href="#_테스트_user_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Content-Length: 81
 
@@ -653,7 +711,7 @@ Content-Length: 81
 <h4 id="_테스트_admin_http_request"><a class="link" href="#_테스트_admin_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/test/admin HTTP/1.1
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/test/admin HTTP/1.1
 Authorization: Bearer null
 Host: localhost:8080</code></pre>
 </div>
@@ -663,7 +721,7 @@ Host: localhost:8080</code></pre>
 <h4 id="_테스트_admin_http_response"><a class="link" href="#_테스트_admin_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Content-Length: 82
 
@@ -683,8 +741,15 @@ Content-Length: 82
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-02 00:17:40 +0900
+Last updated 2024-04-02 00:26:02 +0900
 </div>
 </div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
+<script>
+if (!hljs.initHighlighting.called) {
+  hljs.initHighlighting.called = true
+  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
+}
+</script>
 </body>
 </html>
