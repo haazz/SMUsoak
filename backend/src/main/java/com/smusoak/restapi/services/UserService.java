@@ -41,12 +41,12 @@ public class UserService {
 
     public void updateUserDetails(UserDto.UpdateUserDetailsRequest request) {
         Optional<User> users = userRepository.findByMail(request.getMail());
-        if (users.isPresent()) {
-            users.get().setAge(request.getAge());
-            users.get().setGender(request.getGender());
-            this.userRepository.save(users.get());
+        if (!users.isPresent()) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
-        throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        users.get().setAge(request.getAge());
+        users.get().setGender(request.getGender());
+        this.userRepository.save(users.get());
     }
 
     public void updateUserImg(ImgDto.UpdateUserImgRequest request) {

@@ -6,5 +6,6 @@
 :sectlinks:
 
 include::auth.adoc[]
+include::user.adoc[]
 include::s3.adoc[]
 include::test.adoc[]
