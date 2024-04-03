@@ -40,7 +40,7 @@ class ActivityProfile : AppCompatActivity() {
     private lateinit var mediaType: MediaType
 
     private val user = MySharedPreference.user
-    private val token = "Bearer " + user.getString("jwt", "") //나중에 intent에서 가져오는걸로 수정이 필요함
+    private val token = "Bearer " + user.getString("token", "") //나중에 intent에서 가져오는걸로 수정이 필요함
     private val mail = user.getString("mail", "")
 
     val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->

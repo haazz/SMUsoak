@@ -60,4 +60,6 @@ dependencies {
     implementation 'io.reactivex.rxjava3:rxjava:3.1.5' //rx 사용을 위한 것
     implementation 'com.squareup.okhttp3:okhttp:4.12.0' //okhttp3 사용을 위한 것
     implementation 'org.jetbrains.kotlin:kotlin-stdlib-jdk8' //JSON변환
+
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.9.1'//로그 보기
 }

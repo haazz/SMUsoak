@@ -60,14 +60,14 @@ class ActivityLogin : AppCompatActivity() {
                         if(response != null){
                             if(response.success) {
                                 val token = response.data.token
-                                editor.putString("jwt", token)
+                                editor.putString("token", token)
                                 editor.putString("mail", id)
                                 if(autologin){
                                     editor.putString("id", id)
                                     editor.putString("pw", pw)
                                 }
                                 editor.apply()
-                                val intent = Intent(this@ActivityLogin, ActivityProfile::class.java)
+                                val intent = Intent(this@ActivityLogin, ActivityTestDown::class.java)
                                 startActivity(intent)
                             }
                         }
