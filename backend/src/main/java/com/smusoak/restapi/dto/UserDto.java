@@ -33,7 +33,7 @@ public class UserDto {
         private String nickname;
         private Integer age;
         private char gender;
-        private String major;
+        private String mbti;
     }
 
     @Data
