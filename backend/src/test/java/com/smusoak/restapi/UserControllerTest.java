@@ -95,7 +95,7 @@ public class UserControllerTest extends AbstractRestDocsTests {
         mailList.add("tmp3@sangmyung.kr");
         userImgRequest.setMailList(mailList);
 
-        mockMvc.perform(get("/api/v1/user/imgs")
+        mockMvc.perform(post("/api/v1/user/imgs")
                         .header("Authorization", "Bearer " +
                                 jwtService.generateToken(User
                                         .builder()

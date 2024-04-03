@@ -36,7 +36,7 @@ public class UserController {
         return ApiResponseEntity.toResponseEntity();
     }
 
-    @GetMapping(value = "/imgs")
+    @PostMapping(value = "/imgs")
     public ResponseEntity<ApiResponseEntity> getUserImg(@RequestBody ImgDto.UserImgRequest request) {
         List<ImgDto.UserImageResponse> userImageResponses =  userService.getUserImg(request);
         return ApiResponseEntity.toResponseEntity(userImageResponses);
