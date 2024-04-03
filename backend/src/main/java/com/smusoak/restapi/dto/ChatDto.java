@@ -11,7 +11,7 @@ import java.util.List;
 
 public class ChatDto {
     @Getter
-    public static class SendMessage {
+    public static class SendMessageRequest {
         private String message;
         private String senderMail;
         private String receiverMail;
@@ -24,26 +24,26 @@ public class ChatDto {
     }
 
     @Data
-    public static class chatRoomListDto {
+    public static class ChatRoomListRequest {
         @NotBlank
         private String mail;
     }
 
     @Data
     @Builder
-    public static class chatRoomListResponse {
+    public static class ChatRoomListResponse {
         private List<ChatRoom> chatRoomList;
     }
 
     @Data
-    public static class chatRoomMessagesDto {
+    public static class ChatRoomMessagesRequest {
         @NotBlank
         private Long chatRoomId;
     }
 
     @Data
     @Builder
-    public static class messageListResponse {
+    public static class MessageListResponse {
         private List<Message> messageList;
     }
 }

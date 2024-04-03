@@ -34,7 +34,7 @@ public class S3Service {
     @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
-    public ResponseEntity<ApiResponseEntity> updateS3Img(String key, MultipartFile file, String contentType) {
+    public void updateS3Img(String key, MultipartFile file, String contentType) {
         try {
             System.out.println(key);
             ObjectMetadata metadata= new ObjectMetadata();
@@ -46,7 +46,6 @@ public class S3Service {
         catch (Exception e) {
             throw new CustomException(ErrorCode.NO_SUCH_ALGORITHM);
         }
-        return ApiResponseEntity.toResponseEntity();
     }
 
     public S3Object getObject(String key) {

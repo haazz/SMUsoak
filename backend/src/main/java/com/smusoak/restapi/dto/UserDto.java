@@ -9,14 +9,14 @@ import java.util.List;
 public class UserDto {
     @Data
     @NoArgsConstructor
-    public static class sendAuthCodeDto {
+    public static class SendCodeRequest {
         @NotBlank
         private String mail;
     }
 
     @Data
     @NoArgsConstructor
-    public static class mailVerificationDto {
+    public static class MailVerificationRequest {
         @NotBlank
         private String mail;
         @NotBlank
@@ -25,7 +25,7 @@ public class UserDto {
 
     @Data
     @NoArgsConstructor
-    public static class createUserDto {
+    public static class SignupRequest {
         @NotBlank
         private String mail;
         @NotBlank
@@ -33,12 +33,12 @@ public class UserDto {
         private String nickname;
         private Integer age;
         private char gender;
-        private String major;
+        private String mbti;
     }
 
     @Data
     @NoArgsConstructor
-    public static class signinDto {
+    public static class SigninRequest {
         @NotBlank
         private String mail;
         @NotBlank
@@ -47,36 +47,11 @@ public class UserDto {
 
     @Data
     @NoArgsConstructor
-    public static class updateUserDetailsDto {
+    public static class UpdateUserDetailsRequest {
         @NotBlank
         private String mail;
         private Integer age;
         private char gender;
         private String mbti;
     }
-
-    @Data
-    @NoArgsConstructor
-    public static class updateUserImg {
-        @NotBlank
-        private String mail;
-        private MultipartFile file;
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class getUserImg {
-        @NotBlank
-        private String mail;
-        private List<String> mailList;
-    }
-
-    @Data
-    @Builder
-    public static class userImageResponse {
-        private String mail;
-        private String url;
-        private String type;
-    }
-
 }

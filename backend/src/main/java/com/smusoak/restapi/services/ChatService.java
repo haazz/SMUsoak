@@ -28,7 +28,7 @@ public class ChatService {
     private final UserRepository userRepository;
 
     @Transactional(rollbackFor = Exception.class)
-    public void saveMessage(ChatDto.SendMessage message) {
+    public void saveMessage(ChatDto.SendMessageRequest message) {
         messageRepository.save(Message.builder()
                         .message(message.getMessage())
                         .sender(userRepository.findByMail(message.getSenderMail()).get())
@@ -58,15 +58,15 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseEntity> getChatRoomList(ChatDto.chatRoomListDto request) {
-        return ApiResponseEntity.toResponseEntity(ChatDto.chatRoomListResponse.builder()
+    public ResponseEntity<ApiResponseEntity> getChatRoomList(ChatDto.ChatRoomListRequest request) {
+        return ApiResponseEntity.toResponseEntity(ChatDto.ChatRoomListResponse.builder()
                 .chatRoomList(chatRoomRepository.findByUserListMail(request.getMail()))
                 .build());
         // return chatRoomRepository.findListByMemberId(memberId).stream().map(ChatRoomDto.Response::of).collect(Collectors.toList());
     }
 
-    public ResponseEntity<ApiResponseEntity> getRoomMessages(ChatDto.chatRoomMessagesDto request) {
-        return ApiResponseEntity.toResponseEntity(ChatDto.messageListResponse.builder()
+    public ResponseEntity<ApiResponseEntity> getRoomMessages(ChatDto.ChatRoomMessagesRequest request) {
+        return ApiResponseEntity.toResponseEntity(ChatDto.MessageListResponse.builder()
                 .messageList(messageRepository.findByChatRoomId(request.getChatRoomId()))
                 .build());
     }

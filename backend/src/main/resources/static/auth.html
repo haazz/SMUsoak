@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>SMUsoak API Document</title>
+<title>Authentication</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -435,61 +435,24 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 #footer-text{color:rgba(0,0,0,.6);font-size:.9em}}
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/styles/github.min.css">
 </head>
-<body class="book toc2 toc-left">
+<body class="article">
 <div id="header">
-<h1>SMUsoak API Document</h1>
-<div class="details">
-<span id="revnumber">version 0.0.1-SNAPSHOT</span>
-</div>
-<div id="toc" class="toc2">
-<div id="toctitle">Table of Contents</div>
-<ul class="sectlevel1">
-<li><a href="#_authentication">Authentication</a>
-<ul class="sectlevel2">
-<li><a href="#_메일_인증코드_보내기">메일 인증코드 보내기</a></li>
-<li><a href="#_메일_인증">메일 인증</a></li>
-<li><a href="#_유저생성">유저생성</a></li>
-<li><a href="#_로그인">로그인</a></li>
-</ul>
-</li>
-<li><a href="#_user">User</a>
-<ul class="sectlevel2">
-<li><a href="#_유저_정보_업데이트">유저 정보 업데이트</a></li>
-<li><a href="#_유저_프로필_이미지_업데이트">유저 프로필 이미지 업데이트</a></li>
-<li><a href="#_유저_이미지_가져오기">유저 이미지 가져오기</a></li>
-</ul>
-</li>
-<li><a href="#_image_download">Image Download</a>
-<ul class="sectlevel2">
-<li><a href="#_이미지_다운로드">이미지 다운로드</a></li>
-</ul>
-</li>
-<li><a href="#_test">Test</a>
-<ul class="sectlevel2">
-<li><a href="#_테스트_hello">테스트 Hello</a></li>
-<li><a href="#_테스트_user">테스트 User</a></li>
-<li><a href="#_테스트_admin">테스트 Admin</a></li>
-</ul>
-</li>
-</ul>
-</div>
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_authentication"><a class="link" href="#_authentication">Authentication</a></h2>
+<h2 id="_authentication">Authentication</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_메일_인증코드_보내기"><a class="link" href="#_메일_인증코드_보내기">메일 인증코드 보내기</a></h3>
+<h3 id="_메일_인증코드_보내기">메일 인증코드 보내기</h3>
 <div class="paragraph">
 <p>인증코드 유효기간은 30분입니다.</p>
 </div>
 <div class="sect3">
-<h4 id="_메일_인증코드_보내기_http_request"><a class="link" href="#_메일_인증코드_보내기_http_request">HTTP request</a></h4>
+<h4 id="_메일_인증코드_보내기_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/auth/mail/send-code HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/mail/send-code HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 33
 Host: localhost:8080
@@ -501,7 +464,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_메일_인증코드_보내기_request_fields"><a class="link" href="#_메일_인증코드_보내기_request_fields">Request fields</a></h4>
+<h4 id="_메일_인증코드_보내기_request_fields">Request fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -528,10 +491,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_메일_인증코드_보내기_http_response"><a class="link" href="#_메일_인증코드_보내기_http_response">HTTP response</a></h4>
+<h4 id="_메일_인증코드_보내기_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Content-Length: 39
 
@@ -543,7 +506,7 @@ Content-Length: 39
 </div>
 </div>
 <div class="sect3">
-<h4 id="_메일_인증코드_보내기_response_fields"><a class="link" href="#_메일_인증코드_보내기_response_fields">Response fields</a></h4>
+<h4 id="_메일_인증코드_보내기_response_fields">Response fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -573,12 +536,12 @@ Content-Length: 39
 </div>
 </div>
 <div class="sect2">
-<h3 id="_메일_인증"><a class="link" href="#_메일_인증">메일 인증</a></h3>
+<h3 id="_메일_인증">메일 인증</h3>
 <div class="sect3">
-<h4 id="_메일_인증_http_request"><a class="link" href="#_메일_인증_http_request">HTTP request</a></h4>
+<h4 id="_메일_인증_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/auth/mail/verification HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/mail/verification HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 55
 Host: localhost:8080
@@ -591,7 +554,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_메일_인증_request_fields"><a class="link" href="#_메일_인증_request_fields">Request fields</a></h4>
+<h4 id="_메일_인증_request_fields">Request fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -624,10 +587,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_메일_인증_http_response"><a class="link" href="#_메일_인증_http_response">HTTP response</a></h4>
+<h4 id="_메일_인증_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Content-Length: 39
 
@@ -639,7 +602,7 @@ Content-Length: 39
 </div>
 </div>
 <div class="sect3">
-<h4 id="_메일_인증_response_fields"><a class="link" href="#_메일_인증_response_fields">Response fields</a></h4>
+<h4 id="_메일_인증_response_fields">Response fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -669,12 +632,12 @@ Content-Length: 39
 </div>
 </div>
 <div class="sect2">
-<h3 id="_유저생성"><a class="link" href="#_유저생성">유저생성</a></h3>
+<h3 id="_유저생성">유저생성</h3>
 <div class="sect3">
-<h4 id="_유저생성_http_request"><a class="link" href="#_유저생성_http_request">HTTP request</a></h4>
+<h4 id="_유저생성_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/auth/signup HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/signup HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 129
 Host: localhost:8080
@@ -691,7 +654,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_유저생성_request_fields"><a class="link" href="#_유저생성_request_fields">Request fields</a></h4>
+<h4 id="_유저생성_request_fields">Request fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -748,10 +711,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_유저생성_http_response"><a class="link" href="#_유저생성_http_response">HTTP response</a></h4>
+<h4 id="_유저생성_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Content-Length: 69
 
@@ -765,7 +728,7 @@ Content-Length: 69
 </div>
 </div>
 <div class="sect3">
-<h4 id="_유저생성_response_fields"><a class="link" href="#_유저생성_response_fields">Response fields</a></h4>
+<h4 id="_유저생성_response_fields">Response fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -795,12 +758,12 @@ Content-Length: 69
 </div>
 </div>
 <div class="sect2">
-<h3 id="_로그인"><a class="link" href="#_로그인">로그인</a></h3>
+<h3 id="_로그인">로그인</h3>
 <div class="sect3">
-<h4 id="_로그인_http_request"><a class="link" href="#_로그인_http_request">HTTP request</a></h4>
+<h4 id="_로그인_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/auth/signin HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/auth/signin HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Content-Length: 58
 Host: localhost:8080
@@ -813,7 +776,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_로그인_request_fields"><a class="link" href="#_로그인_request_fields">Request fields</a></h4>
+<h4 id="_로그인_request_fields">Request fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -846,10 +809,10 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_로그인_http_response"><a class="link" href="#_로그인_http_response">HTTP response</a></h4>
+<h4 id="_로그인_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
 Content-Length: 69
 
@@ -863,7 +826,7 @@ Content-Length: 69
 </div>
 </div>
 <div class="sect3">
-<h4 id="_로그인_response_fields"><a class="link" href="#_로그인_response_fields">Response fields</a></h4>
+<h4 id="_로그인_response_fields">Response fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -894,509 +857,12 @@ Content-Length: 69
 </div>
 </div>
 </div>
-<div class="sect1">
-<h2 id="_user"><a class="link" href="#_user">User</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_유저_정보_업데이트"><a class="link" href="#_유저_정보_업데이트">유저 정보 업데이트</a></h3>
-<div class="sect3">
-<h4 id="_유저_정보_업데이트_http_request"><a class="link" href="#_유저_정보_업데이트_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/user/update/info HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer null
-Content-Length: 85
-Host: localhost:8080
-
-{
-  "mail" : "test@sangmyung.kr",
-  "age" : 20,
-  "gender" : "M",
-  "mbti" : "MBTI"
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_유저_정보_업데이트_request_fields"><a class="link" href="#_유저_정보_업데이트_request_fields">Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@sangmyung.kr로 끝나는 메일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>nickname</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">nickname</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>age</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">나이</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>gender</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">M 혹은 W Charter</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mbti</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">MBTI</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_유저_정보_업데이트_http_response"><a class="link" href="#_유저_정보_업데이트_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 39
-
-{
-  "success" : true,
-  "data" : null
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_유저_정보_업데이트_response_fields"><a class="link" href="#_유저_정보_업데이트_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">반환되는 데이터 없음</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_유저_프로필_이미지_업데이트"><a class="link" href="#_유저_프로필_이미지_업데이트">유저 프로필 이미지 업데이트</a></h3>
-<div class="sect3">
-<h4 id="_유저_프로필_이미지_업데이트_http_request"><a class="link" href="#_유저_프로필_이미지_업데이트_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/user/update/img HTTP/1.1
-Content-Type: multipart/form-data;charset=UTF-8; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Accept: application/json
-Authorization: Bearer null
-Host: localhost:8080
-
---6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Content-Disposition: form-data; name=file; filename=tmp.png
-Content-Type: multipart/form-data
-
-uploadFile
---6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
-Content-Disposition: form-data; name=info
-Content-Type: application/json
-
-{"mail":"tmp@sangmyung.kr","file":null}
---6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_유저_프로필_이미지_업데이트_request_parts"><a class="link" href="#_유저_프로필_이미지_업데이트_request_parts">Request parts</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Part</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>file</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">최대 용량 5MB 이미지 파일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>info</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 정보 (JSON)</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_유저_프로필_이미지_업데이트_request_part-info-fields"><a class="link" href="#_유저_프로필_이미지_업데이트_request_part-info-fields">Request part-info-fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@sangmyung.kr로 끝나는 메일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>file</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NULL입력</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_유저_프로필_이미지_업데이트_http_response"><a class="link" href="#_유저_프로필_이미지_업데이트_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 39
-
-{
-  "success" : true,
-  "data" : null
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_유저_프로필_이미지_업데이트_response_fields"><a class="link" href="#_유저_프로필_이미지_업데이트_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">반환되는 데이터 없음</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_유저_이미지_가져오기"><a class="link" href="#_유저_이미지_가져오기">유저 이미지 가져오기</a></h3>
-<div class="sect3">
-<h4 id="_유저_이미지_가져오기_http_request"><a class="link" href="#_유저_이미지_가져오기_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">POST /api/v1/user/imgs HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Authorization: Bearer null
-Content-Length: 115
-Host: localhost:8080
-
-{
-  "mail" : "tmp@sangmyung.kr",
-  "mailList" : [ "tmp1@sangmyung.kr", "tmp2@sangmyung.kr", "tmp3@sangmyung.kr" ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_유저_이미지_가져오기_request_fields"><a class="link" href="#_유저_이미지_가져오기_request_fields">Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@sangmyung.kr로 끝나는 메일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mailList</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">가져오고 싶은 이미지의 mail list</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_유저_이미지_가져오기_http_response"><a class="link" href="#_유저_이미지_가져오기_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 292
-
-{
-  "success" : true,
-  "data" : [ {
-    "mail" : "tmp1@sangmyung.kr",
-    "url" : "URL",
-    "type" : "imge/jpeg"
-  }, {
-    "mail" : "tmp2@sangmyung.kr",
-    "url" : "URL",
-    "type" : "imge/jpeg"
-  }, {
-    "mail" : "tmp3@sangmyung.kr",
-    "url" : "URL",
-    "type" : "imge/jpeg"
-  } ]
-}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_유저_이미지_가져오기_response_fields"><a class="link" href="#_유저_이미지_가져오기_response_fields">Response fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">Path</th>
-<th class="tableblock halign-left valign-top">Type</th>
-<th class="tableblock halign-left valign-top">Description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].mail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 메일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].url</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 다운로드 링크</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 타입</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_image_download"><a class="link" href="#_image_download">Image Download</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_이미지_다운로드"><a class="link" href="#_이미지_다운로드">이미지 다운로드</a></h3>
-<div class="paragraph">
-<p>/user/imgs에서 가져온 URL을 사용<br>
-byte[]가 Response 됩니다.</p>
-</div>
-<div class="sect3">
-<h4 id="_이미지_다운로드_http_request"><a class="link" href="#_이미지_다운로드_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/download/img/test HTTP/1.1
-Authorization: Bearer null
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_이미지_다운로드_http_response"><a class="link" href="#_이미지_다운로드_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_test"><a class="link" href="#_test">Test</a></h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_테스트_hello"><a class="link" href="#_테스트_hello">테스트 Hello</a></h3>
-<div class="sect3">
-<h4 id="_테스트_hello_http_request"><a class="link" href="#_테스트_hello_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/test/hello HTTP/1.1
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_테스트_hello_http_response"><a class="link" href="#_테스트_hello_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 65
-
-{
-  "success" : true,
-  "data" : {
-    "message" : "Hello!"
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_테스트_user"><a class="link" href="#_테스트_user">테스트 User</a></h3>
-<div class="sect3">
-<h4 id="_테스트_user_http_request"><a class="link" href="#_테스트_user_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/test/user HTTP/1.1
-Authorization: Bearer null
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_테스트_user_http_response"><a class="link" href="#_테스트_user_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 81
-
-{
-  "success" : true,
-  "data" : {
-    "message" : "ONLY user can see this"
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_테스트_admin"><a class="link" href="#_테스트_admin">테스트 Admin</a></h3>
-<div class="sect3">
-<h4 id="_테스트_admin_http_request"><a class="link" href="#_테스트_admin_http_request">HTTP request</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/test/admin HTTP/1.1
-Authorization: Bearer null
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_테스트_admin_http_response"><a class="link" href="#_테스트_admin_http_response">HTTP response</a></h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 82
-
-{
-  "success" : true,
-  "data" : {
-    "message" : "ONLY admin can see this"
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-03 17:04:27 +0900
+Last updated 2024-04-03 18:54:19 +0900
 </div>
 </div>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.18.3/highlight.min.js"></script>
-<script>
-if (!hljs.initHighlighting.called) {
-  hljs.initHighlighting.called = true
-  ;[].slice.call(document.querySelectorAll('pre.highlight > code[data-lang]')).forEach(function (el) { hljs.highlightBlock(el) })
-}
-</script>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.smusoak.restapi.services;
 
 import com.amazonaws.services.s3.model.S3Object;
+import com.smusoak.restapi.dto.ImgDto;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.models.User;
 import com.smusoak.restapi.repositories.UserRepository;
@@ -38,26 +39,25 @@ public class UserService {
     @Value("${cloud.aws.s3.limit-size}")
     private Integer imgLimitSize;
 
-    public ResponseEntity<ApiResponseEntity> updateUserDetails(UserDto.updateUserDetailsDto request) {
+    public void updateUserDetails(UserDto.UpdateUserDetailsRequest request) {
         Optional<User> users = userRepository.findByMail(request.getMail());
-        if (users.isPresent()) {
-            users.get().setAge(request.getAge());
-            users.get().setGender(request.getGender());
-            this.userRepository.save(users.get());
-            return ApiResponseEntity.toResponseEntity();
+        if (!users.isPresent()) {
+            throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
-        throw new CustomException(ErrorCode.USER_NOT_FOUND);
+        users.get().setAge(request.getAge());
+        users.get().setGender(request.getGender());
+        this.userRepository.save(users.get());
     }
 
-    public ResponseEntity<ApiResponseEntity> updateUserImg(UserDto.updateUserImg request) {
+    public void updateUserImg(ImgDto.UpdateUserImgRequest request) {
         System.out.println(request.getMail());
         System.out.println(request.getFile().getSize());
         MultipartFile multipartFile = resizeImg(request.getFile());
-        return s3Service.updateS3Img(request.getMail(), multipartFile, request.getFile().getContentType());
+        s3Service.updateS3Img(request.getMail(), multipartFile, request.getFile().getContentType());
     }
 
-    public ResponseEntity<ApiResponseEntity> getUserImg(UserDto.getUserImg request) {
-        List<UserDto.userImageResponse> userImageResponses = new ArrayList<>();
+    public List<ImgDto.UserImageResponse> getUserImg(ImgDto.UserImgRequest request) {
+        List<ImgDto.UserImageResponse> userImageResponses = new ArrayList<>();
         for(String mail : request.getMailList()) {
             S3Object o = s3Service.getObject(mail);
             if(o == null) {
@@ -74,14 +74,14 @@ public class UserService {
             else {
                 continue;
             }
-            userImageResponses.add(UserDto.userImageResponse
+            userImageResponses.add(ImgDto.UserImageResponse
                                     .builder()
                                     .mail(mail)
                                     .url(downloadUrl + mail)
                                     .type(type)
                                     .build());
         }
-        return ApiResponseEntity.toResponseEntity(userImageResponses);
+        return userImageResponses;
     }
 
     private MultipartFile resizeImg(MultipartFile multipartFile) {

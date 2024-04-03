@@ -1,44 +1,33 @@
 package com.smusoak.restapi.controllers;
 
 import com.smusoak.restapi.dto.TestDto;
-import com.smusoak.restapi.services.RedisService;
-import com.smusoak.restapi.services.TestService;
+import com.smusoak.restapi.response.ApiResponseEntity;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
-@RequestMapping("/test")
+@RequestMapping("/api/v1/test")
 @RequiredArgsConstructor
 public class TestController {
-    private final TestService testService;
-
     @GetMapping("/hello")
-    public String hello() {
-        return "Hello World!";
+    public ResponseEntity<ApiResponseEntity> hello() {
+        return ApiResponseEntity.toResponseEntity(
+                TestDto.TestResponse.builder().message("Hello!").build());
     }
 
     @GetMapping("/user")
     @PreAuthorize("hasRole('USER')")
-    public String userEndPoint() { return "ONLY user can see this"; }
+    public ResponseEntity<ApiResponseEntity> userEndPoint() {
+        return ApiResponseEntity.toResponseEntity(
+                TestDto.TestResponse.builder().message("ONLY user can see this").build());
+    }
 
     @GetMapping("/admin")
     @PreAuthorize("hasRole('ADMIN')")
-    public String adminEndPoint() { return "ONLY admin can see this"; }
-
-    @PostMapping("/addRedisData")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String addRedisData(@RequestBody TestDto request) {
-        testService.addRedisData(request);
-        return "Add Success?";
-    }
-
-    @GetMapping("/deleteRedisData")
-    @PreAuthorize("hasRole('ADMIN')")
-    public String deleteRedisData(@RequestBody TestDto request) {
-        testService.deleteRedisData(request);
-        return "Delete Success?";
+    public ResponseEntity<ApiResponseEntity> adminEndPoint() {
+        return ApiResponseEntity.toResponseEntity(
+                TestDto.TestResponse.builder().message("ONLY admin can see this").build());
     }
 }

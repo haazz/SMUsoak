@@ -1,0 +1,10 @@
+== Test
+
+=== 테스트 Hello
+operation::test-controller-test/hello-test[snippets='http-request,http-response']
+
+=== 테스트 User
+operation::test-controller-test/user-test[snippets='http-request,http-response']
+
+=== 테스트 Admin
+operation::test-controller-test/admin-test[snippets='http-request,http-response']

@@ -1,5 +1,6 @@
 package com.smusoak.restapi.controllers;
 
+import com.smusoak.restapi.dto.JwtAuthenticationResponse;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.services.AuthenticationService;
@@ -9,29 +10,35 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/authentication")
+@RequestMapping("/api/v1/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {
 
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/sendAuthCode")
-    public ResponseEntity<ApiResponseEntity> sendAuthCode(@Valid @RequestBody UserDto.sendAuthCodeDto request) throws Exception{
-        return authenticationService.sendCodeToMail(request);
+    @PostMapping("/mail/send-code")
+    public ResponseEntity<ApiResponseEntity> sendAuthCode(@Valid @RequestBody UserDto.SendCodeRequest request) throws Exception{
+        authenticationService.sendCodeToMail(request);
+        return ApiResponseEntity.toResponseEntity();
     }
 
-    @PostMapping("/mailVerification")
-    public ResponseEntity<ApiResponseEntity> mailVerification(@Valid @RequestBody UserDto.mailVerificationDto request) throws Exception{
-        return authenticationService.verifiedCode(request);
+    @PostMapping("/mail/verification")
+    public ResponseEntity<ApiResponseEntity> mailVerification(@Valid @RequestBody UserDto.MailVerificationRequest request) throws Exception{
+        authenticationService.verifiedCode(request);
+        return ApiResponseEntity.toResponseEntity();
     }
 
-    @PostMapping("/createUser")
-    public ResponseEntity<ApiResponseEntity> createUser(@RequestBody @Valid UserDto.createUserDto request) throws Exception{
-        return authenticationService.createUser(request);
+    @PostMapping("/signup")
+    public ResponseEntity<ApiResponseEntity> createUser(@RequestBody @Valid UserDto.SignupRequest request) throws Exception{
+        String token =  authenticationService.createUser(request);
+        return ApiResponseEntity.toResponseEntity(
+                JwtAuthenticationResponse.builder().token(token).build());
     }
 
     @PostMapping("/signin")
-    public ResponseEntity<ApiResponseEntity> signin(@Valid @RequestBody UserDto.signinDto request) throws Exception {
-        return authenticationService.signin(request);
+    public ResponseEntity<ApiResponseEntity> signin(@Valid @RequestBody UserDto.SigninRequest request) throws Exception {
+        String token =  authenticationService.signin(request);
+        return ApiResponseEntity.toResponseEntity(
+                JwtAuthenticationResponse.builder().token(token).build());
     }
 }

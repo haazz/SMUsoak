@@ -21,25 +21,25 @@ import java.util.stream.Collectors;
 @RestController
 @RequiredArgsConstructor
 @CrossOrigin
-@RequestMapping("/chat")
+@RequestMapping("/api/v1/chat")
 public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
 
     // Mapped as app/send
     @MessageMapping("/send")
-    public ResponseEntity<ApiResponseEntity> send(@Payload ChatDto.SendMessage request) {
+    public ResponseEntity<ApiResponseEntity> send(@Payload ChatDto.SendMessageRequest request) {
         messagingTemplate.convertAndSend("/topic/" + request.getRoomId(), request);
         return ApiResponseEntity.toResponseEntity();
     }
 
-    @GetMapping("/roomList")
-    public ResponseEntity<ApiResponseEntity> chatRoomList(ChatDto.chatRoomListDto request) {
+    @GetMapping("/room/list")
+    public ResponseEntity<ApiResponseEntity> chatRoomList(ChatDto.ChatRoomListRequest request) {
         return chatService.getChatRoomList(request);
     }
 
-    @GetMapping("/roomMessages")
-    public ResponseEntity<ApiResponseEntity> getChatRoomMessages(ChatDto.chatRoomMessagesDto request) {
+    @GetMapping("/room/messages")
+    public ResponseEntity<ApiResponseEntity> getChatRoomMessages(ChatDto.ChatRoomMessagesRequest request) {
         return chatService.getRoomMessages(request);
     }
 }
