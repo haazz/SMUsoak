@@ -1,5 +1,7 @@
 == Image Download
 
 === 이미지 다운로드
+/user/imgs에서 가져온 URL을 사용 +
+byte[]가 Response 됩니다.
 
 operation::s3-controller-test/download-img[snippets='http-request,http-response']

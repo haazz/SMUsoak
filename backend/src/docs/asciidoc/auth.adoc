@@ -1,13 +1,15 @@
 == Authentication
 
 === 메일 인증코드 보내기
-operation::authentication-controller-test/mail-send-test[snippets='http-request,http-response']
+인증코드 유효기간은 30분입니다.
+
+operation::authentication-controller-test/mail-send-test[snippets='http-request,request-fields,http-response,response-fields']
 
 === 메일 인증
-operation::authentication-controller-test/mail-verification-test[snippets='http-request,http-response']
+operation::authentication-controller-test/mail-verification-test[snippets='http-request,request-fields,http-response,response-fields']
 
 === 유저생성
-operation::authentication-controller-test/signup-test[snippets='http-request,http-response']
+operation::authentication-controller-test/signup-test[snippets='http-request,request-fields,http-response,response-fields']
 
 === 로그인
-operation::authentication-controller-test/signin-test[snippets='http-request,http-response']
+operation::authentication-controller-test/signin-test[snippets='http-request,request-fields,http-response,response-fields']

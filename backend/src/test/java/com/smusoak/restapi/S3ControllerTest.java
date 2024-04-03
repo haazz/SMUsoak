@@ -6,6 +6,7 @@ import com.smusoak.restapi.controllers.AuthenticationController;
 import com.smusoak.restapi.controllers.S3Controller;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.filters.JwtAuthenticationFilter;
+import com.smusoak.restapi.models.User;
 import com.smusoak.restapi.repositories.UserRepository;
 import com.smusoak.restapi.restdocs.AbstractRestDocsTests;
 import com.smusoak.restapi.services.*;
@@ -37,7 +38,13 @@ public class S3ControllerTest extends AbstractRestDocsTests {
 
     @Test
     void DownloadImg() throws Exception {
-        mockMvc.perform(get("/api/v1/download/img/{fileName}", "2019"))
+        mockMvc.perform(get("/api/v1/download/img/{fileName}", "test")
+                        .header("Authorization", "Bearer " +
+                                jwtService.generateToken(User
+                                        .builder()
+                                        .mail("tmp")
+                                        .build())
+                        ))
                 .andExpect(status().isOk());
     }
 }
