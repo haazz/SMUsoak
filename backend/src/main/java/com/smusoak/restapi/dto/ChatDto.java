@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 import java.util.List;
 
 public class ChatDto {
-    @Getter
+    @Data
+    @NoArgsConstructor
     public static class SendMessageRequest {
         private String message;
         private String senderMail;
@@ -18,12 +19,14 @@ public class ChatDto {
         private Long roomId;
     }
 
-    @Getter
+    @Data
+    @NoArgsConstructor
     public static class ChatRoomRequest {
         private List<String> userMailList;
     }
 
     @Data
+    @NoArgsConstructor
     public static class ChatRoomListRequest {
         @NotBlank
         private String mail;
@@ -36,6 +39,7 @@ public class ChatDto {
     }
 
     @Data
+    @NoArgsConstructor
     public static class ChatRoomMessagesRequest {
         @NotBlank
         private Long chatRoomId;

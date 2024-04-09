@@ -12,4 +12,12 @@ public class TestDto {
     public static class TestResponse {
         private String message;
     }
+
+    @Data
+    @Builder
+    public static class FcmRequest {
+        private String title;
+        private String body;
+        private String token;
+    }
 }
