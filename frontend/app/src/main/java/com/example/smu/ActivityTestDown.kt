@@ -58,7 +58,7 @@ class ActivityTestDown : AppCompatActivity() {
             })
         }
         binding.btnDown.setOnClickListener {
-            val call = RetrofitObject.getRetrofitService.profiledown(token, "201910911@sangmyung.kr")
+            val call = RetrofitObject.getRetrofitService.profiledown(token, "1234")
             call.enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     Log.d("profile", response.toString())
