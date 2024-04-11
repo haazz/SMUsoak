@@ -15,9 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,13 +46,13 @@ public class ChatService {
             throw new CustomException(ErrorCode.MIN_USER_CREATE_CHATROOM);
         }
 
-        List<User> userList = new ArrayList<User>();
+        Set<User> userList = new HashSet<>();
         for(String mail: userMailList) {
             userList.add(userRepository.findByMail(mail).get());
         }
 
         ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder()
-                .userList(userList)
+                .users(userList)
                 .build());
         return chatRoom.getId();
     }
@@ -60,7 +60,7 @@ public class ChatService {
     @Transactional(readOnly = true)
     public ResponseEntity<ApiResponseEntity> getChatRoomList(ChatDto.ChatRoomListRequest request) {
         return ApiResponseEntity.toResponseEntity(ChatDto.ChatRoomListResponse.builder()
-                .chatRoomList(chatRoomRepository.findByUserListMail(request.getMail()))
+                .chatRoomList(chatRoomRepository.findByUsersMail(request.getMail()))
                 .build());
         // return chatRoomRepository.findListByMemberId(memberId).stream().map(ChatRoomDto.Response::of).collect(Collectors.toList());
     }
@@ -69,6 +69,30 @@ public class ChatService {
         return ApiResponseEntity.toResponseEntity(ChatDto.MessageListResponse.builder()
                 .messageList(messageRepository.findByChatRoomId(request.getChatRoomId()))
                 .build());
+    }
+
+    public List<String> getUserMailsByRoomId(Long roomId) {
+        List<User> users = userRepository.findByChatRoomsId(roomId);
+        List<String> mails = new ArrayList<>();
+        for(User user: users) {
+            String mail = user.getMail();
+            if(!mail.isEmpty()) {
+                mails.add(mail);
+            }
+        }
+        return mails;
+    }
+
+    public Long putUserToChatRoom(List<String> mails) {
+        Set<User> userList = new HashSet<>();
+        for(String mail: mails) {
+            Optional<User> user = userRepository.findByMail(mail);
+            if(user.isPresent()) {
+                userList.add(user.get());
+            }
+        }
+        Long roomId = chatRoomRepository.save(ChatRoom.builder().users(userList).build()).getId();
+        return roomId;
     }
 
 //    @Transactional(readOnly = true)
