@@ -9,8 +9,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByMail(String mail);
-    List<User> findByChatRoomsId(Long id);
+    Set<User> findByChatRoomsId(Long id);
 }

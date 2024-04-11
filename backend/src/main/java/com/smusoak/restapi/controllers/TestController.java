@@ -15,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/v1/test")
@@ -63,7 +64,7 @@ public class TestController {
     @GetMapping("/chat-room")
     public ResponseEntity<ApiResponseEntity> getUserByChatRoomId(@RequestBody TestDto.ChatRoomResponse request) {
         System.out.println(request);
-        List<String> mails = chatService.getUserMailsByRoomId(request.getChatRoomId());
+        Set<String> mails = chatService.getUserMailsByRoomId(request.getChatRoomId());
         return ApiResponseEntity.toResponseEntity(mails);
     }
 }

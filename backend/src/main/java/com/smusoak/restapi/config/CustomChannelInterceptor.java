@@ -150,9 +150,8 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
                     mailList.add(mail);
                 }
 
-
             }
-            catch (Exception e) {
+            catch (ParseException e) {
                 System.out.println("config/CustomChannelInterceptor: json parse 실패");
             }
         }

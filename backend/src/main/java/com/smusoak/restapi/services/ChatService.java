@@ -71,12 +71,12 @@ public class ChatService {
                 .build());
     }
 
-    public List<String> getUserMailsByRoomId(Long roomId) {
-        List<User> users = userRepository.findByChatRoomsId(roomId);
-        List<String> mails = new ArrayList<>();
+    public Set<String> getUserMailsByRoomId(Long roomId) {
+        Set<User> users = userRepository.findByChatRoomsId(roomId);
+        Set<String> mails = new HashSet<>();
         for(User user: users) {
             String mail = user.getMail();
-            if(!mail.isEmpty()) {
+            if(!mail.isBlank()) {
                 mails.add(mail);
             }
         }
