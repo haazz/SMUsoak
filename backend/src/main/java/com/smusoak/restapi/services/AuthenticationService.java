@@ -49,6 +49,9 @@ public class AuthenticationService {
         }
         var user = userRepository.findByMail(request.getMail())
                 .orElseThrow(() -> new CustomException(ErrorCode.WRONG_MAIL_OR_PASSWORD));
+        // FCM token 업데이트
+        user.setFcmToken(request.getFcmToken());
+        userRepository.save(user);
         // JWT Token 생성
         var jwt = jwtService.generateToken(user);
         return jwt;

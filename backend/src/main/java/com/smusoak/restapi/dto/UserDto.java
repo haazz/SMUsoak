@@ -43,6 +43,7 @@ public class UserDto {
         private String mail;
         @NotBlank
         private String password;
+        private String fcmToken;
     }
 
     @Data
