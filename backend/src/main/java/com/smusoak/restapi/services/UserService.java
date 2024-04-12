@@ -36,8 +36,6 @@ public class UserService {
 
     @Value("${cloud.aws.s3.url}")
     private String downloadUrl;
-    @Value("${cloud.aws.s3.limit-size}")
-    private Integer imgLimitSize;
 
     public void updateUserDetails(UserDto.UpdateUserDetailsRequest request) {
         Optional<User> users = userRepository.findByMail(request.getMail());
