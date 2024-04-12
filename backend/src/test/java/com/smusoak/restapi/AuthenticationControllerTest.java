@@ -119,7 +119,8 @@ public class AuthenticationControllerTest extends AbstractRestDocsTests {
     void SigninTest() throws Exception {
         UserDto.SigninRequest signinDto = new UserDto.SigninRequest();
         signinDto.setMail("tmp@sangmyung.kr");
-        signinDto.setPassword("tmptmp");;
+        signinDto.setPassword("tmptmp");
+        signinDto.setFcmToken("fcm token");
 
         given(authenticationService.signin(any(UserDto.SigninRequest.class)))
                 .willReturn("Bearer token");
@@ -132,7 +133,8 @@ public class AuthenticationControllerTest extends AbstractRestDocsTests {
                         restDocs.document(
                                 requestFields(
                                         fieldWithPath("mail").type(JsonFieldType.STRING).description("@sangmyung.kr로 끝나는 메일"),
-                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
+                                        fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호"),
+                                        fieldWithPath("fcmToken").type(JsonFieldType.STRING).description("FCM 토큰")
                                 ),
                                 responseFields(
                                         fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부")
