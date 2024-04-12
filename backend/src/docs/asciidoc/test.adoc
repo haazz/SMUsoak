@@ -8,3 +8,8 @@ operation::test-controller-test/user-test[snippets='http-request,http-response']
 
 === 테스트 Admin
 operation::test-controller-test/admin-test[snippets='http-request,http-response']
+
+=== 테스트 채팅방 생성하기
+테스트를 위해 채팅방 생성
+
+operation::test-controller-test/put-chat-room-test[snippets='http-request,request-fields,http-response,response-fields']

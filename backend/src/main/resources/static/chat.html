@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.18">
-<title>Test</title>
+<title>Chat</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -441,120 +441,28 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_test">Test</h2>
+<h2 id="_chat">Chat</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_테스트_hello">테스트 Hello</h3>
+<h3 id="_채팅방_리스트_가져오기">채팅방 리스트 가져오기</h3>
 <div class="sect3">
-<h4 id="_테스트_hello_http_request">HTTP request</h4>
+<h4 id="_채팅방_리스트_가져오기_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/test/hello HTTP/1.1
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_테스트_hello_http_response">HTTP response</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 65
-
-{
-  "success" : true,
-  "data" : {
-    "message" : "Hello!"
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_테스트_user">테스트 User</h3>
-<div class="sect3">
-<h4 id="_테스트_user_http_request">HTTP request</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/test/user HTTP/1.1
-Authorization: Bearer null
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_테스트_user_http_response">HTTP response</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 81
-
-{
-  "success" : true,
-  "data" : {
-    "message" : "ONLY user can see this"
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_테스트_admin">테스트 Admin</h3>
-<div class="sect3">
-<h4 id="_테스트_admin_http_request">HTTP request</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/test/admin HTTP/1.1
-Authorization: Bearer null
-Host: localhost:8080</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_테스트_admin_http_response">HTTP response</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
-Content-Type: application/json;charset=UTF-8
-Content-Length: 82
-
-{
-  "success" : true,
-  "data" : {
-    "message" : "ONLY admin can see this"
-  }
-}</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_테스트_채팅방_생성하기">테스트 채팅방 생성하기</h3>
-<div class="paragraph">
-<p>테스트를 위해 채팅방 생성</p>
-</div>
-<div class="sect3">
-<h4 id="_테스트_채팅방_생성하기_http_request">HTTP request</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/test/chat-room HTTP/1.1
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/chat/room/list HTTP/1.1
 Content-Type: application/json;charset=UTF-8
 Authorization: Bearer token
-Content-Length: 80
+Content-Length: 33
 Host: localhost:8080
 
 {
-  "mails" : [ "tmp@sangmyung.kr", "tmp1@sangmyung.kr", "tmp2@sangmyung.kr" ]
+  "mail" : "tmp@sangmyung.kr"
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_테스트_채팅방_생성하기_request_fields">Request fields</h4>
+<h4 id="_채팅방_리스트_가져오기_request_fields">Request fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -572,33 +480,40 @@ Host: localhost:8080
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mails</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mail</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@sangmyung.kr로 끝나는 메일 리스트</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">@sangmyung.kr로 끝나는 메일</p></td>
 </tr>
 </tbody>
 </table>
 </div>
 <div class="sect3">
-<h4 id="_테스트_채팅방_생성하기_http_response">HTTP response</h4>
+<h4 id="_채팅방_리스트_가져오기_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Vary: Origin
+Vary: Access-Control-Request-Method
+Vary: Access-Control-Request-Headers
 Content-Type: application/json;charset=UTF-8
-Content-Length: 61
+Content-Length: 245
 
 {
   "success" : true,
-  "data" : {
-    "chatRoomId" : 1
-  }
+  "data" : [ {
+    "roomId" : 1,
+    "mails" : [ "tmp@sangmyung.kr", "tmp1@sangmyung.kr", "tmp2@sangmyung.kr" ]
+  }, {
+    "roomId" : 2,
+    "mails" : [ "tmp@sangmyung.kr", "tmp1@sangmyung.kr", "tmp2@sangmyung.kr" ]
+  } ]
 }</code></pre>
 </div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_테스트_채팅방_생성하기_response_fields">Response fields</h4>
+<h4 id="_채팅방_리스트_가져오기_response_fields">Response fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -619,9 +534,14 @@ Content-Length: 61
 <td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.chatRoomId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].roomId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">새롯 생성된 채팅방 번호</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅방 ID</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].mails</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Array</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">채팅방에 참여 중인 메일 리스트</p></td>
 </tr>
 </tbody>
 </table>
@@ -633,7 +553,7 @@ Content-Length: 61
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-12 18:52:08 +0900
+Last updated 2024-04-12 18:31:05 +0900
 </div>
 </div>
 </body>

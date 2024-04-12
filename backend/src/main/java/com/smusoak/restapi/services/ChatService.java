@@ -3,28 +3,20 @@ package com.smusoak.restapi.services;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.smusoak.restapi.dto.ChatDto;
 import com.smusoak.restapi.models.ChatRoom;
-import com.smusoak.restapi.models.Message;
 import com.smusoak.restapi.models.User;
 import com.smusoak.restapi.repositories.ChatRoomRepository;
-import com.smusoak.restapi.repositories.MessageRepository;
 import com.smusoak.restapi.repositories.UserRepository;
-import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.response.CustomException;
 import com.smusoak.restapi.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.swing.text.html.Option;
-import java.time.LocalDateTime;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class ChatService {
-    private final MessageRepository messageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
     private final RedisService redisService;
@@ -83,12 +75,6 @@ public class ChatService {
                     .build());
         }
         return chatRoomInfos;
-    }
-
-    public ResponseEntity<ApiResponseEntity> getRoomMessages(ChatDto.ChatRoomMessagesRequest request) {
-        return ApiResponseEntity.toResponseEntity(ChatDto.MessageListResponse.builder()
-                .messageList(messageRepository.findByChatRoomId(request.getChatRoomId()))
-                .build());
     }
 
     public Set<String> getUserMailsByRoomId(Long roomId) {
