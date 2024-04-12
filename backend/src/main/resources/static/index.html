@@ -1282,44 +1282,11 @@ Content-Length: 292
 <h4 id="_채팅방_리스트_가져오기_http_request"><a class="link" href="#_채팅방_리스트_가져오기_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/chat/room/list HTTP/1.1
-Content-Type: application/json;charset=UTF-8
+<pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/chat/room/list/tmp@sangmyung.kr HTTP/1.1
 Authorization: Bearer token
-Content-Length: 33
-Host: localhost:8080
-
-{
-  "mail" : "tmp@sangmyung.kr"
-}</code></pre>
+Host: localhost:8080</code></pre>
 </div>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_채팅방_리스트_가져오기_request_fields"><a class="link" href="#_채팅방_리스트_가져오기_request_fields">Request fields</a></h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">필드명</th>
-<th class="tableblock halign-left valign-top">타입</th>
-<th class="tableblock halign-left valign-top">필수값</th>
-<th class="tableblock halign-left valign-top">설명</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>mail</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">true</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">@sangmyung.kr로 끝나는 메일</p></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect3">
 <h4 id="_채팅방_리스트_가져오기_http_response"><a class="link" href="#_채팅방_리스트_가져오기_http_response">HTTP response</a></h4>
@@ -1329,6 +1296,7 @@ Host: localhost:8080
 Vary: Origin
 Vary: Access-Control-Request-Method
 Vary: Access-Control-Request-Headers
+Content-Disposition: inline;filename=f.txt
 Content-Type: application/json;charset=UTF-8
 Content-Length: 245
 
