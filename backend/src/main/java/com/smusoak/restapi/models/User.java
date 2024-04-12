@@ -37,6 +37,8 @@ public class User implements UserDetails {
     private Character gender;
     private String mbti;
 
+    private String fcmToken;
+
     // Join
     @ManyToMany(mappedBy = "users")
     private Set<ChatRoom> chatRooms;

@@ -1,11 +1,9 @@
 package com.smusoak.restapi.config;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.smusoak.restapi.response.CustomException;
 import com.smusoak.restapi.response.ErrorCode;
-import com.smusoak.restapi.services.ChatService;
-import com.smusoak.restapi.services.JwtService;
-import com.smusoak.restapi.services.RedisService;
-import com.smusoak.restapi.services.UserService;
+import com.smusoak.restapi.services.*;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -27,6 +25,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 // Redis로 웹소켓에 접속 중인 사용자 세션을 관리
@@ -40,6 +39,7 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
     private final JwtService jwtService;
     private final UserService userService;
     private final ChatService chatService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @Value("${socket.session.expirationms}")
     private long sessionExpirationms;
@@ -139,20 +139,35 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
                 // message payload를 통해 내용 가져오기
                 JSONParser parser = new JSONParser();
                 JSONObject jsonObject = (JSONObject) parser.parse(new String((byte[]) message.getPayload()));
-                System.out.println(jsonObject.get("message"));
+                String senderMail = (String) jsonObject.get("senderMail");
+                String body = (String) jsonObject.get("message");
+                String roomId = (String) jsonObject.get("roomId");
+                System.out.println(senderMail + body + roomId);
 
                 // 채팅방을 구독 중인 sessionIdList를 가져와 mailList로 변경
-                List<String> sessionList = redisService.getListOps("/topic/" + (String) jsonObject.get("roomId"));
+                // chatroom에 참여 중인 mail list를 가져와서
+                // FCM으로 메시지 전송할 리스트를 추출
+                System.out.println("WS:(send) accessor.Dest: " + accessor.getDestination() + "roomId: " + roomId);
+                if(accessor.getDestination().equals("/topic/" + roomId)) {
+                    throw new CustomException(ErrorCode.BAD_REQUEST);
+                }
+                List<String> sessionList = redisService.getListOps("/topic/" + roomId);
                 System.out.println(sessionList);
-                List<String> mailList = new ArrayList<>();
+                Set<String> chatRoomMails = chatService.getUserMailsByRoomId(Long.parseLong(roomId));
                 for(String session: sessionList) {
-                    String mail = redisService.getListOpsByIndex(session, 0);
-                    mailList.add(mail);
+                    String socketMail = redisService.getListOpsByIndex(session, 0);
+                    chatRoomMails.remove(socketMail);
                 }
 
-            }
-            catch (ParseException e) {
+                // chatRoomMails에 남아 있는 메일에 FCM 메시지를 전송
+                for(String chatRoomMail: chatRoomMails) {
+                    firebaseCloudMessageService.sendMessageByToken(senderMail, body, userService.getFcmTokenByMail(chatRoomMail));
+                }
+            } catch (ParseException e) {
                 System.out.println("config/CustomChannelInterceptor: json parse 실패");
+            } catch (FirebaseMessagingException e) {
+                System.out.println("config/CustomChannelInterceptor: firebase 오류");
+                throw new RuntimeException(e);
             }
         }
     }

@@ -39,6 +39,10 @@ public class UserService {
     @Value("${cloud.aws.s3.limit-size}")
     private Integer imgLimitSize;
 
+    public String getFcmTokenByMail(String mail) {
+        return userRepository.findByMail(mail).get().getFcmToken();
+    }
+
     public void updateUserDetails(UserDto.UpdateUserDetailsRequest request) {
         Optional<User> users = userRepository.findByMail(request.getMail());
         if (!users.isPresent()) {
