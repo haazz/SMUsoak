@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @Builder
@@ -36,9 +37,11 @@ public class User implements UserDetails {
     private Character gender;
     private String mbti;
 
+    private String fcmToken;
+
     // Join
-    @ManyToMany(mappedBy = "userList")
-    private List<ChatRoom> chatRoomList = new ArrayList<>();
+    @ManyToMany(mappedBy = "users")
+    private Set<ChatRoom> chatRooms;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

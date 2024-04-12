@@ -1,10 +1,9 @@
 package com.smusoak.restapi.config;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.smusoak.restapi.response.CustomException;
 import com.smusoak.restapi.response.ErrorCode;
-import com.smusoak.restapi.services.JwtService;
-import com.smusoak.restapi.services.RedisService;
-import com.smusoak.restapi.services.UserService;
+import com.smusoak.restapi.services.*;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +25,12 @@ import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+
+// Redis로 웹소켓에 접속 중인 사용자 세션을 관리
+// { sessionId: [0] = userMail }
+// { roomId: [0, 1, ...] = 채팅방에 접속 중인 sessionIds }
 @Component
 @RequiredArgsConstructor
 public class CustomChannelInterceptor implements ChannelInterceptor {
@@ -66,11 +70,26 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             }
 
             // 모든 검사를 통과 했다면 유저 세션을 redis에 저장
-            // redis에 sessionId를 키로 갖는 list 저장 [0]: userMail [1]: roomId
+            // redis에 sessionId를 키로 갖는 list 저장 [0]: userMail
             String sessionId = accessor.getSessionId();
             redisService.deleteByKey(sessionId);
             redisService.setListOps(sessionId, userMail);
             redisService.setExpire(sessionId, sessionExpirationms);
+        }
+        else if(accessor.getCommand().equals(StompCommand.SEND)) {
+            try {
+                // 메시지에 담겨있는 채팅룸번호와 현재 구독 중인 채팅룸번호가 같은지 확인
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObject = (JSONObject) parser.parse(new String((byte[]) message.getPayload()));
+                String roomId = (String) jsonObject.get("roomId");
+
+                System.out.println("WS:(send) accessor.Dest: " + accessor.getDestination() + "roomId: " + roomId);
+                if (accessor.getDestination().equals("/topic/" + roomId)) {
+                    throw new CustomException(ErrorCode.BAD_REQUEST);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
         }
         return message;
     }
@@ -90,19 +109,6 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
                 return;
             }
             redisService.deleteByKey(accessor.getSessionId());
-            if(sessionDataList.size() <= 1) {
-                return;
-            }
-            // roomId에 저장되어 있는 sessionId 제거
-            List<String> sessionList = redisService.getListOps(sessionDataList.get(1));
-            sessionList.remove(accessor.getSessionId());
-            // roomId에 저장된 sessionId 리스트를 제거 혹은 재 업로드
-            redisService.deleteByKey(sessionDataList.get(1));
-            if(sessionList.isEmpty()) {
-                return;
-            }
-            redisService.setListOps(sessionDataList.get(1), sessionList);
-            redisService.setExpire(sessionDataList.get(1), sessionExpirationms);
         }
         // 채팅 방을 구독할 때 roomId 데이터에 sessionId를 업데이트
         else if(accessor.getCommand().equals(StompCommand.SUBSCRIBE)) {
@@ -115,23 +121,13 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             redisService.deleteByKey(accessor.getDestination());
             redisService.setListOps(accessor.getDestination(), sessionList);
             redisService.setExpire(accessor.getDestination(), sessionExpirationms);
-            // sessionId에 채팅 방 업데이트
-            List<String> sessionDataList = redisService.getListOps(accessor.getSessionId());
-            redisService.deleteByKey(accessor.getSessionId());
-            redisService.setListOps(accessor.getSessionId(), sessionDataList.get(0), accessor.getDestination());
-            redisService.setExpire(accessor.getSessionId(), sessionExpirationms);
         }
         // 채팅 방 구독을 끊을 때 roomId 데이터에 sessionId를 제거
         else if(accessor.getCommand().equals(StompCommand.UNSUBSCRIBE)) {
-            // sessionId에 채팅 방 업데이트
-            List<String> sessionDataList = redisService.getListOps(accessor.getSessionId());
-            redisService.deleteByKey(accessor.getSessionId());
-            redisService.setListOps(accessor.getSessionId(), sessionDataList.get(0), accessor.getDestination());
-            redisService.setExpire(accessor.getSessionId(), sessionExpirationms);
 
             List<String> sessionList = redisService.getListOps(accessor.getDestination());
             System.out.println(sessionList);
-            // 현제 sessionId가 redis에 저장 안돼 있다면 sessionList에 add
+            // 현제 sessionId가 roomList에 저장 안돼있다면 return
             if(!sessionList.contains(accessor.getSessionId())) {
                 return;
             }
@@ -143,23 +139,6 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             }
             redisService.setListOps(accessor.getDestination(), sessionList);
             redisService.setExpire(accessor.getDestination(), sessionExpirationms);
-        }
-        // 같은 방을 구독 중이지 않은 사용자들에게 FCM을 사용하여 알림 보내기
-        else if(accessor.getCommand().equals(StompCommand.SEND)) {
-            System.out.println(new String((byte[]) message.getPayload()));
-            try {
-                // chatroomService.getChatroom()을 해서 같은 채팅창 유저 리스트 가져오기
-                // 본인을 제외한 유저가 websocket 같은 room에 접속중인지 session 조회 비교
-                // 만약 없다면 Firebase로 알림 보내기
-                JSONParser parser = new JSONParser();
-                JSONObject jsonObject = (JSONObject) parser.parse(new String((byte[]) message.getPayload()));
-                System.out.println(jsonObject.get("message"));
-                List<String> sessionList = redisService.getListOps("/topic/" + (String) jsonObject.get("roomId"));
-                System.out.println(sessionList);
-            }
-            catch (Exception e) {
-                System.out.println("config/CustomChannelInterceptor: json parse 실패");
-            }
         }
     }
 }

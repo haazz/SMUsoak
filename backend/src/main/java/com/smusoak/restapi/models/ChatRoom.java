@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Data
@@ -21,9 +22,12 @@ public class ChatRoom {
     private Long id;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "user_chatroom")
-    private List<User> userList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
-    private List<Message> messageList = new ArrayList<>();
+    @JoinTable(
+            name = "user_chatroom",
+            joinColumns = @JoinColumn(name = "chat_room_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
+    private Set<User> users;
+//
+//    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
+//    private List<Message> messageList = new ArrayList<>();
 }

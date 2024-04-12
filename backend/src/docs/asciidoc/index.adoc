@@ -7,5 +7,6 @@
 
 include::auth.adoc[]
 include::user.adoc[]
+include::chat.adoc[]
 include::s3.adoc[]
 include::test.adoc[]
