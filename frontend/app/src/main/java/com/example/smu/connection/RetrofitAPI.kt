@@ -50,4 +50,10 @@ interface RetrofitAPI {
     fun profiledown(
         @Header("Authorization") token: String,
         @Path("fileName") fileName: String): Call<ResponseBody>
+
+    //채팅룸 리스트 가져오기
+    @GET("/api/v1/chat/room/list/{mail}")
+    fun chatlist(
+        @Header("Authorization") token: String,
+        @Path("mail") mail: String): Call<Retrofit.Responsechatroom>
 }

@@ -86,4 +86,18 @@ class Retrofit {
         @SerializedName("type")
         val type: String
     )
+
+    //7. 채팅룸 리스트 가져오기
+    data class Responsechatroom(
+        @SerializedName("success")
+        val success: Boolean,
+        @SerializedName("data")
+        val data: List<chatroom>
+    )
+    data class chatroom(
+        @SerializedName("roomId")
+        val roomId: Int,
+        @SerializedName("mails")
+        val mails: List<String>
+    )
 }
