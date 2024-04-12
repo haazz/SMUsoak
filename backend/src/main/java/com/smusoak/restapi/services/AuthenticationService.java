@@ -50,7 +50,7 @@ public class AuthenticationService {
         var user = userRepository.findByMail(request.getMail())
                 .orElseThrow(() -> new CustomException(ErrorCode.WRONG_MAIL_OR_PASSWORD));
         // FCM token 업데이트
-        if(!request.getFcmToken().isEmpty() && user.getFcmToken() != request.getFcmToken()) {
+        if(request.getFcmToken() != null && user.getFcmToken() != request.getFcmToken()) {
             user.setFcmToken(request.getFcmToken());
             userRepository.save(user);
         }
