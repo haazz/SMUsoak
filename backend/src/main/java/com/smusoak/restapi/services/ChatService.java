@@ -62,8 +62,8 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatDto.ChatRoomInfo> getChatRoomList(ChatDto.ChatRoomListRequest request) {
-        List<Object[]> objects = chatRoomRepository.findByUserMail(request.getMail());
+    public List<ChatDto.ChatRoomInfo> getChatRoomList(String mail) {
+        List<Object[]> objects = chatRoomRepository.findByUserMail(mail);
         List<ChatDto.ChatRoomInfo> chatRoomInfos = new ArrayList<>();
 
         for(Object[] object: objects) {

@@ -34,9 +34,9 @@ public class ChatController {
         return ApiResponseEntity.toResponseEntity();
     }
 
-    @GetMapping("/room/list")
-    public ResponseEntity<ApiResponseEntity> chatRoomList(@RequestBody ChatDto.ChatRoomListRequest request) {
-        return ApiResponseEntity.toResponseEntity(chatService.getChatRoomList(request));
+    @GetMapping("/room/list/{mail}")
+    public ResponseEntity<ApiResponseEntity> chatRoomList(@PathVariable String mail) {
+        return ApiResponseEntity.toResponseEntity(chatService.getChatRoomList(mail));
     }
 
 //    @GetMapping("/room/messages")

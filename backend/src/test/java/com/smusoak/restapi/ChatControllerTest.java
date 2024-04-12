@@ -42,9 +42,6 @@ public class ChatControllerTest extends AbstractRestDocsTests {
 
     @Test
     void ChatRoomListTest() throws Exception {
-        ChatDto.ChatRoomListRequest chatRoomListRequest = new ChatDto.ChatRoomListRequest();
-        chatRoomListRequest.setMail("tmp@sangmyung.kr");
-
         // given
         List<String> mails = new ArrayList<>();
         mails.add("tmp@sangmyung.kr");
@@ -59,20 +56,15 @@ public class ChatControllerTest extends AbstractRestDocsTests {
                 .roomId(2L)
                 .mails(mails)
                 .build());
-        given(chatService.getChatRoomList(any(ChatDto.ChatRoomListRequest.class)))
+        given(chatService.getChatRoomList(any(String.class)))
                 .willReturn(chatRoomInfos);
 
-        mockMvc.perform(get("/api/v1/chat/room/list")
+        mockMvc.perform(get("/api/v1/chat/room/list/{mail}", mails.get(0))
                         .header("Authorization", "Bearer token")
-                        .content(objectMapper.writeValueAsString(chatRoomListRequest))
-                        .contentType(MediaType.APPLICATION_JSON)
                 )
                 .andExpect(status().isOk())
                 .andDo(
                         restDocs.document(
-                                requestFields(
-                                        fieldWithPath("mail").type(JsonFieldType.STRING).description("@sangmyung.kr로 끝나는 메일")
-                                ),
                                 responseFields(
                                         fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부")
                                 ).andWithPrefix("data.[].",
