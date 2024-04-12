@@ -9,7 +9,9 @@ class Retrofit {
         @SerializedName("mail")
         val mail: String,
         @SerializedName("password")
-        val pw: String
+        val pw: String,
+        @SerializedName("fcmToken")
+        val fcmtoken: String
     )
 
     //2.회원가입

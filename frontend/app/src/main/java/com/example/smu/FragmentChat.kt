@@ -18,10 +18,6 @@ class FragmentChat : Fragment() {
     ): View? {
         binding = FragmentChatBinding.inflate(layoutInflater)
 
-        binding.chatBtn.setOnClickListener {
-            val intent = Intent(activity, ActivityChat::class.java)
-            startActivity(intent)
-        }
         return binding.root
     }
 }

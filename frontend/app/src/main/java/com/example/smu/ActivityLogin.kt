@@ -52,7 +52,8 @@ class ActivityLogin : AppCompatActivity() {
         btn_singin.setOnClickListener {
             id = binding.loginEditId.text.toString()+"@sangmyung.kr"
             pw = binding.loginEditPw.text.toString()
-            val call = RetrofitObject.getRetrofitService.signin(Retrofit.Requestsignin(id, pw))
+            val fcm_token = user.getString("fcm token", "")
+            val call = RetrofitObject.getRetrofitService.signin(Retrofit.Requestsignin(id, pw, fcm_token!!))
             call.enqueue(object : Callback<Retrofit.Responsetoken> {
                 override fun onResponse(call: Call<Retrofit.Responsetoken>, response: Response<Retrofit.Responsetoken>) {
                     if (response.isSuccessful) {
