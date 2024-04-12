@@ -1,7 +1,9 @@
 package com.smusoak.restapi.controllers;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.smusoak.restapi.dto.ChatDto;
 import com.smusoak.restapi.dto.UserDto;
+import com.smusoak.restapi.models.ChatRoom;
 import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.services.ChatService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
@@ -28,14 +31,18 @@ public class ChatController {
 
     // Mapped as app/send
     @MessageMapping("/send")
-    public ResponseEntity<ApiResponseEntity> send(@Payload ChatDto.SendMessageRequest request) {
+    public ResponseEntity<ApiResponseEntity> send(@Payload ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
         messagingTemplate.convertAndSend("/topic/" + request.getRoomId(), request);
+        chatService.sendMessage(request);
         return ApiResponseEntity.toResponseEntity();
     }
 
     @GetMapping("/room/list")
     public ResponseEntity<ApiResponseEntity> chatRoomList(ChatDto.ChatRoomListRequest request) {
-        return chatService.getChatRoomList(request);
+        List<ChatRoom> chatRoomList = chatService.getChatRoomList(request);
+        return ApiResponseEntity.toResponseEntity(ChatDto.ChatRoomListResponse.builder()
+                .chatRoomList(chatRoomList)
+                .build());
     }
 
     @GetMapping("/room/messages")

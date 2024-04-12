@@ -15,7 +15,6 @@ public class ChatDto {
     public static class SendMessageRequest {
         private String message;
         private String senderMail;
-        private String receiverMail;
         private Long roomId;
     }
 

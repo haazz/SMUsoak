@@ -38,8 +38,6 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
     private final RedisService redisService;
     private final JwtService jwtService;
     private final UserService userService;
-    private final ChatService chatService;
-    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
     @Value("${socket.session.expirationms}")
     private long sessionExpirationms;
@@ -77,6 +75,21 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             redisService.deleteByKey(sessionId);
             redisService.setListOps(sessionId, userMail);
             redisService.setExpire(sessionId, sessionExpirationms);
+        }
+        else if(accessor.getCommand().equals(StompCommand.SEND)) {
+            try {
+                // 메시지에 담겨있는 채팅룸번호와 현재 구독 중인 채팅룸번호가 같은지 확인
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObject = (JSONObject) parser.parse(new String((byte[]) message.getPayload()));
+                String roomId = (String) jsonObject.get("roomId");
+
+                System.out.println("WS:(send) accessor.Dest: " + accessor.getDestination() + "roomId: " + roomId);
+                if (accessor.getDestination().equals("/topic/" + roomId)) {
+                    throw new CustomException(ErrorCode.BAD_REQUEST);
+                }
+            } catch (ParseException e) {
+                throw new RuntimeException(e);
+            }
         }
         return message;
     }
@@ -126,49 +139,6 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             }
             redisService.setListOps(accessor.getDestination(), sessionList);
             redisService.setExpire(accessor.getDestination(), sessionExpirationms);
-        }
-        // 같은 방을 구독 중이지 않은 사용자들에게 FCM을 사용하여 알림 보내기
-        // 방에서 sessionList를 가져와 sessionId들이 redis에 저장돼있는지 확인 필요
-        else if(accessor.getCommand().equals(StompCommand.SEND)) {
-            System.out.println(new String((byte[]) message.getPayload()));
-            try {
-                // chatroomService.getChatroom()을 해서 같은 채팅창 유저 리스트 가져오기
-                // 본인을 제외한 유저가 websocket 같은 room에 접속중인지 session 조회 비교
-                // 만약 없다면 Firebase로 알림 보내기
-
-                // message payload를 통해 내용 가져오기
-                JSONParser parser = new JSONParser();
-                JSONObject jsonObject = (JSONObject) parser.parse(new String((byte[]) message.getPayload()));
-                String senderMail = (String) jsonObject.get("senderMail");
-                String body = (String) jsonObject.get("message");
-                String roomId = (String) jsonObject.get("roomId");
-                System.out.println(senderMail + body + roomId);
-
-                // 채팅방을 구독 중인 sessionIdList를 가져와 mailList로 변경
-                // chatroom에 참여 중인 mail list를 가져와서
-                // FCM으로 메시지 전송할 리스트를 추출
-                System.out.println("WS:(send) accessor.Dest: " + accessor.getDestination() + "roomId: " + roomId);
-                if(accessor.getDestination().equals("/topic/" + roomId)) {
-                    throw new CustomException(ErrorCode.BAD_REQUEST);
-                }
-                List<String> sessionList = redisService.getListOps("/topic/" + roomId);
-                System.out.println(sessionList);
-                Set<String> chatRoomMails = chatService.getUserMailsByRoomId(Long.parseLong(roomId));
-                for(String session: sessionList) {
-                    String socketMail = redisService.getListOpsByIndex(session, 0);
-                    chatRoomMails.remove(socketMail);
-                }
-
-                // chatRoomMails에 남아 있는 메일에 FCM 메시지를 전송
-                for(String chatRoomMail: chatRoomMails) {
-                    firebaseCloudMessageService.sendMessageByToken(senderMail, body, userService.getFcmTokenByMail(chatRoomMail));
-                }
-            } catch (ParseException e) {
-                System.out.println("config/CustomChannelInterceptor: json parse 실패");
-            } catch (FirebaseMessagingException e) {
-                System.out.println("config/CustomChannelInterceptor: firebase 오류");
-                throw new RuntimeException(e);
-            }
         }
     }
 }

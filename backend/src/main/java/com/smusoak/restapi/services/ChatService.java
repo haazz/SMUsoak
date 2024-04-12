@@ -1,5 +1,6 @@
 package com.smusoak.restapi.services;
 
+import com.google.firebase.messaging.FirebaseMessagingException;
 import com.smusoak.restapi.dto.ChatDto;
 import com.smusoak.restapi.models.ChatRoom;
 import com.smusoak.restapi.models.Message;
@@ -26,16 +27,27 @@ public class ChatService {
     private final MessageRepository messageRepository;
     private final ChatRoomRepository chatRoomRepository;
     private final UserRepository userRepository;
+    private final RedisService redisService;
+    private final FirebaseCloudMessageService firebaseCloudMessageService;
 
-    @Transactional(rollbackFor = Exception.class)
-    public void saveMessage(ChatDto.SendMessageRequest message) {
-        messageRepository.save(Message.builder()
-                        .message(message.getMessage())
-                        .sender(userRepository.findByMail(message.getSenderMail()).get())
-                        .receiver(userRepository.findByMail(message.getReceiverMail()).get())
-                        .chatRoom(ChatRoom.builder().id(message.getRoomId()).build())
-                        .sendAt(LocalDateTime.now())
-                        .build());
+    // 웹소켓을 구독 중이지 않은 사용자들에게 FCM을 사용하여 알림 보내기
+    public void sendMessage(ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
+        List<String> sessionList = redisService.getListOps("/topic/" + request.getRoomId());
+        System.out.println(sessionList);
+        Set<String> chatRoomMails = this.getUserMailsByRoomId(request.getRoomId());
+        for(String session: sessionList) {
+            String socketMail = redisService.getListOpsByIndex(session, 0);
+            chatRoomMails.remove(socketMail);
+        }
+
+        // chatRoomMails에 남아 있는 메일에 FCM 메시지를 전송
+        for(String chatRoomMail: chatRoomMails) {
+            firebaseCloudMessageService.sendMessageByToken(request.getSenderMail(), request.getMessage(), this.getFcmTokenByMail(chatRoomMail));
+        }
+    }
+
+    private String getFcmTokenByMail(String mail) {
+        return userRepository.findByMail(mail).get().getFcmToken();
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -58,11 +70,8 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public ResponseEntity<ApiResponseEntity> getChatRoomList(ChatDto.ChatRoomListRequest request) {
-        return ApiResponseEntity.toResponseEntity(ChatDto.ChatRoomListResponse.builder()
-                .chatRoomList(chatRoomRepository.findByUsersMail(request.getMail()))
-                .build());
-        // return chatRoomRepository.findListByMemberId(memberId).stream().map(ChatRoomDto.Response::of).collect(Collectors.toList());
+    public List<ChatRoom> getChatRoomList(ChatDto.ChatRoomListRequest request) {
+        return chatRoomRepository.findByUsersMail(request.getMail());
     }
 
     public ResponseEntity<ApiResponseEntity> getRoomMessages(ChatDto.ChatRoomMessagesRequest request) {
@@ -115,4 +124,14 @@ public class ChatService {
 //                .getResultList().stream().findFirst();
 //        return chatRoomList.isPresent();
 //    }
+//    @Transactional(rollbackFor = Exception.class)
+//    public void saveMessage(ChatDto.SendMessageRequest message) {
+//        messageRepository.save(Message.builder()
+//                .message(message.getMessage())
+//                .sender(userRepository.findByMail(message.getSenderMail()).get())
+//                .chatRoom(ChatRoom.builder().id(message.getRoomId()).build())
+//                .sendAt(LocalDateTime.now())
+//                .build());
+//    }
+
 }
