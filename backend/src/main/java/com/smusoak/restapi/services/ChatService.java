@@ -70,8 +70,19 @@ public class ChatService {
     }
 
     @Transactional(readOnly = true)
-    public List<ChatRoom> getChatRoomList(ChatDto.ChatRoomListRequest request) {
-        return chatRoomRepository.findByUsersMail(request.getMail());
+    public List<ChatDto.ChatRoomInfo> getChatRoomList(ChatDto.ChatRoomListRequest request) {
+        List<Object[]> objects = chatRoomRepository.findByUserMail(request.getMail());
+        List<ChatDto.ChatRoomInfo> chatRoomInfos = new ArrayList<>();
+
+        for(Object[] object: objects) {
+            String userMailsString = (String) object[1];
+            List<String> userMailList = Arrays.asList(userMailsString.split(","));
+            chatRoomInfos.add(ChatDto.ChatRoomInfo.builder()
+                    .roomId((Long) object[0])
+                    .mails(userMailList)
+                    .build());
+        }
+        return chatRoomInfos;
     }
 
     public ResponseEntity<ApiResponseEntity> getRoomMessages(ChatDto.ChatRoomMessagesRequest request) {

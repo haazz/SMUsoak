@@ -12,10 +12,7 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.user.SimpUserRegistry;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Set;
@@ -38,15 +35,12 @@ public class ChatController {
     }
 
     @GetMapping("/room/list")
-    public ResponseEntity<ApiResponseEntity> chatRoomList(ChatDto.ChatRoomListRequest request) {
-        List<ChatRoom> chatRoomList = chatService.getChatRoomList(request);
-        return ApiResponseEntity.toResponseEntity(ChatDto.ChatRoomListResponse.builder()
-                .chatRoomList(chatRoomList)
-                .build());
+    public ResponseEntity<ApiResponseEntity> chatRoomList(@RequestBody ChatDto.ChatRoomListRequest request) {
+        return ApiResponseEntity.toResponseEntity(chatService.getChatRoomList(request));
     }
 
-    @GetMapping("/room/messages")
-    public ResponseEntity<ApiResponseEntity> getChatRoomMessages(ChatDto.ChatRoomMessagesRequest request) {
-        return chatService.getRoomMessages(request);
-    }
+//    @GetMapping("/room/messages")
+//    public ResponseEntity<ApiResponseEntity> getChatRoomMessages(@RequestBody ChatDto.ChatRoomMessagesRequest request) {
+//        return chatService.getRoomMessages(request);
+//    }
 }

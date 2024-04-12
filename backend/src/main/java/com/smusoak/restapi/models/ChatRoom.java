@@ -24,8 +24,8 @@ public class ChatRoom {
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             name = "user_chatroom",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "chat_room_id"))
+            joinColumns = @JoinColumn(name = "chat_room_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id"))
     private Set<User> users;
 
     @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)

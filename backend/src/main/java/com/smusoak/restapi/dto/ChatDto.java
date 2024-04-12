@@ -33,8 +33,9 @@ public class ChatDto {
 
     @Data
     @Builder
-    public static class ChatRoomListResponse {
-        private List<ChatRoom> chatRoomList;
+    public static class ChatRoomInfo {
+        private Long roomId;
+        private List<String> mails;
     }
 
     @Data
