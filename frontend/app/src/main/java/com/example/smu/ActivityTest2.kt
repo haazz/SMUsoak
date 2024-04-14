@@ -17,6 +17,8 @@ class ActivityTest2 : AppCompatActivity() {
     private val binding: ActivityTest2Binding by lazy { ActivityTest2Binding.inflate(layoutInflater) }
     lateinit var stompClient: StompClient
     lateinit var disposable: Disposable
+    private val user = MySharedPreference.user
+    private val token= user.getString("token","")
 
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -24,30 +26,30 @@ class ActivityTest2 : AppCompatActivity() {
         setContentView(binding.root)
 
         var open = false
-        val url = BaseUrl.Socket_URL+"/ws/websocket"
+        val url = BaseUrl.Socket_URL
         stompClient =  Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
-        val headers = listOf(StompHeader("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIyMDE5MTA5MTJAc2FuZ215dW5nLmtyIiwiaWF0IjoxNzExMzQ0NjA0LCJleHAiOjE3MTEzNDgyMDR9.irjamT0dFosS_XlePk8cI-lB1-CQzsUfHz0bcltk9kI"))
+        val headers = listOf(StompHeader("Authorization", "Bearer $token"))
         stompClient.withServerHeartbeat(10000)
         stompClient.connect(headers)
 
         disposable = stompClient.topic("/topic/1234").subscribe()
-
-        stompClient.lifecycle().subscribe { lifecycleEvent ->
-            when (lifecycleEvent.type) {
-                LifecycleEvent.Type.OPENED -> {
-                    open=true
-                }
-                LifecycleEvent.Type.CLOSED -> {
-                    open=false
-                }
-                LifecycleEvent.Type.ERROR -> {
-                    open=false
-                }
-                else->{
-
-                }
-            }
-        }
+//        이거 필요 없는데 연결 끊겼을 때 다시 확인할라면 필요함
+//        stompClient.lifecycle().subscribe { lifecycleEvent ->
+//            when (lifecycleEvent.type) {
+//                LifecycleEvent.Type.OPENED -> {
+//                    open=true
+//                }
+//                LifecycleEvent.Type.CLOSED -> {
+//                    open=false
+//                }
+//                LifecycleEvent.Type.ERROR -> {
+//                    open=false
+//                }
+//                else->{
+//
+//                }
+//            }
+//        }
 
         binding.sendtext.setOnClickListener {
             if(open){

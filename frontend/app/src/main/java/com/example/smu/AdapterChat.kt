@@ -2,11 +2,9 @@ package com.example.smu
 
 import android.content.Context
 import android.content.Intent
-import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.smu.databinding.RvChattingBinding
@@ -15,9 +13,12 @@ import java.util.Calendar
 
 
 class AdapterChat(
-    private val chatlist : MutableList<ChatList>,
+    private val chatList : MutableList<ChatMessage>,
     private val context: Context
 ) : RecyclerView.Adapter<AdapterChat.viewHolder>() {
+
+    private val user = MySharedPreference.user
+    private val sender = user.getString("mail","")
 
     inner class viewHolder(private val binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
         fun visibleMy(){
@@ -40,41 +41,22 @@ class AdapterChat(
             binding.rvChattingMyTime.visibility = View.INVISIBLE
         }
 
-        fun bind(list : ChatList) {
-            if(list.type == 1){
+        fun bind(list : ChatMessage) {
+            if(list.sender == sender){
                 visibleMy()
                 invisibleYour()
                 binding.rvChattingDay.visibility = View.GONE
                 binding.rvChattingMyimage.visibility = View.GONE
-                binding.rvChattingMytext.text = list.text
-                binding.rvChattingMyTime.text = list.time
+                binding.rvChattingMytext.text = list.message
+                binding.rvChattingMyTime.text = list.time.substring(9)
             }
-            else if(list.type == 0){
+            else{
                 visibleYour()
                 invisibleMy()
                 binding.rvChattingDay.visibility = View.GONE
                 binding.rvChattingMyimage.visibility = View.GONE
-                binding.rvChattingYourtext.text = list.text
-                binding.rvChattingYourTime.text = list.time
-            }else if(list.type == 2){
-                binding.rvChattingDay.visibility = View.VISIBLE
-                binding.rvChattingMyimage.visibility = View.GONE
-                binding.rvChattingDayText.text = getCurrentDate()
-                invisibleMy()
-                invisibleYour()
-            }else if(list.type == 4){
-                binding.rvChattingDay.visibility = View.GONE
-                binding.rvChattingMyimage.visibility = View.VISIBLE
-                invisibleMy()
-                invisibleYour()
-                Glide.with(context)
-                    .load(list.text)
-                    .into(binding.rvChattingMyimage)
-                binding.rvChattingMyimage.setOnClickListener {
-                    val intent = Intent(context, ActivityImage::class.java)
-                    intent.putExtra("image_uri", list.text)
-                    context.startActivity(intent)
-                }
+                binding.rvChattingYourtext.text = list.message
+                binding.rvChattingYourTime.text = list.time.substring(9)
             }
         }
     }
@@ -84,10 +66,10 @@ class AdapterChat(
     }
 
     override fun onBindViewHolder(holder: AdapterChat.viewHolder, position: Int) {
-        holder.bind(chatlist[position])
+        holder.bind(chatList[position])
     }
 
-    override fun getItemCount() = chatlist.size
+    override fun getItemCount() = chatList.size
 
     fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()

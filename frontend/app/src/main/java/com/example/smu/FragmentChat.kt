@@ -28,7 +28,7 @@ class FragmentChat : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentChatBinding.inflate(layoutInflater)
 
         val call = RetrofitObject.getRetrofitService.chatlist(token!!, mail!!)
