@@ -59,16 +59,19 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
     }
 
     @SuppressLint("Range")
-    fun getAllMessages(roomId: Int): List<ChatMessage> {
+    fun getAllMessages(roomId: Int): ArrayList<ChatMessage>? {
         val messages = ArrayList<ChatMessage>()
         val db = readableDatabase
         val cursor = db.query(TABLE_NAME, null, "$COLUMN_ROOM_ID= $roomId", null, null, null, COLUMN_TIME)
 
+        if (cursor.count==0)
+            return null
+
         cursor.use {
             while (it.moveToNext()) {
-                val sender = it.getString(it.getColumnIndex(COLUMN_SENDER))
-                val message = it.getString(it.getColumnIndex(COLUMN_MESSAGE))
-                val timestamp = it.getString(it.getColumnIndex(COLUMN_TIME))
+                val sender = it.getString(2)
+                val message = it.getString(3)
+                val timestamp = it.getString(4)
                 val chatMessage = ChatMessage(sender, message, timestamp)
                 messages.add(chatMessage)
             }
