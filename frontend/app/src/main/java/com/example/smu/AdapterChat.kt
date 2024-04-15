@@ -70,10 +70,4 @@ class AdapterChat(
     }
 
     override fun getItemCount() = chatList.size
-
-    fun getCurrentDate(): String {
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
-        return dateFormat.format(calendar.time)
-    }
 }

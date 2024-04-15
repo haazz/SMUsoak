@@ -32,31 +32,31 @@ class ActivityTest2 : AppCompatActivity() {
         stompClient.withServerHeartbeat(10000)
         stompClient.connect(headers)
 
-        disposable = stompClient.topic("/topic/1234").subscribe()
+        disposable = stompClient.topic("/topic/2").subscribe()
 //        이거 필요 없는데 연결 끊겼을 때 다시 확인할라면 필요함
-//        stompClient.lifecycle().subscribe { lifecycleEvent ->
-//            when (lifecycleEvent.type) {
-//                LifecycleEvent.Type.OPENED -> {
-//                    open=true
-//                }
-//                LifecycleEvent.Type.CLOSED -> {
-//                    open=false
-//                }
-//                LifecycleEvent.Type.ERROR -> {
-//                    open=false
-//                }
-//                else->{
-//
-//                }
-//            }
-//        }
+        stompClient.lifecycle().subscribe { lifecycleEvent ->
+            when (lifecycleEvent.type) {
+                LifecycleEvent.Type.OPENED -> {
+                    open=true
+                }
+                LifecycleEvent.Type.CLOSED -> {
+                    open=false
+                }
+                LifecycleEvent.Type.ERROR -> {
+                    open=false
+                }
+                else->{
+
+                }
+            }
+        }
 
         binding.sendtext.setOnClickListener {
             if(open){
                 val text = binding.editexts.text.toString()
                 val data = JSONObject()
                 data.put("message", text)
-                stompClient.send("/topic/1234", data.toString()).subscribe(
+                stompClient.send("/topic/2", data.toString()).subscribe(
                     {
                         Log.d("StompMessage", "Message sent successfully: $text")
                     },

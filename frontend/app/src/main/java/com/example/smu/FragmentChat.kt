@@ -1,6 +1,5 @@
 package com.example.smu
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import androidx.fragment.app.Fragment
@@ -22,7 +21,7 @@ class FragmentChat : Fragment() {
     private val user=MySharedPreference.user
     private val token=user.getString("token","")
     private val mail=user.getString("mail","")
-    private val roomlist= mutableListOf<Retrofit.chatroom>()
+    private val roomList= mutableListOf<Retrofit.chatroom>()
     private lateinit var recyclerViewChatRoom: RecyclerView
 
     override fun onCreateView(
@@ -31,18 +30,16 @@ class FragmentChat : Fragment() {
     ): View {
         binding = FragmentChatBinding.inflate(layoutInflater)
 
-        val call = RetrofitObject.getRetrofitService.chatlist(token!!, mail!!)
+        val call = RetrofitObject.getRetrofitService.chatlist("Bearer $token", mail!!)
         call.enqueue(object : Callback<Retrofit.Responsechatroom> {
             override fun onResponse(call: Call<Retrofit.Responsechatroom>, response: Response<Retrofit.Responsechatroom>) {
-                Log.d("chatroom", response.toString())
                 if (response.isSuccessful) {
                     val response = response.body()
                     if (response != null) {
                         if (response.success) {
                             for (i in response.data){
-                                roomlist.add(i)
+                                roomList.add(i)
                             }
-                            Log.d("chatroom", roomlist.toString())
                         }
                     }
                 }

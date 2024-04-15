@@ -16,6 +16,7 @@ import android.util.Base64
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -25,6 +26,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.databinding.ActivityChatBinding
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
@@ -54,7 +57,7 @@ class ActivityChat : AppCompatActivity() {
     private val user = MySharedPreference.user
     private val sender = user.getString("mail","")
     private val token= user.getString("token","")
-    private var chatList = mutableListOf<ChatMessage>()
+    private var chatList:MutableList<ChatMessage> = mutableListOf()
     private var isKeyboardOpened = false
 
     //채팅 줄 수가 늘 때 editText 크기도 같이 변동 되도록 해주는 textWatcher
@@ -111,7 +114,9 @@ class ActivityChat : AppCompatActivity() {
                 val text = imageText
                 val data = JSONObject()
                 data.put("message", text)
-                stompClient.send("/topic/$roomId", data.toString()).subscribe(
+                stompClient.send("/topic/$roomId", data.toString())
+                    .subscribeOn(Schedulers.io())
+                    .subscribe(
                     {
                         chatList.add(ChatMessage("image $sender", imageText, getCurrentTime()))
                         val position = recyclerViewChat.adapter?.itemCount?.minus(1) ?: 0
@@ -125,7 +130,7 @@ class ActivityChat : AppCompatActivity() {
         }
     }
 
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "NotifyDataSetChanged")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -138,7 +143,7 @@ class ActivityChat : AppCompatActivity() {
         val headers = listOf(StompHeader("Authorization", "Bearer $token"))
         stompClient.withServerHeartbeat(10000)
         stompClient.connect(headers)
-        roomId = "1234"
+        roomId = "2"
         disposable = stompClient.topic("/topic/$roomId").subscribe()//임시 topic이고 실제로는 intent를 통해서 가져와야함
 
         stompClient.lifecycle().subscribe { lifecycleEvent ->
@@ -147,6 +152,7 @@ class ActivityChat : AppCompatActivity() {
                     open=true
                 }
                 LifecycleEvent.Type.CLOSED -> {
+                    Toast.makeText(this@ActivityChat,"재연결 시도 중 입니다.", Toast.LENGTH_SHORT).show()
                     open=false
                 }
                 LifecycleEvent.Type.ERROR -> {
@@ -188,17 +194,21 @@ class ActivityChat : AppCompatActivity() {
                     val text = chatMessage
                     val data = JSONObject()
                     data.put("message", text)
-                    stompClient.send("/topic/$roomId", data.toString()).subscribe(
+                    stompClient.send("/topic/$roomId", data.toString())
+                        .subscribeOn(Schedulers.io())
+                        .subscribe(
                         {
-                            //send가 성공했을 때
-                            val lTime = chatList[chatList.size-1].time.split(" ")
-                            val cTime = currentTime.split(" ")
-                            if(chatList.size == 0){
+                            if(chatList.size == 0) {
                                 chatList.add(ChatMessage("system", getCurrentDate(), ""))
-                            }else if(lTime[0]!=cTime[0]){
-                                chatList.add(ChatMessage("system", getCurrentDate(), ""))
+                            }else{
+                                val lTime = chatList[chatList.size-1].time.split(" ")
+                                val cTime = currentTime.split(" ")
+                                if(lTime[0]!=cTime[0]) {
+                                    chatList.add(ChatMessage("system", getCurrentDate(), ""))
+                                }
                             }
                             chatList.add(ChatMessage(sender!!, chatMessage, currentTime))
+                            recyclerViewChat.adapter?.notifyDataSetChanged()
                         },
                         { throwable ->
                             Log.e("StompMessage", "Error sending message", throwable)
@@ -214,8 +224,6 @@ class ActivityChat : AppCompatActivity() {
 
                 val position = recyclerViewChat.adapter?.itemCount?.minus(1) ?: 0
                 recyclerViewChat.adapter?.notifyItemInserted(position)
-
-                Log.d("chat", chatAdapter.itemCount.toString())
                 recyclerViewChat.post {
                     val layoutManager = recyclerViewChat.layoutManager as LinearLayoutManager
                     val totalHeight = layoutManager.findViewByPosition(position+1)?.height ?: 0
