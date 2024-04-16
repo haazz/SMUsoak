@@ -17,20 +17,4 @@ public class ImgDto {
         private String mail;
         private MultipartFile file;
     }
-
-    @Data
-    @NoArgsConstructor
-    public static class UserImgRequest {
-        @NotBlank
-        private String mail;
-        private List<String> mailList;
-    }
-
-    @Data
-    @Builder
-    public static class UserImageResponse {
-        private String mail;
-        private String url;
-        private String type;
-    }
 }

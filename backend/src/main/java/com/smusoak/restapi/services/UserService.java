@@ -73,11 +73,23 @@ public class UserService {
         s3Service.updateS3Img(request.getMail(), multipartFile, request.getFile().getContentType());
     }
 
-    public List<ImgDto.UserImageResponse> getUserImg(ImgDto.UserImgRequest request) {
-        List<ImgDto.UserImageResponse> userImageResponses = new ArrayList<>();
+    public List<UserDto.UserInfoResponse> getUserInfo(UserDto.UserInfoRequest request) {
+        List<UserDto.UserInfoResponse> userInfoResponses = new ArrayList<>();
         for(String mail : request.getMailList()) {
+            // UserDetail 가져오기
+            Optional<UserDetail> userDetail = userDetailRepository.findByUserMail(mail);
+            if(!userDetail.isPresent()) {
+                continue;
+            }
             S3Object o = s3Service.getObject(mail);
             if(o == null) {
+                userInfoResponses.add(UserDto.UserInfoResponse.builder()
+                        .mail(mail)
+                        .nickname(userDetail.get().getNickname())
+                        .age(userDetail.get().getAge())
+                        .gender(userDetail.get().getGender())
+                        .mbti(userDetail.get().getMbti())
+                        .build());
                 continue;
             }
             String contentType = o.getObjectMetadata().getContentType().toString();
@@ -91,14 +103,17 @@ public class UserService {
             else {
                 continue;
             }
-            userImageResponses.add(ImgDto.UserImageResponse
-                                    .builder()
-                                    .mail(mail)
-                                    .url(downloadUrl + mail)
-                                    .type(type)
-                                    .build());
+            userInfoResponses.add(UserDto.UserInfoResponse.builder()
+                    .mail(mail)
+                    .nickname(userDetail.get().getNickname())
+                    .age(userDetail.get().getAge())
+                    .gender(userDetail.get().getGender())
+                    .mbti(userDetail.get().getMbti())
+                    .imgUrl(downloadUrl + mail)
+                    .imgType(type)
+                    .build());
         }
-        return userImageResponses;
+        return userInfoResponses;
     }
 
     private MultipartFile resizeImg(MultipartFile multipartFile) {
