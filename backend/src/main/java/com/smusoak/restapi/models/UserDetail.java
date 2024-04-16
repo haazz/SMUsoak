@@ -15,6 +15,7 @@ public class UserDetail {
     private Long id;
 
     // User detail info
+    @Column(unique = true)
     private String nickname;
     private Integer age;
     private Character gender;

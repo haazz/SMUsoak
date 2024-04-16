@@ -51,6 +51,7 @@ public class UserDto {
     public static class UpdateUserDetailsRequest {
         @NotBlank
         private String mail;
+        private String nickname;
         private Integer age;
         private char gender;
         private String mbti;

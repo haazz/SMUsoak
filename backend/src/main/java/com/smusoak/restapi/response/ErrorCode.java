@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "request 필수 항목을 확인하세요."),
     USER_MAIL_DUPLICATE(HttpStatus.BAD_REQUEST, "이미 등록된 mail입니다."),
+    USER_NICKNAME_DUPLICATE(HttpStatus.BAD_REQUEST, "이미 등록된 nickname입니다."),
     WRONG_MAIL_ADDRESS(HttpStatus.BAD_REQUEST, "잘못된 메일 주소입니다."),
     WRONG_AUTH_CODE(HttpStatus.BAD_REQUEST, "잘못된 인증코드입니다. 인증을 재시도 해주세요!"),
     WRONG_PASSWORD_RULE(HttpStatus.BAD_REQUEST, "패스워드 규칙을 다시 확인해주세요."),
