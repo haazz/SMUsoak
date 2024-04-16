@@ -56,4 +56,10 @@ public class UserDto {
         private char gender;
         private String mbti;
     }
+
+    @Data
+    @Builder
+    public static class DuplicatedNicknameResponse {
+        private boolean available;
+    }
 }

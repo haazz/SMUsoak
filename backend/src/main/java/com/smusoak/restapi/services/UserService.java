@@ -46,7 +46,7 @@ public class UserService {
             throw new CustomException(ErrorCode.USER_NOT_FOUND);
         }
         if (request.getNickname() != null && !userDetail.get().getNickname().equals(request.getNickname())) {
-            if (!checkDuplicatiedNickname(request.getNickname())) {
+            if (checkDuplicatiedNickname(request.getNickname())) {
                 userDetail.get().setNickname(request.getNickname());
             }
         }
@@ -57,12 +57,13 @@ public class UserService {
         userDetailRepository.save(userDetail.get());
     }
 
+    // 닉네임 중복시 return false;
     public boolean checkDuplicatiedNickname(String nickname) {
         Optional<UserDetail> userDetail = userDetailRepository.findByNickname(nickname);
         if (userDetail.isPresent()) {
-            return true;
+            return false;
         }
-        return false;
+        return true;
     }
 
     public void updateUserImg(ImgDto.UpdateUserImgRequest request) {

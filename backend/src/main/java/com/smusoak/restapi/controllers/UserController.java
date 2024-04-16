@@ -41,5 +41,13 @@ public class UserController {
         List<ImgDto.UserImageResponse> userImageResponses =  userService.getUserImg(request);
         return ApiResponseEntity.toResponseEntity(userImageResponses);
     }
+
+    @GetMapping("/check/nickname/{nickname}")
+    public ResponseEntity<ApiResponseEntity> checkDuplicatedNickname(@PathVariable String nickname) {
+        boolean checkDuplicated = userService.checkDuplicatiedNickname(nickname);
+        return ApiResponseEntity.toResponseEntity(UserDto.DuplicatedNicknameResponse.builder()
+                .available(checkDuplicated)
+                .build());
+    }
 }
 
