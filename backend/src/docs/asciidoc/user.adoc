@@ -6,5 +6,8 @@ operation::user-controller-test/update-user-details-test[snippets='http-request,
 === 유저 프로필 이미지 업데이트
 operation::user-controller-test/update-user-img-test[snippets='http-request,request-parts,request-part-info-fields,http-response,response-fields']
 
-=== 유저 이미지 가져오기
+=== 유저 정보 가져오기
 operation::user-controller-test/get-user-info-test[snippets='http-request,request-fields,http-response,response-fields']
+
+== 닉네임 중복 체크
+operation::user-controller-test/check-nickname-test[snippets='http-request,http-response,response-fields']
