@@ -30,6 +30,7 @@ public class AuthenticationController {
 
     @PostMapping("/signup")
     public ResponseEntity<ApiResponseEntity> createUser(@RequestBody @Valid UserDto.SignupRequest request) throws Exception{
+        System.out.println(request);
         String token =  authenticationService.createUser(request);
         return ApiResponseEntity.toResponseEntity(
                 JwtAuthenticationResponse.builder().token(token).build());

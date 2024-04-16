@@ -84,10 +84,11 @@ public class AuthenticationControllerTest extends AbstractRestDocsTests {
     void SignupTest() throws Exception {
         UserDto.SignupRequest createUserDto = new UserDto.SignupRequest();
         createUserDto.setMail("tmp@sangmyung.kr");
-        createUserDto.setPassword("tmptmp");
+        createUserDto.setPassword("tmptmp1234");
         createUserDto.setNickname("tmp");
         createUserDto.setAge(20);
         createUserDto.setGender('M');
+        createUserDto.setMail("ENTP");
 
         given(authenticationService.createUser(any(UserDto.SignupRequest.class)))
                 .willReturn("Bearer token");

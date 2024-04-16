@@ -24,14 +24,14 @@ import lombok.RequiredArgsConstructor;
 public class MatchingController {
     private final MatchingService matchingService;
 
-    @PostMapping("/onetoone")
-    public ResponseEntity<String> matchUsers(@RequestBody MatchingInfo matchingInfo) {
-        try {
-            matchingService.matchUsers(matchingInfo);
-            return ResponseEntity.ok("Matching completed.");
-        } catch (Exception e) {
-            log.error("Error during matching:", e);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Matching failed: " + e.getMessage());
-        }
-    }
+//    @PostMapping("/onetoone")
+//    public ResponseEntity<String> matchUsers(@RequestBody MatchingInfo matchingInfo) {
+//        try {
+//            matchingService.matchUsers(matchingInfo);
+//            return ResponseEntity.ok("Matching completed.");
+//        } catch (Exception e) {
+//            log.error("Error during matching:", e);
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Matching failed: " + e.getMessage());
+//        }
+//    }
 }

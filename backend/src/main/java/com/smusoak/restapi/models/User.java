@@ -22,24 +22,19 @@ public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
     @Column(unique = true)
-    String mail;
-    String password;
-    LocalDateTime createdAt;
-    private boolean mailAuth;
+    private String mail;
+    private String password;
+    private LocalDateTime createdAt;
     @Enumerated(EnumType.STRING)
-    Role role;
-
-    // User detail info
-    private String nickname;
-    private Integer age;
-    private Character gender;
-    private String mbti;
-
+    private Role role;
     private String fcmToken;
 
-    // Join
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_detail_id")
+    private UserDetail userDetail;
+
     @ManyToMany(mappedBy = "users")
     private Set<ChatRoom> chatRooms;
 

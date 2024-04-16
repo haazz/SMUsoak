@@ -4,6 +4,8 @@ import com.smusoak.restapi.dto.JwtAuthenticationResponse;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.models.Role;
 import com.smusoak.restapi.models.User;
+import com.smusoak.restapi.models.UserDetail;
+import com.smusoak.restapi.repositories.UserDetailRepository;
 import com.smusoak.restapi.repositories.UserRepository;
 import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.response.CustomException;
@@ -30,6 +32,7 @@ import java.util.Random;
 public class AuthenticationService {
 
     private final UserRepository userRepository;
+    private final UserDetailRepository userDetailRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
     private final AuthenticationManager authenticationManager;
@@ -60,33 +63,46 @@ public class AuthenticationService {
     }
 
     public String createUser(UserDto.SignupRequest request) {
-        User user = new User();
+
+        // verifiedCode를 거치면 "true"가 redis에 저장되어 있어야 함
         String auth = redisService.getListOpsByIndex(request.getMail(), AUTH_CODE_INDEX);
         if (auth == null || auth.isEmpty()) {
             throw new CustomException(ErrorCode.REDIS_DATA_NOT_FOUND);
         }
-        // verifiedCode를 거치면 "true"가 redis에 저장되어 있어야 함
         else if (!auth.equals("true")) {
             throw new CustomException(ErrorCode.WRONG_AUTH_CODE);
         }
-        this.checkDuplicatiedMail(request.getMail());
+        // 패스워드 규칙, 메일 중복, 닉네임 중복 검사
         this.checkPasswordRule(request.getPassword());
+        this.checkDuplicatiedMail(request.getMail());
+        Optional<UserDetail> checkUserDetail = userDetailRepository.findByNickname(request.getNickname());
+        if (checkUserDetail.isPresent()) {
+            throw new CustomException(ErrorCode.USER_NICKNAME_DUPLICATE);
+        }
 
+        // UserDetail DB에 저장
+        UserDetail userDetail = UserDetail.builder()
+                .nickname(request.getNickname())
+                .gender(request.getGender())
+                .age(request.getAge())
+                .mbti(request.getMbti())
+                .build();
+        userDetailRepository.save(userDetail);
         // 유저 DB에 저장
-        user.setMail(request.getMail());
-        user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setMailAuth(true);
-        user.setCreatedAt(LocalDateTime.now());
-        user.setRole(Role.ROLE_USER);
-        user.setAge(request.getAge());
-        user.setGender(Character.toUpperCase(request.getGender()));
-        this.userRepository.save(user);
+        User user = User.builder()
+                .mail(request.getMail())
+                .password(passwordEncoder.encode(request.getPassword()))
+                .role(Role.ROLE_USER)
+                .userDetail(userDetail)
+                .build();
+        userRepository.save(user);
         redisService.deleteByKey(request.getMail());
         // JWT Token 생성
         var jwt = jwtService.generateToken(user);
         return jwt;
     }
 
+    // 메일 인증 코드 전송
     public void sendCodeToMail(UserDto.SendCodeRequest request) throws MessagingException {
         String toMail = request.getMail();
         if (!toMail.endsWith("@sangmyung.kr")) {
@@ -105,6 +121,7 @@ public class AuthenticationService {
         mailService.sendMail(toMail, title, htmlContent);
     }
 
+    // 메일 인증 코드 검증
     public void verifiedCode(UserDto.MailVerificationRequest request) {
         this.checkDuplicatiedMail(request.getMail());
         String redisAuthCode = redisService.getListOpsByIndex(request.getMail(), AUTH_CODE_INDEX);
@@ -120,6 +137,7 @@ public class AuthenticationService {
         redisService.setExpire(request.getMail(), authCodeExpirationMillis);
     }
 
+    // 메일 인증 코드 생성
     private String createCode() {
         int length = 6;
         try {
@@ -144,7 +162,7 @@ public class AuthenticationService {
     }
 
     private void checkPasswordRule(String password) {
-        //정규표현식 숫자최소1개,대소문자 최소1개, 길이 8~20자
+        //정규표현식 숫자최소1개, 영문 최소1개, 길이 8~20자
         String regExp = "^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d~!@#$%^&*()+|=]{8,20}$";
 
         if (!password.matches(regExp)) {

@@ -51,8 +51,33 @@ public class UserDto {
     public static class UpdateUserDetailsRequest {
         @NotBlank
         private String mail;
+        private String nickname;
         private Integer age;
         private char gender;
         private String mbti;
+    }
+
+    @Data
+    @Builder
+    public static class DuplicatedNicknameResponse {
+        private boolean available;
+    }
+
+    @Data
+    @NoArgsConstructor
+    public static class UserInfoRequest {
+        private List<String> mailList;
+    }
+
+    @Data
+    @Builder
+    public static class UserInfoResponse {
+        private String mail;
+        private String nickname;
+        private Integer age;
+        private char gender;
+        private String mbti;
+        private String imgUrl;
+        private String imgType;
     }
 }
