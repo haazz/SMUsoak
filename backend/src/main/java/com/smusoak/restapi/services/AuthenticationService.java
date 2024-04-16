@@ -75,7 +75,6 @@ public class AuthenticationService {
         // 유저 DB에 저장
         user.setMail(request.getMail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
-        user.setMailAuth(true);
         user.setCreatedAt(LocalDateTime.now());
         user.setRole(Role.ROLE_USER);
         user.setAge(request.getAge());
