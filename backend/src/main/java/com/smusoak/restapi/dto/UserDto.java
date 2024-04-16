@@ -66,8 +66,6 @@ public class UserDto {
     @Data
     @NoArgsConstructor
     public static class UserInfoRequest {
-        @NotBlank
-        private String mail;
         private List<String> mailList;
     }
 
