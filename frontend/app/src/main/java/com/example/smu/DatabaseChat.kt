@@ -29,7 +29,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_ROOM_ID INTEGER, $COLUMN_SENDER TEXT, $COLUMN_MESSAGE TEXT, $COLUMN_TIME TEXT)"
+        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_ROOM_ID TEXT, $COLUMN_SENDER TEXT, $COLUMN_MESSAGE TEXT, $COLUMN_TIME TEXT)"
         db.execSQL(createTableQuery)
     }
 
@@ -40,7 +40,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
         }
     }
 
-    fun insertMessage(roomId: Int, sender: String, message: String, timestamp: String) {
+    fun insertMessage(roomId: String, sender: String, message: String, timestamp: String) {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply{
             put(COLUMN_ROOM_ID, roomId)
@@ -52,20 +52,20 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
         db.close()
     }
 
-    fun deleteChatroom(roomId: Int){
+    fun deleteChatroom(roomId: String){
         val db = this.writableDatabase
         db.delete(TABLE_NAME, "$COLUMN_ID = $roomId", null)
         db.close()
     }
 
     @SuppressLint("Range")
-    fun getAllMessages(roomId: Int): ArrayList<ChatMessage>? {
-        val messages = ArrayList<ChatMessage>()
+    fun getAllMessages(roomId:String): MutableList<ChatMessage> {
+        val messages: MutableList<ChatMessage> = mutableListOf()
         val db = readableDatabase
         val cursor = db.query(TABLE_NAME, null, "$COLUMN_ROOM_ID= $roomId", null, null, null, COLUMN_TIME)
 
         if (cursor.count==0)
-            return null
+            return messages
 
         cursor.use {
             while (it.moveToNext()) {

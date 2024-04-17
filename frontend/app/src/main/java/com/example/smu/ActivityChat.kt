@@ -1,5 +1,6 @@
 package com.example.smu
 
+import DatabaseChat
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -111,14 +112,15 @@ class ActivityChat : AppCompatActivity() {
                 imageText = encodeImageToBase64(path, "PNG")!!
             }
             if(open){
-                val text = imageText
                 val data = JSONObject()
-                data.put("message", text)
+                val currentTime = getCurrentTime()
+                data.put("message", imageText)
                 stompClient.send("/topic/$roomId", data.toString())
                     .subscribeOn(Schedulers.io())
                     .subscribe(
                     {
-                        chatList.add(ChatMessage("image $sender", imageText, getCurrentTime()))
+                        chatList.add(ChatMessage("image $sender", imageText, currentTime))
+                        databaseHelper.insertMessage(roomId,"image $sender",imageText,currentTime)
                         val position = recyclerViewChat.adapter?.itemCount?.minus(1) ?: 0
                         recyclerViewChat.adapter?.notifyItemInserted(position)
                     },
@@ -126,11 +128,16 @@ class ActivityChat : AppCompatActivity() {
                         Log.e("StompMessage", "Error sending message", throwable)
                     }
                 )
+                val position = recyclerViewChat.adapter?.itemCount?.minus(1) ?: 0
+                recyclerViewChat.adapter?.notifyItemInserted(position)
             }
         }
     }
 
-    @SuppressLint("CheckResult", "NotifyDataSetChanged")
+    //DataBase 가져오기
+    private val databaseHelper: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext)}
+
+    @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -153,9 +160,12 @@ class ActivityChat : AppCompatActivity() {
                 }
                 LifecycleEvent.Type.CLOSED -> {
                     Toast.makeText(this@ActivityChat,"재연결 시도 중 입니다.", Toast.LENGTH_SHORT).show()
+                    stompClient.connect(headers)
                     open=false
                 }
                 LifecycleEvent.Type.ERROR -> {
+                    Toast.makeText(this@ActivityChat,"재연결 시도 중 입니다.", Toast.LENGTH_SHORT).show()
+                    stompClient.connect(headers)
                     open=false
                 }
                 else->{
@@ -164,12 +174,15 @@ class ActivityChat : AppCompatActivity() {
             }
         }
 
+        //리사이클러뷰 초기 설정
+        chatList=databaseHelper.getAllMessages(roomId)
         recyclerViewChat = binding.chatRv
         recyclerViewChat.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
         chatAdapter = AdapterChat(chatList, this)
         recyclerViewChat.adapter = chatAdapter
 
+        //변수 초기화
         plusbtn = binding.chatBtnPlus
         send = binding.chatBtnSend
         const = binding.chatMainConst
@@ -177,6 +190,7 @@ class ActivityChat : AppCompatActivity() {
         chatEdit = binding.chatEdit
         chatEdit.addTextChangedListener(chatline)
 
+        //보내기 버튼 눌렀을 때
         send.setOnClickListener{
             if(chatEdit.length() != 0){
                 const.layoutParams.height = 50.dpToPx()
@@ -189,26 +203,27 @@ class ActivityChat : AppCompatActivity() {
                 chatEdit.requestLayout()
 
                 val currentTime = getCurrentTime()
-
+                val currentDate = getCurrentDate()
                 if(open){
-                    val text = chatMessage
                     val data = JSONObject()
-                    data.put("message", text)
+                    data.put("message", chatMessage)
                     stompClient.send("/topic/$roomId", data.toString())
                         .subscribeOn(Schedulers.io())
                         .subscribe(
                         {
                             if(chatList.size == 0) {
-                                chatList.add(ChatMessage("system", getCurrentDate(), ""))
+                                chatList.add(ChatMessage("system", currentDate, ""))
+                                databaseHelper.insertMessage(roomId,"system",currentDate,"")
                             }else{
                                 val lTime = chatList[chatList.size-1].time.split(" ")
                                 val cTime = currentTime.split(" ")
                                 if(lTime[0]!=cTime[0]) {
-                                    chatList.add(ChatMessage("system", getCurrentDate(), ""))
+                                    chatList.add(ChatMessage("system", currentDate, ""))
+                                    databaseHelper.insertMessage(roomId,"system",currentDate,"")
                                 }
                             }
+                            databaseHelper.insertMessage(roomId,sender!!,chatMessage,currentTime)
                             chatList.add(ChatMessage(sender!!, chatMessage, currentTime))
-                            recyclerViewChat.adapter?.notifyDataSetChanged()
                         },
                         { throwable ->
                             Log.e("StompMessage", "Error sending message", throwable)
