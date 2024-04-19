@@ -54,7 +54,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
 
     fun deleteChatroom(roomId: String){
         val db = this.writableDatabase
-        db.delete(TABLE_NAME, "$COLUMN_ID = $roomId", null)
+        db.delete(TABLE_NAME, "$COLUMN_ROOM_ID = '$roomId'", null)
         db.close()
     }
 
@@ -62,7 +62,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
     fun getAllMessages(roomId:String): MutableList<ChatMessage> {
         val messages: MutableList<ChatMessage> = mutableListOf()
         val db = readableDatabase
-        val cursor = db.query(TABLE_NAME, null, "$COLUMN_ROOM_ID= $roomId", null, null, null, COLUMN_TIME)
+        val cursor = db.query(TABLE_NAME, null, "$COLUMN_ROOM_ID= '$roomId'", null, null, null, COLUMN_TIME)
 
         if (cursor.count==0)
             return messages

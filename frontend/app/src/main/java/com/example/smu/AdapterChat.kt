@@ -1,21 +1,13 @@
 package com.example.smu
 
 import android.content.Context
-import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
 import com.example.smu.databinding.RvChattingBinding
-import java.text.SimpleDateFormat
-import java.util.Calendar
 
-
-class AdapterChat(
-    private val chatList : MutableList<ChatMessage>,
-    private val context: Context
-) : RecyclerView.Adapter<AdapterChat.viewHolder>() {
+class AdapterChat(private val chatList : MutableList<ChatMessage>) : RecyclerView.Adapter<AdapterChat.viewHolder>() {
 
     private val user = MySharedPreference.user
     private val sender = user.getString("mail","")
@@ -48,7 +40,11 @@ class AdapterChat(
                 binding.rvChattingDay.visibility = View.GONE
                 binding.rvChattingMyimage.visibility = View.GONE
                 binding.rvChattingMytext.text = list.message
-                binding.rvChattingMyTime.text = list.time.substring(9)
+                if (list.time.isNotEmpty()) {
+                    binding.rvChattingMyTime.text = list.time.substring(9)
+                }else{
+                    binding.rvChattingMyTime.visibility=View.INVISIBLE
+                }
             }
             else{
                 visibleYour()
@@ -56,7 +52,11 @@ class AdapterChat(
                 binding.rvChattingDay.visibility = View.GONE
                 binding.rvChattingMyimage.visibility = View.GONE
                 binding.rvChattingYourtext.text = list.message
-                binding.rvChattingYourTime.text = list.time.substring(9)
+                if (list.time.isNotEmpty()) {
+                    binding.rvChattingMyTime.text = list.time.substring(9)
+                }else{
+                    binding.rvChattingMyTime.visibility=View.INVISIBLE
+                }
             }
         }
     }
