@@ -22,18 +22,18 @@ class ActivityLogin : AppCompatActivity() {
     //자동 로그인 설정
     private val user = MySharedPreference.user
     private val editor = user.edit()
-
+    private val databaseHelper: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-
-        val btn_singin = binding.loginBtnSignin
-        val btn_findpw = binding.loginBtnFindpw
-        val btn_signup = binding.loginBtnSingup
-        val checkauto = binding.loginCheck
+        databaseHelper.deleteChatroom("2")
+        val btnSignIn = binding.loginBtnSignin
+        val btnFindPw = binding.loginBtnFindpw
+        val btnSignUp = binding.loginBtnSingup
+        val autoCheck = binding.loginCheck
         var autologin = false
 
-        checkauto.setOnCheckedChangeListener { check, isChecked ->
+        autoCheck.setOnCheckedChangeListener { check, isChecked ->
             if (isChecked) {
                 editor.putBoolean("autologin", true)
                 autologin = true
@@ -44,13 +44,13 @@ class ActivityLogin : AppCompatActivity() {
             editor.apply()
         }
 
-        btn_signup.setOnClickListener{
+        btnSignUp.setOnClickListener{
             val intent = Intent(this, ActivitySingup::class.java)
             startActivity(intent)
             finish()
         }
 
-        btn_singin.setOnClickListener {
+        btnSignIn.setOnClickListener {
             id = binding.loginEditId.text.toString()+"@sangmyung.kr"
             pw = binding.loginEditPw.text.toString()
             val fcm_token = user.getString("fcm token", "")
@@ -58,10 +58,10 @@ class ActivityLogin : AppCompatActivity() {
             call.enqueue(object : Callback<Retrofit.Responsetoken> {
                 override fun onResponse(call: Call<Retrofit.Responsetoken>, response: Response<Retrofit.Responsetoken>) {
                     if (response.isSuccessful) {
-                        val response = response.body()
-                        if(response != null){
-                            if(response.success) {
-                                val token = response.data.token
+                        val responseBody = response.body()
+                        if(responseBody != null){
+                            if(responseBody.success) {
+                                val token = responseBody.data.token
                                 editor.putString("token", token)
                                 editor.putString("mail", id)
                                 if(autologin){
@@ -86,7 +86,7 @@ class ActivityLogin : AppCompatActivity() {
             })
         }
 
-        btn_findpw.setOnClickListener {
+        btnFindPw.setOnClickListener {
             val intent = Intent(this, ActivityTest2::class.java)
             startActivity(intent)
             finish()
