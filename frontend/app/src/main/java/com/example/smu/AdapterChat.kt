@@ -13,20 +13,44 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>) : RecyclerVie
 
     inner class ViewHolder(private val binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
 
-        private val myChat = binding.rvChattingMychatConst
-        private val otherChat = binding.rvChattingOtherchatConst
-        private val dateChat = binding.rvChattingDay
+        private val myChatConst = binding.rvChattingMychatConst
+        private val myChat = binding.rvChattingMytext
+        private val myChatTime = binding.rvChattingMyTime
+        private val otherChatConst = binding.rvChattingOtherchatConst
+        private val otherChat = binding.rvChattingOthertext
+        private val otherChatTime = binding.rvChattingOtherTime
+        private val dateChatConst = binding.rvChattingDay
+        private val dateChat = binding.rvChattingDayText
 
         fun bind(list : ChatMessage) {
             when (list.sender) {
                 "message $senderMail" -> {
-                    myChat.visibility= View.VISIBLE
+                    myChatConst.visibility= View.VISIBLE
+                    otherChatConst.visibility= View.GONE
+                    dateChatConst.visibility= View.GONE
+                    myChat.text=list.message
+                    if(list.time.length>=9){
+                        myChatTime.text=list.time.substring(9)
+                    }else{
+                        myChatTime.text=list.time
+                    }
                 }
                 "system" -> {
-                    dateChat.visibility= View.VISIBLE
+                    dateChatConst.visibility= View.VISIBLE
+                    otherChatConst.visibility= View.GONE
+                    myChatConst.visibility= View.GONE
+                    dateChat.text=list.message
                 }
                 else -> {
-                    otherChat.visibility= View.VISIBLE
+                    otherChatConst.visibility= View.VISIBLE
+                    myChatConst.visibility= View.GONE
+                    dateChatConst.visibility= View.GONE
+                    otherChat.text=list.message
+                    if(list.time.length>=9){
+                        otherChatTime.text=list.time.substring(9)
+                    }else{
+                        otherChatTime.text=list.time
+                    }
                 }
             }
         }

@@ -3,19 +3,19 @@ package com.example.smu.connection
 import com.google.gson.annotations.SerializedName
 
 class Retrofit {
-    //순서 1. 로그인 2. 회원가입 3. 메일 인증 4. 인증 번호 확인 5. 성공여부만 반환 6. 유저 프로필 가져오기
+    //순서 1. 로그인 2. 회원가입 3. 메일 인증 4. 인증 번호 확인 5. 성공여부만 반환 6. 유저 프로필 가져오기 7. 채팅룸 리스트 가져오기
     //1. 로그인
-    data class Requestsignin(
+    data class RequestSignIn(
         @SerializedName("mail")
         val mail: String,
         @SerializedName("password")
         val pw: String,
         @SerializedName("fcmToken")
-        val fcmtoken: String
+        val fcmToken: String
     )
 
     //2.회원가입
-    data class Requestsignup(
+    data class RequestSignUp(
         @SerializedName("mail")
         val mail: String,
         @SerializedName("password")
@@ -29,29 +29,29 @@ class Retrofit {
         @SerializedName("nickname")
         val nickname: String
     )
-    data class Responsetoken(
+    data class ResponseToken(
         @SerializedName("success")
         val success: Boolean,
         @SerializedName("data")
-        val data: token
+        val data: Token
     )
-    data class token(
+    data class Token(
         @SerializedName("token")
         val token:String
     )
 
     //3. 메일 인증
-    data class Requestsendnum(
+    data class RequestSendNum(
         @SerializedName("mail")
         val mail: String
     )
-    data class Responsesendnum(
+    data class ResponseSendNum(
         @SerializedName("success")
         val success: Boolean
     )
 
     //4. 인증 번호 확인
-    data class Requestchecknum(
+    data class RequestCheckNum(
         @SerializedName("mail")
         val mail: String,
         @SerializedName("authCode")
@@ -59,26 +59,26 @@ class Retrofit {
     )
 
     //5. 성공 여부만 반환
-    data class Responsesuccess(
+    data class ResponseSuccess(
         @SerializedName("success")
         val success: Boolean
     )
 
     //6. 유저 프로필 가져오기
-    data class Requestuserprofile(
+    data class RequestUserProfile(
         @SerializedName("mail")
         val mail: String,
         @SerializedName("mailList")
-        val maillist: List<String>
+        val mailList: List<String>
     )
-    data class Responseuserprofile(
+    data class ResponseUserProfile(
         @SerializedName("success")
         val success: Boolean,
         @SerializedName("data")
-        val data: List<mailList>
+        val data: List<MailList>
     )
 
-    data class mailList(
+    data class MailList(
         @SerializedName("mail")
         val mail: String,
         @SerializedName("url")
@@ -88,13 +88,13 @@ class Retrofit {
     )
 
     //7. 채팅룸 리스트 가져오기
-    data class Responsechatroom(
+    data class ResponseChatroom(
         @SerializedName("success")
         val success: Boolean,
         @SerializedName("data")
-        val data: List<chatroom>
+        val data: List<Chatroom>
     )
-    data class chatroom(
+    data class Chatroom(
         @SerializedName("roomId")
         val roomId: Int,
         @SerializedName("mails")

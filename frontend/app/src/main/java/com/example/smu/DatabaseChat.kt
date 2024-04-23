@@ -16,7 +16,6 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
         private const val COLUMN_SENDER = "sender"
         private const val COLUMN_MESSAGE = "message"
         private const val COLUMN_TIME = "time"
-        private const val COLUMN_CHAT_ID = "chat_id"
 
         @Volatile
         private var instance: DatabaseChat?= null
@@ -30,7 +29,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_ROOM_ID TEXT, $COLUMN_SENDER TEXT, $COLUMN_MESSAGE TEXT, $COLUMN_TIME TEXT, $COLUMN_CHAT_ID INTEGER)"
+        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_ROOM_ID TEXT, $COLUMN_SENDER TEXT, $COLUMN_MESSAGE TEXT, $COLUMN_TIME TEXT)"
         db.execSQL(createTableQuery)
     }
 
@@ -41,14 +40,13 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
         }
     }
 
-    fun insertMessage(roomId: String, sender: String, message: String, timestamp: String, chatId: Int) {
+    fun insertMessage(roomId: String, sender: String, message: String, timestamp: String) {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply{
             put(COLUMN_ROOM_ID, roomId)
             put(COLUMN_SENDER, sender)
             put(COLUMN_MESSAGE, message)
             put(COLUMN_TIME, timestamp)
-            put(COLUMN_CHAT_ID, chatId)
         }
         db.insert(TABLE_NAME, null, contentValues)
         db.close()
@@ -73,22 +71,18 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
                 val sender = it.getString(2)
                 val message = it.getString(3)
                 val timestamp = it.getString(4)
-                val chatId = it.getInt(5)
-                val chatMessage = ChatMessage(sender, message, timestamp, chatId)
+                val chatMessage = ChatMessage(sender, message, timestamp)
+                if(messages.size>1){
+                    val lSender=messages[messages.size-1].sender.split(" ")[1]
+                    val lTimestamp=messages[messages.size-1].time
+                    if(lSender==sender.split(" ")[1] && lTimestamp==timestamp){
+                        messages[messages.size-1].time=""
+                    }
+                }
                 messages.add(chatMessage)
             }
         }
         db.close()
         return messages
-    }
-
-    fun updateMessage(roomId: String, chatId: Int) {
-        val db = writableDatabase
-        val contentValues = ContentValues().apply {
-            put(COLUMN_TIME, "")
-        }
-        val selection = "$COLUMN_ROOM_ID = ? AND $COLUMN_CHAT_ID = ?"
-        db.update(TABLE_NAME, contentValues, selection, arrayOf(roomId, chatId.toString()))
-        db.close()
     }
 }

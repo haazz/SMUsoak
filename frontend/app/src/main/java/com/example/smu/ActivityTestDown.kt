@@ -3,7 +3,6 @@ package com.example.smu
 import android.graphics.BitmapFactory
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Base64
 import android.util.Log
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
@@ -31,12 +30,12 @@ class ActivityTestDown : AppCompatActivity() {
 
         Log.d("profile", token)
         binding.btnTestdown.setOnClickListener {
-            val call = RetrofitObject.getRetrofitService.userprofile(token, Retrofit.Requestuserprofile(email!!, mailList))
+            val call = RetrofitObject.getRetrofitService.userprofile(token, Retrofit.RequestUserProfile(email!!, mailList))
             Log.d("profile", mailList.toString())
             Log.d("profile", token)
             Log.d("profile", email.toString())
-            call.enqueue(object : Callback<Retrofit.Responseuserprofile> {
-                override fun onResponse(call: Call<Retrofit.Responseuserprofile>, response: Response<Retrofit.Responseuserprofile>) {
+            call.enqueue(object : Callback<Retrofit.ResponseUserProfile> {
+                override fun onResponse(call: Call<Retrofit.ResponseUserProfile>, response: Response<Retrofit.ResponseUserProfile>) {
                     if (response.isSuccessful) {
                         val response = response.body()
                         if (response != null) {
@@ -51,14 +50,14 @@ class ActivityTestDown : AppCompatActivity() {
                         }
                     }
                 }
-                override fun onFailure(call: Call<Retrofit.Responseuserprofile>, t: Throwable) {
+                override fun onFailure(call: Call<Retrofit.ResponseUserProfile>, t: Throwable) {
                     val errorMessage = "Call Failed: ${t.message}"
                     Log.d("Retrofit", errorMessage)
                 }
             })
         }
         binding.btnDown.setOnClickListener {
-            val call = RetrofitObject.getRetrofitService.profiledown(token, "1234")
+            val call = RetrofitObject.getRetrofitService.profileDown(token, "1234")
             call.enqueue(object : Callback<ResponseBody> {
                 override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
                     Log.d("profile", response.toString())

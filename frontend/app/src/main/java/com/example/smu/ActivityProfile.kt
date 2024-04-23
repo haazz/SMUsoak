@@ -81,8 +81,8 @@ class ActivityProfile : AppCompatActivity() {
             Log.d("profile", data.toString())
             val call = RetrofitObject.getRetrofitService.profile(token, imagePart, email)
             Log.d("profile", email.toString())
-            call.enqueue(object : Callback<Retrofit.Responsesuccess> {
-                override fun onResponse(call: Call<Retrofit.Responsesuccess>, response: Response<Retrofit.Responsesuccess>) {
+            call.enqueue(object : Callback<Retrofit.ResponseSuccess> {
+                override fun onResponse(call: Call<Retrofit.ResponseSuccess>, response: Response<Retrofit.ResponseSuccess>) {
                     Log.d("profile", response.toString())
                     if (response.isSuccessful) {
                         val response = response.body()
@@ -95,7 +95,7 @@ class ActivityProfile : AppCompatActivity() {
                         }
                     }
                 }
-                override fun onFailure(call: Call<Retrofit.Responsesuccess>, t: Throwable) {
+                override fun onFailure(call: Call<Retrofit.ResponseSuccess>, t: Throwable) {
                     val errorMessage = "Call Failed: ${t.message}"
                     Log.d("Retrofit", errorMessage)
                 }

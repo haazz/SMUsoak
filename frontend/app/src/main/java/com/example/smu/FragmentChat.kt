@@ -21,7 +21,7 @@ class FragmentChat : Fragment() {
     private val user=MySharedPreference.user
     private val token=user.getString("token","")
     private val mail=user.getString("mail","")
-    private val roomList= mutableListOf<Retrofit.chatroom>()
+    private val roomList= mutableListOf<Retrofit.Chatroom>()
     private lateinit var recyclerViewChatRoom: RecyclerView
 
     override fun onCreateView(
@@ -30,9 +30,9 @@ class FragmentChat : Fragment() {
     ): View {
         binding = FragmentChatBinding.inflate(layoutInflater)
 
-        val call = RetrofitObject.getRetrofitService.chatlist("Bearer $token", mail!!)
-        call.enqueue(object : Callback<Retrofit.Responsechatroom> {
-            override fun onResponse(call: Call<Retrofit.Responsechatroom>, response: Response<Retrofit.Responsechatroom>) {
+        val call = RetrofitObject.getRetrofitService.chatList("Bearer $token", mail!!)
+        call.enqueue(object : Callback<Retrofit.ResponseChatroom> {
+            override fun onResponse(call: Call<Retrofit.ResponseChatroom>, response: Response<Retrofit.ResponseChatroom>) {
                 if (response.isSuccessful) {
                     val response = response.body()
                     if (response != null) {
@@ -44,7 +44,7 @@ class FragmentChat : Fragment() {
                     }
                 }
             }
-            override fun onFailure(call: Call<Retrofit.Responsechatroom>, t: Throwable) {
+            override fun onFailure(call: Call<Retrofit.ResponseChatroom>, t: Throwable) {
                 val errorMessage = "Call Failed: ${t.message}"
                 Log.d("Retrofit", errorMessage)
             }

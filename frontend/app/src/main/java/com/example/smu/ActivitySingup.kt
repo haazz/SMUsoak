@@ -1,7 +1,6 @@
 package com.example.smu
 
 import android.content.Intent
-import android.content.res.Resources
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -200,9 +199,9 @@ class ActivitySingup : AppCompatActivity() {
             if (idcheck && edit_id.text.length==9) {
                 id = edit_id.text.toString()
                 email = id + "@sangmyung.kr"
-                val call = RetrofitObject.getRetrofitService.sendnum(Retrofit.Requestsendnum(email))
-                call.enqueue(object : Callback<Retrofit.Responsesendnum> {
-                    override fun onResponse(call: Call<Retrofit.Responsesendnum>, response: Response<Retrofit.Responsesendnum>) {
+                val call = RetrofitObject.getRetrofitService.sendNum(Retrofit.RequestSendNum(email))
+                call.enqueue(object : Callback<Retrofit.ResponseSendNum> {
+                    override fun onResponse(call: Call<Retrofit.ResponseSendNum>, response: Response<Retrofit.ResponseSendNum>) {
                         if (response.isSuccessful) {
                             val response = response.body()
                             if (response != null) {
@@ -216,7 +215,7 @@ class ActivitySingup : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<Retrofit.Responsesendnum>, t: Throwable) {
+                    override fun onFailure(call: Call<Retrofit.ResponseSendNum>, t: Throwable) {
                         val errorMessage = "Call Failed: ${t.message}"
                         Log.d("Retrofit", errorMessage)
                     }
@@ -231,9 +230,9 @@ class ActivitySingup : AppCompatActivity() {
         btn_checknum.setOnClickListener {
             btn_checknum.isEnabled = false
             val num = edit_checknum.text.toString()
-            val call = RetrofitObject.getRetrofitService.checknum(Retrofit.Requestchecknum(email,num))
-            call.enqueue(object : Callback<Retrofit.Responsesuccess> {
-                override fun onResponse(call: Call<Retrofit.Responsesuccess>, response: Response<Retrofit.Responsesuccess>) {
+            val call = RetrofitObject.getRetrofitService.checkNum(Retrofit.RequestCheckNum(email,num))
+            call.enqueue(object : Callback<Retrofit.ResponseSuccess> {
+                override fun onResponse(call: Call<Retrofit.ResponseSuccess>, response: Response<Retrofit.ResponseSuccess>) {
                     if (response.isSuccessful) {
                         val response = response.body()
                         if (response != null) {
@@ -252,7 +251,7 @@ class ActivitySingup : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<Retrofit.Responsesuccess>, t: Throwable) {
+                override fun onFailure(call: Call<Retrofit.ResponseSuccess>, t: Throwable) {
                     btn_checknum.isEnabled = true
                     val errorMessage = "Call Failed: ${t.message}"
                     Log.d("Retrofit", errorMessage)
@@ -284,13 +283,13 @@ class ActivitySingup : AppCompatActivity() {
                 gender="W"
             nickname = edit_nickname.text.toString()
             if(pwcheck && emailcheck && gender!="Gender" && age!="출생 연도"){
-                var call = RetrofitObject.getRetrofitService.signup(Retrofit.Requestsignup(email,pw,age.toInt(),gender,mbti,nickname))
+                var call = RetrofitObject.getRetrofitService.signUp(Retrofit.RequestSignUp(email,pw,age.toInt(),gender,mbti,nickname))
                 if(mbti=="선택 안함"){
-                    call = RetrofitObject.getRetrofitService.signup(Retrofit.Requestsignup(email,pw,age.toInt(),gender,null,nickname))
+                    call = RetrofitObject.getRetrofitService.signUp(Retrofit.RequestSignUp(email,pw,age.toInt(),gender,null,nickname))
                 }
                 Log.d("signup", age+gender+mbti+email+pw+nickname)
-                call.enqueue(object : Callback<Retrofit.Responsetoken> {
-                    override fun onResponse(call: Call<Retrofit.Responsetoken>, response: Response<Retrofit.Responsetoken>) {
+                call.enqueue(object : Callback<Retrofit.ResponseToken> {
+                    override fun onResponse(call: Call<Retrofit.ResponseToken>, response: Response<Retrofit.ResponseToken>) {
                         if (response.isSuccessful) {
                             val response = response.body()
                             if (response != null) {
@@ -309,7 +308,7 @@ class ActivitySingup : AppCompatActivity() {
                         }
                     }
 
-                    override fun onFailure(call: Call<Retrofit.Responsetoken>, t: Throwable) {
+                    override fun onFailure(call: Call<Retrofit.ResponseToken>, t: Throwable) {
                         val errorMessage = "Call Failed: ${t.message}"
                         Log.d("Retrofit", errorMessage)
                     }

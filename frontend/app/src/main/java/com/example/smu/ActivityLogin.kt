@@ -26,7 +26,7 @@ class ActivityLogin : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-//        databaseHelper.deleteChatroom("2")
+        databaseHelper.deleteChatroom("2")
         val btnSignIn = binding.loginBtnSignin
         val btnFindPw = binding.loginBtnFindpw
         val btnSignUp = binding.loginBtnSingup
@@ -54,9 +54,9 @@ class ActivityLogin : AppCompatActivity() {
             id = binding.loginEditId.text.toString()+"@sangmyung.kr"
             pw = binding.loginEditPw.text.toString()
             val fcm_token = user.getString("fcm token", "")
-            val call = RetrofitObject.getRetrofitService.signin(Retrofit.Requestsignin(id, pw, fcm_token!!))
-            call.enqueue(object : Callback<Retrofit.Responsetoken> {
-                override fun onResponse(call: Call<Retrofit.Responsetoken>, response: Response<Retrofit.Responsetoken>) {
+            val call = RetrofitObject.getRetrofitService.signIn(Retrofit.RequestSignIn(id, pw, fcm_token!!))
+            call.enqueue(object : Callback<Retrofit.ResponseToken> {
+                override fun onResponse(call: Call<Retrofit.ResponseToken>, response: Response<Retrofit.ResponseToken>) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         if(responseBody != null){
@@ -79,7 +79,7 @@ class ActivityLogin : AppCompatActivity() {
                     }
                 }
 
-                override fun onFailure(call: Call<Retrofit.Responsetoken>, t: Throwable) {
+                override fun onFailure(call: Call<Retrofit.ResponseToken>, t: Throwable) {
                     val errorMessage = "Call Failed: ${t.message}"
                     Log.d("Retrofit", errorMessage)
                 }

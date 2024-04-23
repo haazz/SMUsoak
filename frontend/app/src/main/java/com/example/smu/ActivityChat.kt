@@ -55,11 +55,10 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var roomId: String
     private lateinit var chatMessage: String
     private lateinit var chatList:MutableList<ChatMessage>
-    private var chatId = 0
-    private var open = false
     private val user = MySharedPreference.user
     private val sender = user.getString("mail","")
     private val token= user.getString("token","")
+    private val headers = listOf(StompHeader("Authorization", "Bearer $token"))
     private var isKeyboardOpened = false
 
     //채팅 줄 수가 늘 때 editText 크기도 같이 변동 되도록 해주는 textWatcher
@@ -112,13 +111,19 @@ class ActivityChat : AppCompatActivity() {
             }else if(file.toString().substring(file.toString().length-3)=="png"){
                 imageText = encodeImageToBase64(path, "PNG")!!
             }
-            if(open){
+
+            if(stompClient.isConnected){
                 val data = JSONObject()
                 val currentTime = getCurrentTime()
+                data.put("roomId", roomId)
                 data.put("message", imageText)
-                data.put("sender", "image $sender")
+                data.put("sender", "$sender")
                 data.put("time", currentTime)
+                data.put("img", true)
                 stompClient.send("/topic/$roomId", data.toString()).subscribe()
+            }else{
+                stompClient.connect(headers)
+                Toast.makeText(this@ActivityChat,"전송에 실패했습니다. 다시 시도해주세요.",Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -127,10 +132,10 @@ class ActivityChat : AppCompatActivity() {
     private val mainHandler = Handler(Looper.getMainLooper())
 
     // Main Tread 에서 할 코드임
+    @SuppressLint("NotifyDataSetChanged")
     private val updateRecyclerViewRunnable = Runnable {
-        val position = recyclerViewChat.adapter?.itemCount?.minus(1) ?: 0
-        recyclerViewChat.adapter?.notifyItemChanged(position-1)
-        recyclerViewChat.adapter?.notifyItemInserted(position)
+        recyclerViewChat.adapter?.notifyDataSetChanged()
+
         recyclerViewChat.post {
             val layoutManager = recyclerViewChat.layoutManager as LinearLayoutManager
             val pos = chatAdapter.itemCount - 1
@@ -152,7 +157,6 @@ class ActivityChat : AppCompatActivity() {
         val url = BaseUrl.Socket_URL
 
         stompClient =  Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
-        val headers = listOf(StompHeader("Authorization", "Bearer $token"))
         stompClient.withServerHeartbeat(10000)
         stompClient.connect(headers)
         roomId = "2"
@@ -168,30 +172,27 @@ class ActivityChat : AppCompatActivity() {
                 val currentDate=getCurrentDate()
 
                 if(chatList.size == 0) {
-                    chatList.add(ChatMessage("system", currentDate, currentTime, chatId))
-                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, chatId)
-                    chatId+=1
+                    chatList.add(ChatMessage("system", currentDate, currentTime))
+                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime)
                 }else{
                     val lTime = chatList[chatList.size-1].time.split(" ")
                     val cTime = currentTime.split(" ")
                     if(lTime[0]!=cTime[0]) {
-                        chatList.add(ChatMessage("system", currentDate, currentTime, chatId))
-                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime, chatId)
-                        chatId+=1
+                        chatList.add(ChatMessage("system", currentDate, currentTime))
+                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime)
                     }
                 }
 
                 if(chatList.size >= 2){
                     if(chatList[chatList.size-1].sender.split(" ")[1] == sender.split(" ")[1] && chatList[chatList.size-1].time == time){
                         chatList[chatList.size-1].time = ""
-                        databaseHelper.updateMessage(roomId,chatId-1)
                     }
                 }
 
-                chatList.add(ChatMessage(sender, message, time, chatId))
-                databaseHelper.insertMessage(roomId,sender,message,time,chatId)
+                chatList.add(ChatMessage(sender, message, time))
+                databaseHelper.insertMessage(roomId,sender,message,time)
+                Log.d("chatList", databaseHelper.getAllMessages("2").toString())
 
-                chatId+=1
                 mainHandler.post(updateRecyclerViewRunnable)
             },
             { throwable ->
@@ -199,30 +200,7 @@ class ActivityChat : AppCompatActivity() {
             }
         )
 
-        stompClient.lifecycle().subscribe { lifecycleEvent ->
-            when (lifecycleEvent.type) {
-                LifecycleEvent.Type.OPENED -> {
-                    open=true
-                }
-                LifecycleEvent.Type.CLOSED -> {
-                    Toast.makeText(this@ActivityChat,"재연결 시도 중 입니다.", Toast.LENGTH_SHORT).show()
-                    stompClient.connect(headers)
-                    open=false
-                }
-                LifecycleEvent.Type.ERROR -> {
-                    Toast.makeText(this@ActivityChat,"재연결 시도 중 입니다.", Toast.LENGTH_SHORT).show()
-                    stompClient.connect(headers)
-                    open=false
-                }
-                else->{
-
-                }
-            }
-        }
         chatList=databaseHelper.getAllMessages(roomId)
-        if(chatList.isNotEmpty()){
-            chatId=chatList[chatList.size-1].chatId+1
-        }
 
         //recyclerView 초기 설정
         recyclerViewChat = binding.chatRv
@@ -253,12 +231,18 @@ class ActivityChat : AppCompatActivity() {
 
                 val currentTime = getCurrentTime()
 
-                if(open){
+                if(stompClient.isConnected){
                     val data = JSONObject()
+                    data.put("roomId", roomId)
                     data.put("message", chatMessage)
-                    data.put("sender", "message $sender")
+                    data.put("senderMail", "message $sender")
+                    data.put("img", false)
                     data.put("time", currentTime)
                     stompClient.send("/topic/$roomId", data.toString()).subscribe()
+                    chatEdit.setText("")
+                }else{
+                    stompClient.connect(headers)
+                    Toast.makeText(this@ActivityChat,"전송에 실패했습니다. 다시 시도해주세요.",Toast.LENGTH_SHORT).show()
                     chatEdit.setText("")
                 }
             }
@@ -286,6 +270,7 @@ class ActivityChat : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         disposable.dispose()
+        stompClient.disconnect()
     }
 
     fun Int.dpToPx(): Int {
