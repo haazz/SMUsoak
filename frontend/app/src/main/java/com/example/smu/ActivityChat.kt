@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.databinding.ActivityChatBinding
 import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
 import org.json.JSONObject
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
@@ -117,23 +116,9 @@ class ActivityChat : AppCompatActivity() {
                 val data = JSONObject()
                 val currentTime = getCurrentTime()
                 data.put("message", imageText)
-                data.put("sender", sender)
+                data.put("sender", "image $sender")
                 data.put("time", currentTime)
-                stompClient.send("/topic/$roomId", data.toString())
-                    .subscribeOn(Schedulers.io())
-                    .subscribe(
-                    {
-                        chatList.add(ChatMessage("image $sender", imageText, currentTime, chatId))
-                        databaseHelper.insertMessage(roomId,"image $sender", imageText, currentTime, chatId)
-                        val position = recyclerViewChat.adapter?.itemCount?.minus(1) ?: 0
-                        recyclerViewChat.adapter?.notifyItemInserted(position)
-                    },
-                    { throwable ->
-                        Log.e("StompMessage", "Error sending message", throwable)
-                    }
-                )
-                val position = recyclerViewChat.adapter?.itemCount?.minus(1) ?: 0
-                recyclerViewChat.adapter?.notifyItemInserted(position)
+                stompClient.send("/topic/$roomId", data.toString()).subscribe()
             }
         }
     }
@@ -148,8 +133,9 @@ class ActivityChat : AppCompatActivity() {
         recyclerViewChat.adapter?.notifyItemInserted(position)
         recyclerViewChat.post {
             val layoutManager = recyclerViewChat.layoutManager as LinearLayoutManager
-            val totalHeight = layoutManager.findViewByPosition(position+1)?.height ?: 0
-            layoutManager.scrollToPositionWithOffset(position+1, totalHeight)
+            val pos = chatAdapter.itemCount - 1
+            val totalHeight = layoutManager.findViewByPosition(pos)?.height ?: 0
+            layoutManager.scrollToPositionWithOffset(pos, totalHeight)
         }
     }
 
@@ -195,16 +181,16 @@ class ActivityChat : AppCompatActivity() {
                     }
                 }
 
+                if(chatList.size >= 2){
+                    if(chatList[chatList.size-1].sender.split(" ")[1] == sender.split(" ")[1] && chatList[chatList.size-1].time == time){
+                        chatList[chatList.size-1].time = ""
+                        databaseHelper.updateMessage(roomId,chatId-1)
+                    }
+                }
+
                 chatList.add(ChatMessage(sender, message, time, chatId))
                 databaseHelper.insertMessage(roomId,sender,message,time,chatId)
 
-                if(chatList.size >= 2){
-                    if(chatList[chatList.size-2].sender == chatList[chatList.size-1].sender && chatList[chatList.size-2].time == chatList[chatList.size-1].time){
-                        chatList[chatList.size-2].time = ""
-                        databaseHelper.updateMessage(roomId,chatId-1)
-                        Log.d("chatlistid", databaseHelper.getAllMessages("2").toString())
-                    }
-                }
                 chatId+=1
                 mainHandler.post(updateRecyclerViewRunnable)
             },
@@ -237,7 +223,7 @@ class ActivityChat : AppCompatActivity() {
         if(chatList.isNotEmpty()){
             chatId=chatList[chatList.size-1].chatId+1
         }
-        Log.d("chatlistinit",chatId.toString())
+
         //recyclerView 초기 설정
         recyclerViewChat = binding.chatRv
         recyclerViewChat.layoutManager =
@@ -270,7 +256,7 @@ class ActivityChat : AppCompatActivity() {
                 if(open){
                     val data = JSONObject()
                     data.put("message", chatMessage)
-                    data.put("sender", sender)
+                    data.put("sender", "message $sender")
                     data.put("time", currentTime)
                     stompClient.send("/topic/$roomId", data.toString()).subscribe()
                     chatEdit.setText("")
@@ -300,7 +286,6 @@ class ActivityChat : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         disposable.dispose()
-        Log.d("chatlistdelete", "연결종료")
     }
 
     fun Int.dpToPx(): Int {

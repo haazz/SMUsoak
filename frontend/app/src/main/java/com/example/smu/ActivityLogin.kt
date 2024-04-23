@@ -26,7 +26,7 @@ class ActivityLogin : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        databaseHelper.deleteChatroom("2")
+//        databaseHelper.deleteChatroom("2")
         val btnSignIn = binding.loginBtnSignin
         val btnFindPw = binding.loginBtnFindpw
         val btnSignUp = binding.loginBtnSingup

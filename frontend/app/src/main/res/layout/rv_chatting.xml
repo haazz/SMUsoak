@@ -53,14 +53,14 @@
             android:text="오전 2:29"
             android:textColor="@color/time_gray"
             android:textSize="8sp"
-            android:visibility="invisible"
+            android:visibility="visible"
             app:layout_constraintBottom_toBottomOf="@+id/rv_chatting_mytext"
             app:layout_constraintEnd_toStartOf="@+id/rv_chatting_mytext" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rv_chatting_yourchat_const"
+        android:id="@+id/rv_chatting_otherchat_const"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -70,7 +70,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/rv_chatting_yourtext"
+            android:id="@+id/rv_chatting_othertext"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/radius_20_solid_chat_gray"
@@ -85,16 +85,16 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/rv_chatting_your_time"
+            android:id="@+id/rv_chatting_other_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
             android:text="오전 00:01"
             android:textColor="@color/time_gray"
             android:textSize="8sp"
-            android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="@+id/rv_chatting_yourtext"
-            app:layout_constraintStart_toEndOf="@+id/rv_chatting_yourtext" />
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="@+id/rv_chatting_othertext"
+            app:layout_constraintStart_toEndOf="@+id/rv_chatting_othertext" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout

@@ -1,71 +1,42 @@
 package com.example.smu
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.databinding.RvChattingBinding
 
-class AdapterChat(private val chatList : MutableList<ChatMessage>) : RecyclerView.Adapter<AdapterChat.viewHolder>() {
+class AdapterChat(private val chatList : MutableList<ChatMessage>) : RecyclerView.Adapter<AdapterChat.ViewHolder>() {
 
     private val user = MySharedPreference.user
-    private val sender = user.getString("mail","")
+    private val senderMail = user.getString("mail","")
 
-    inner class viewHolder(private val binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
-        fun visibleMy(){
-            binding.rvChattingMychatConst.visibility = View.VISIBLE
-            binding.rvChattingMyTime.visibility = View.VISIBLE
-        }
+    inner class ViewHolder(private val binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
 
-        fun visibleYour(){
-            binding.rvChattingYourchatConst.visibility = View.VISIBLE
-            binding.rvChattingYourTime.visibility = View.VISIBLE
-        }
-
-        fun invisibleYour(){
-            binding.rvChattingYourchatConst.visibility = View.INVISIBLE
-            binding.rvChattingYourTime.visibility = View.INVISIBLE
-        }
-
-        fun invisibleMy(){
-            binding.rvChattingMychatConst.visibility = View.INVISIBLE
-            binding.rvChattingMyTime.visibility = View.INVISIBLE
-        }
+        private val myChat = binding.rvChattingMychatConst
+        private val otherChat = binding.rvChattingOtherchatConst
+        private val dateChat = binding.rvChattingDay
 
         fun bind(list : ChatMessage) {
-            if(list.sender == sender){
-                visibleMy()
-                invisibleYour()
-                binding.rvChattingDay.visibility = View.GONE
-                binding.rvChattingMyimage.visibility = View.GONE
-                binding.rvChattingMytext.text = list.message
-                if (list.time.isNotEmpty()) {
-                    binding.rvChattingMyTime.text = list.time.substring(9)
-                }else{
-                    binding.rvChattingMyTime.visibility=View.INVISIBLE
+            when (list.sender) {
+                "message $senderMail" -> {
+                    myChat.visibility= View.VISIBLE
                 }
-            }
-            else{
-                visibleYour()
-                invisibleMy()
-                binding.rvChattingDay.visibility = View.GONE
-                binding.rvChattingMyimage.visibility = View.GONE
-                binding.rvChattingYourtext.text = list.message
-                if (list.time.isNotEmpty()) {
-                    binding.rvChattingMyTime.text = list.time.substring(9)
-                }else{
-                    binding.rvChattingMyTime.visibility=View.INVISIBLE
+                "system" -> {
+                    dateChat.visibility= View.VISIBLE
+                }
+                else -> {
+                    otherChat.visibility= View.VISIBLE
                 }
             }
         }
     }
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): viewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = RvChattingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return viewHolder(binding)
+        return ViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: AdapterChat.viewHolder, position: Int) {
+    override fun onBindViewHolder(holder: AdapterChat.ViewHolder, position: Int) {
         holder.bind(chatList[position])
     }
 

@@ -47,7 +47,7 @@
                 android:background="@drawable/radius_8_stroke_darkgray"
                 android:ems="10"
                 android:hint="학번을 입력해 주세요."
-                android:inputType="text"
+                android:inputType="number"
                 android:paddingStart="12dp"
                 android:textColorHint="@color/gray"
                 android:textSize="14sp"
