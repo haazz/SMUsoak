@@ -38,4 +38,5 @@ out/
 
 ### firebase ###
 firebase/
+.env
 

@@ -687,9 +687,9 @@ Content-Length: 39
 </div>
 </div>
 <div class="sect2">
-<h3 id="_유저_이미지_가져오기">유저 이미지 가져오기</h3>
+<h3 id="_유저_정보_가져오기">유저 정보 가져오기</h3>
 <div class="sect3">
-<h4 id="_유저_이미지_가져오기_http_request">HTTP request</h4>
+<h4 id="_유저_정보_가져오기_http_request">HTTP request</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">POST /api/v1/user/info HTTP/1.1
@@ -705,7 +705,7 @@ Host: localhost:8080
 </div>
 </div>
 <div class="sect3">
-<h4 id="_유저_이미지_가져오기_request_fields">Request fields</h4>
+<h4 id="_유저_정보_가져오기_request_fields">Request fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 25%;">
@@ -732,7 +732,7 @@ Host: localhost:8080
 </table>
 </div>
 <div class="sect3">
-<h4 id="_유저_이미지_가져오기_http_response">HTTP response</h4>
+<h4 id="_유저_정보_가져오기_http_response">HTTP response</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
@@ -771,7 +771,7 @@ Content-Length: 556
 </div>
 </div>
 <div class="sect3">
-<h4 id="_유저_이미지_가져오기_response_fields">Response fields</h4>
+<h4 id="_유저_정보_가져오기_response_fields">Response fields</h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -832,11 +832,71 @@ Content-Length: 556
 </div>
 </div>
 </div>
+<div class="sect1">
+<h2 id="_닉네임_중복_체크">닉네임 중복 체크</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_닉네임_중복_체크_http_request">HTTP request</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">GET /api/v1/user/check/nickname/test HTTP/1.1
+Host: localhost:8080</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_닉네임_중복_체크_http_response">HTTP response</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
+Content-Type: application/json;charset=UTF-8
+Content-Length: 63
+
+{
+  "success" : true,
+  "data" : {
+    "available" : true
+  }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_닉네임_중복_체크_response_fields">Response fields</h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Path</th>
+<th class="tableblock halign-left valign-top">Type</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>success</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">성공 여부</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.available</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Boolean</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">닉네임 사용 가능 여부 (true = 사용가능 / false = 불가능)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
 </div>
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2024-04-16 17:06:14 +0900
+Last updated 2024-04-16 17:10:17 +0900
 </div>
 </div>
 </body>

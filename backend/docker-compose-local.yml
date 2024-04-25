@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  springboot:
+    container_name: springboot-container
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - smusoak_network
+
+  mysql:
+    container_name: mysql-container
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      MYSQL_USER: ${MYSQL_USER}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+    ports:
+      - "3306:3306"
+    networks:
+      - smusoak_network
+    volumes:
+      - mysql_data:/var/lib/mysql  # MySQL 데이터를 저장하는 볼륨
+
+  redis:
+    container_name: redis-container
+    image: redis
+    restart: always
+    networks:
+      - smusoak_network
+    volumes:
+      - redis_data:/data  # Redis 데이터를 저장하는 볼륨
+
+networks:
+  smusoak_network:
+
+volumes:
+  mysql_data:  # MySQL 데이터를 저장하는 볼륨 정의
+  redis_data:  # Redis 데이터를 저장하는 볼륨 정의
