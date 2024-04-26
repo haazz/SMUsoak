@@ -55,6 +55,7 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var roomId: String
     private lateinit var chatMessage: String
     private lateinit var chatList:MutableList<ChatMessage>
+    private var open = false
     private val user = MySharedPreference.user
     private val sender = user.getString("mail","")
     private val token= user.getString("token","")
@@ -105,6 +106,7 @@ class ActivityChat : AppCompatActivity() {
             val path = getRealPathFromUri(uri)
             val file = File(path!!)
             var imageText =""
+
             //jpg, jpeg, png 인지 확인
             if(file.toString().substring(file.toString().length-3)=="jpg" || file.toString().substring(file.toString().length-4)=="jpeg"){
                 imageText = encodeImageToBase64(path, "jpeg")!!
@@ -112,18 +114,17 @@ class ActivityChat : AppCompatActivity() {
                 imageText = encodeImageToBase64(path, "PNG")!!
             }
 
-            if(stompClient.isConnected){
+            Log.d("stomp", imageText.length.toString())
+
+            if(open){
                 val data = JSONObject()
                 val currentTime = getCurrentTime()
                 data.put("roomId", roomId)
                 data.put("message", imageText)
-                data.put("sender", "$sender")
+                data.put("senderMail", "$sender")
                 data.put("time", currentTime)
                 data.put("img", true)
                 stompClient.send("/topic/$roomId", data.toString()).subscribe()
-            }else{
-                stompClient.connect(headers)
-                Toast.makeText(this@ActivityChat,"전송에 실패했습니다. 다시 시도해주세요.",Toast.LENGTH_SHORT).show()
             }
         }
     }
@@ -164,9 +165,11 @@ class ActivityChat : AppCompatActivity() {
             { topicMessage ->
                 val payload = topicMessage.payload
                 val jsonObject = JSONObject(payload)
+                val roomId = jsonObject.getString("roomId")
                 val message = jsonObject.getString("message")
-                val sender = jsonObject.getString("sender")
+                val sender = jsonObject.getString("senderMail")
                 val time = jsonObject.getString("time")
+                val img = jsonObject.getBoolean("img")
 
                 val currentTime=getCurrentTime()
                 val currentDate=getCurrentDate()
@@ -200,6 +203,24 @@ class ActivityChat : AppCompatActivity() {
             }
         )
 
+        stompClient.lifecycle().subscribe { lifecycleEvent ->
+            when (lifecycleEvent.type) {
+                LifecycleEvent.Type.OPENED -> {
+                    open=true
+                }
+                LifecycleEvent.Type.CLOSED -> {
+                    open=false
+                    stompClient.connect(headers)
+                }
+                LifecycleEvent.Type.ERROR -> {
+                    open=false
+                    stompClient.connect(headers)
+                }
+                else->{
+                }
+            }
+        }
+
         chatList=databaseHelper.getAllMessages(roomId)
 
         //recyclerView 초기 설정
@@ -231,18 +252,14 @@ class ActivityChat : AppCompatActivity() {
 
                 val currentTime = getCurrentTime()
 
-                if(stompClient.isConnected){
+                if(open) {
                     val data = JSONObject()
                     data.put("roomId", roomId)
                     data.put("message", chatMessage)
-                    data.put("senderMail", "message $sender")
+                    data.put("senderMail", "$sender")
                     data.put("img", false)
                     data.put("time", currentTime)
                     stompClient.send("/topic/$roomId", data.toString()).subscribe()
-                    chatEdit.setText("")
-                }else{
-                    stompClient.connect(headers)
-                    Toast.makeText(this@ActivityChat,"전송에 실패했습니다. 다시 시도해주세요.",Toast.LENGTH_SHORT).show()
                     chatEdit.setText("")
                 }
             }
@@ -334,9 +351,9 @@ class ActivityChat : AppCompatActivity() {
         val bitmap = BitmapFactory.decodeFile(imagePath)
         val outputStream = ByteArrayOutputStream()
         if(type=="PNG"){
-            bitmap?.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
         }else{
-            bitmap?.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
+            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
         }
         val byteArray = outputStream.toByteArray()
         return Base64.encodeToString(byteArray, Base64.DEFAULT)
