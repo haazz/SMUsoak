@@ -25,6 +25,10 @@ interface RetrofitAPI {
     @POST("/api/v1/auth/mail/verification")
     fun checkNum(@Body request: Retrofit.RequestCheckNum): Call<Retrofit.ResponseSuccess>
 
+    //닉네임 중복 확인
+    @GET("/api/v1/user/check/nickname/{nick}")
+    fun checkNick(@Path("nick") nick: String): Call<Retrofit.ResponseCheckNick>
+
     //회원가입
     @POST("/api/v1/auth/signup")
     fun signUp(@Body request: Retrofit.RequestSignUp): Call<Retrofit.ResponseToken>

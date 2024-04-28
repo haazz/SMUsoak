@@ -75,7 +75,7 @@ class ActivityLogin : AppCompatActivity() {
                         }
                     }
                     else{
-                        Toast.makeText(this@ActivityLogin,"학번 및 비밀번호를 다시 확인해주세요.",Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@ActivityLogin,"학번 및 비밀번호를 다시 확인해 주세요.",Toast.LENGTH_SHORT).show()
                     }
                 }
 

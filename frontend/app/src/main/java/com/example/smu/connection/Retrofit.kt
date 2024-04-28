@@ -3,7 +3,7 @@ package com.example.smu.connection
 import com.google.gson.annotations.SerializedName
 
 class Retrofit {
-    //순서 1. 로그인 2. 회원가입 3. 메일 인증 4. 인증 번호 확인 5. 성공여부만 반환 6. 유저 프로필 가져오기 7. 채팅룸 리스트 가져오기
+    //순서 1. 로그인 2. 회원가입 3. 메일 인증 4. 인증 번호 확인 5. 닉네임 중복 확인 6. 성공여부만 반환 7. 유저 프로필 가져오기 8. 채팅룸 리스트 가져오기
     //1. 로그인
     data class RequestSignIn(
         @SerializedName("mail")
@@ -58,13 +58,26 @@ class Retrofit {
         val authCode: String
     )
 
-    //5. 성공 여부만 반환
+    //5. 닉에임 중복 확인
+    data class ResponseCheckNick(
+        @SerializedName("success")
+        val success: Boolean,
+        @SerializedName("data")
+        val data: CheckNick
+    )
+
+    data class CheckNick(
+        @SerializedName("available")
+        val available: Boolean
+    )
+
+    //6. 성공 여부만 반환
     data class ResponseSuccess(
         @SerializedName("success")
         val success: Boolean
     )
 
-    //6. 유저 프로필 가져오기
+    //7. 유저 프로필 가져오기
     data class RequestUserProfile(
         @SerializedName("mail")
         val mail: String,
@@ -87,7 +100,7 @@ class Retrofit {
         val type: String
     )
 
-    //7. 채팅룸 리스트 가져오기
+    //8. 채팅룸 리스트 가져오기
     data class ResponseChatroom(
         @SerializedName("success")
         val success: Boolean,

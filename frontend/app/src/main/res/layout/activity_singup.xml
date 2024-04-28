@@ -176,8 +176,8 @@
                 android:layout_marginTop="5dp"
                 android:alpha="0.5"
                 android:background="@drawable/radius_8_solid_smu"
-                android:text="인증번호 전송"
                 android:enabled="false"
+                android:text="인증번호 전송"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="@+id/signup_edit_id"
@@ -346,19 +346,22 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="2dp"
                 android:text="*선택"
+                android:textColor="@color/red"
                 android:textSize="10sp"
                 app:layout_constraintBottom_toBottomOf="@+id/signup_text7"
                 app:layout_constraintStart_toEndOf="@+id/signup_text7" />
 
             <TextView
-                android:id="@+id/signup_text10"
+                android:id="@+id/signup_text_checknick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="5dp"
-                android:text="사용 가능한 특수문자 : ~!@#$%^&amp;*()+|="
+                android:layout_marginStart="3dp"
+                android:layout_marginTop="3dp"
+                android:text="TextView"
                 android:textSize="12sp"
-                app:layout_constraintBottom_toBottomOf="@+id/signup_text2"
-                app:layout_constraintStart_toEndOf="@+id/signup_text2" />
+                android:visibility="invisible"
+                app:layout_constraintStart_toStartOf="@+id/signup_edit_nickname"
+                app:layout_constraintTop_toBottomOf="@+id/signup_edit_nickname" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
