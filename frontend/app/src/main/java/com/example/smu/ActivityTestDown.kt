@@ -31,9 +31,6 @@ class ActivityTestDown : AppCompatActivity() {
         Log.d("profile", token)
         binding.btnTestdown.setOnClickListener {
             val call = RetrofitObject.getRetrofitService.userprofile(token, Retrofit.RequestUserProfile(email!!, mailList))
-            Log.d("profile", mailList.toString())
-            Log.d("profile", token)
-            Log.d("profile", email.toString())
             call.enqueue(object : Callback<Retrofit.ResponseUserProfile> {
                 override fun onResponse(call: Call<Retrofit.ResponseUserProfile>, response: Response<Retrofit.ResponseUserProfile>) {
                     if (response.isSuccessful) {

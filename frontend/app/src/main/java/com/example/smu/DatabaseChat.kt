@@ -1,9 +1,10 @@
+package com.example.smu
+
 import android.annotation.SuppressLint
 import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
-import com.example.smu.ChatMessage
 
 class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -22,8 +23,8 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
 
         fun getInstance(context: Context)=
             instance ?: synchronized(DatabaseChat::class.java){
-                instance ?:DatabaseChat(context).also{
-                    instance=it
+                instance ?: DatabaseChat(context).also{
+                    instance =it
                 }
             }
     }

@@ -1,6 +1,5 @@
 package com.example.smu
 
-import DatabaseChat
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Resources
@@ -19,7 +18,6 @@ import android.util.Base64
 import android.util.Log
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog

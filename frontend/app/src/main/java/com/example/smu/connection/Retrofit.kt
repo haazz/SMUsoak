@@ -113,4 +113,21 @@ class Retrofit {
         @SerializedName("mails")
         val mails: List<String>
     )
+
+    data class RequestTestRoom(
+        @SerializedName("mails")
+        val mails: MutableList<String>
+    )
+
+    data class ResponseTestRoom(
+        @SerializedName("success")
+        val success: Boolean,
+        @SerializedName("data")
+        val data: ChatRoomId
+    )
+
+    data class ChatRoomId(
+        @SerializedName("chatRoomId")
+        val chatRoomId: Boolean
+    )
 }

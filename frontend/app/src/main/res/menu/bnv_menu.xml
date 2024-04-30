@@ -9,6 +9,10 @@
         android:icon="@drawable/svg_bnv_chat"
         android:title="채팅" />
     <item
+        android:id="@+id/bnv_board"
+        android:icon="@drawable/svg_bnv_board"
+        android:title="게시판" />
+    <item
         android:id="@+id/bnv_profile"
         android:icon="@drawable/svg_bnv_profile"
         android:title="프로필" />

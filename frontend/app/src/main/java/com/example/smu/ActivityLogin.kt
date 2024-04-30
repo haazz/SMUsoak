@@ -1,6 +1,5 @@
 package com.example.smu
 
-import DatabaseChat
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -22,11 +21,10 @@ class ActivityLogin : AppCompatActivity() {
     //자동 로그인 설정
     private val user = MySharedPreference.user
     private val editor = user.edit()
-    private val databaseHelper: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext)}
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        databaseHelper.deleteChatroom("2")
+
         val btnSignIn = binding.loginBtnSignin
         val btnFindPw = binding.loginBtnFindpw
         val btnSignUp = binding.loginBtnSingup
@@ -34,12 +32,12 @@ class ActivityLogin : AppCompatActivity() {
         var autologin = false
 
         autoCheck.setOnCheckedChangeListener { check, isChecked ->
-            if (isChecked) {
+            autologin = if (isChecked) {
                 editor.putBoolean("autologin", true)
-                autologin = true
+                true
             } else {
                 editor.putBoolean("autologin", false)
-                autologin = false
+                false
             }
             editor.apply()
         }
@@ -53,8 +51,8 @@ class ActivityLogin : AppCompatActivity() {
         btnSignIn.setOnClickListener {
             id = binding.loginEditId.text.toString()+"@sangmyung.kr"
             pw = binding.loginEditPw.text.toString()
-            val fcm_token = user.getString("fcm token", "")
-            val call = RetrofitObject.getRetrofitService.signIn(Retrofit.RequestSignIn(id, pw, fcm_token!!))
+            val fcmToken = user.getString("fcm token", "")
+            val call = RetrofitObject.getRetrofitService.signIn(Retrofit.RequestSignIn(id, pw, fcmToken!!))
             call.enqueue(object : Callback<Retrofit.ResponseToken> {
                 override fun onResponse(call: Call<Retrofit.ResponseToken>, response: Response<Retrofit.ResponseToken>) {
                     if (response.isSuccessful) {
@@ -69,7 +67,7 @@ class ActivityLogin : AppCompatActivity() {
                                     editor.putString("pw", pw)
                                 }
                                 editor.apply()
-                                val intent = Intent(this@ActivityLogin, ActivityChat::class.java)
+                                val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
                                 startActivity(intent)
                             }
                         }
@@ -87,9 +85,7 @@ class ActivityLogin : AppCompatActivity() {
         }
 
         btnFindPw.setOnClickListener {
-            val intent = Intent(this, ActivityTest2::class.java)
-            startActivity(intent)
-            finish()
+
         }
     }
 }

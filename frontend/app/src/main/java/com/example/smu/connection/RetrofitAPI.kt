@@ -58,4 +58,10 @@ interface RetrofitAPI {
     fun chatList(
         @Header("Authorization") token: String,
         @Path("mail") mail: String): Call<Retrofit.ResponseChatroom>
+
+    //채팅룸 만들기 테스트
+    @POST("/api/v1/test/chat-room")
+    fun makeRoom(
+        @Header("Authorization") token: String,
+        @Body request: Retrofit.RequestTestRoom): Call<Retrofit.ResponseTestRoom>
 }
