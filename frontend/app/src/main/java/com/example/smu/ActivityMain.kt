@@ -44,6 +44,14 @@ class ActivityMain : AppCompatActivity() {
                     binding.mainToolbar.title = "채팅"
                     true
                 }
+                R.id.bnv_board -> {
+                    supportFragmentManager
+                        .beginTransaction()
+                        .replace(binding.mainFrame.id, FragmentBoard())
+                        .commitAllowingStateLoss()
+                    binding.mainToolbar.title = "게시판"
+                    true
+                }
                 R.id.bnv_profile -> {
                     supportFragmentManager
                         .beginTransaction()

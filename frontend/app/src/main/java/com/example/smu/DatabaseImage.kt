@@ -11,7 +11,7 @@ class DatabaseImage private constructor(context: Context) : SQLiteOpenHelper(con
     companion object {
         private const val DATABASE_VERSION = 1
         private const val DATABASE_NAME = "user_profile.db"
-        private const val TABLE_NAME = "mail-profile"
+        private const val TABLE_NAME = "mail_profile"
         private const val COLUMN_MAIL = "mail"
         private const val COLUMN_IMAGE = "image"
 

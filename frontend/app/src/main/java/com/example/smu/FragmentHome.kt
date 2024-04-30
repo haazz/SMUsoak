@@ -31,19 +31,16 @@ class FragmentHome : Fragment() {
         mailList.add("201910912@sangmyung.kr")
 
         binding.testbtn.setOnClickListener {
-            val call = RetrofitObject.getRetrofitService.makeRoom(token!!, Retrofit.RequestTestRoom(mailList))
+            val call = RetrofitObject.getRetrofitService.makeRoom("Bearer $token", Retrofit.RequestTestRoom(mailList))
             call.enqueue(object : Callback<Retrofit.ResponseTestRoom> {
                 override fun onResponse(call: Call<Retrofit.ResponseTestRoom>, response: Response<Retrofit.ResponseTestRoom>) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         if(responseBody != null){
                             if(responseBody.success) {
-
+                                Toast.makeText(requireContext(),"방이 생성되었습니다.", Toast.LENGTH_SHORT).show()
                             }
                         }
-                    }
-                    else{
-                        Toast.makeText(requireContext(),"학번 및 비밀번호를 다시 확인해 주세요.", Toast.LENGTH_SHORT).show()
                     }
                 }
 

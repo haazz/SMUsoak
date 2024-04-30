@@ -60,6 +60,7 @@ class ActivityLogin : AppCompatActivity() {
                         if(responseBody != null){
                             if(responseBody.success) {
                                 val token = responseBody.data.token
+                                Log.d("tttt", token)
                                 editor.putString("token", token)
                                 editor.putString("mail", id)
                                 if(autologin){
