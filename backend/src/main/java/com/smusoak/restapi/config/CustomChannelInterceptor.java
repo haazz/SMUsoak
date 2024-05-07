@@ -84,7 +84,7 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
                 String roomId = (String) jsonObject.get("roomId");
 
                 System.out.println("WS:(send) accessor.Dest: " + accessor.getDestination() + "roomId: " + roomId);
-                if (accessor.getDestination().equals("/topic/" + roomId)) {
+                if (!accessor.getDestination().equals("/topic/" + roomId)) {
                     throw new CustomException(ErrorCode.BAD_REQUEST);
                 }
             } catch (ParseException e) {
