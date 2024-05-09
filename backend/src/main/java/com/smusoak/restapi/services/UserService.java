@@ -66,13 +66,6 @@ public class UserService {
         return true;
     }
 
-    public void updateUserImg(ImgDto.UpdateUserImgRequest request) {
-        System.out.println(request.getMail());
-        System.out.println(request.getFile().getSize());
-        MultipartFile multipartFile = resizeImg(request.getFile());
-        s3Service.updateS3Img(request.getMail(), multipartFile, request.getFile().getContentType());
-    }
-
     public List<UserDto.UserInfoResponse> getUserInfo(UserDto.UserInfoRequest request) {
         List<UserDto.UserInfoResponse> userInfoResponses = new ArrayList<>();
         for(String mail : request.getMailList()) {
@@ -115,40 +108,6 @@ public class UserService {
         }
         return userInfoResponses;
     }
-
-    private MultipartFile resizeImg(MultipartFile multipartFile) {
-        try {
-            BufferedImage bufferedImage = Thumbnails.of(multipartFile.getInputStream())
-                    .size(300, 300)
-                    .asBufferedImage();
-
-            // 기존 file type 저장
-            String contentType = multipartFile.getContentType().toString();
-            String type;
-            // jpeg, jpg, png가 아닌 경우 throw
-            if(contentType.endsWith("jpeg") || contentType.endsWith("jpg")) {
-                type = "jpeg";
-            }
-            else if(contentType.endsWith("png")) {
-                type = "png";
-            }
-            else {
-                System.out.println("UserService/resizeImg: not png and jpeg");
-                throw new CustomException(ErrorCode.BAD_REQUEST);
-            }
-
-            // "Buffered Image" -> "byte array" -> MultipartFile
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
-            ImageIO.write(bufferedImage, type, baos);
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(baos.toByteArray());
-            // MockMultipartFile은 원래 test용으로 만들어졌지만 multipartfile로 변환할때도 사용한다.
-            return new MockMultipartFile("fileName", byteArrayInputStream.readAllBytes());
-
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.NO_SUCH_ALGORITHM);
-        }
-    }
-
 
     public UserDetailsService userDetailsService() {
         return new UserDetailsService() {

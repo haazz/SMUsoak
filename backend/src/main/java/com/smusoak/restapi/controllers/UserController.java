@@ -3,6 +3,7 @@ package com.smusoak.restapi.controllers;
 import com.smusoak.restapi.dto.ImgDto;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.response.ApiResponseEntity;
+import com.smusoak.restapi.services.S3Service;
 import com.smusoak.restapi.services.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+    private final S3Service s3Service;
 
     @PostMapping("/update/info")
     public ResponseEntity<ApiResponseEntity> updateUserDetails(@RequestBody UserDto.UpdateUserDetailsRequest request) {
@@ -31,8 +33,7 @@ public class UserController {
     @PostMapping(value = "/update/img", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponseEntity> updateUserImg(@RequestPart(value="info", required=true) ImgDto.UpdateUserImgRequest request,
                                                            @RequestPart(value="file", required=true) MultipartFile file) {
-        request.setFile(file);
-        userService.updateUserImg(request);
+        s3Service.updateImg(request.getMail(), file);
         return ApiResponseEntity.toResponseEntity();
     }
 

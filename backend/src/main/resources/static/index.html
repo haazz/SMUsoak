@@ -459,13 +459,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_유저_정보_업데이트">유저 정보 업데이트</a></li>
 <li><a href="#_유저_프로필_이미지_업데이트">유저 프로필 이미지 업데이트</a></li>
 <li><a href="#_유저_정보_가져오기">유저 정보 가져오기</a></li>
-</ul>
-</li>
-<li><a href="#_닉네임_중복_체크">닉네임 중복 체크</a>
-<ul class="sectlevel2">
-<li><a href="#_닉네임_중복_체크_http_request">HTTP request</a></li>
-<li><a href="#_닉네임_중복_체크_http_response">HTTP response</a></li>
-<li><a href="#_닉네임_중복_체크_response_fields">Response fields</a></li>
+<li><a href="#_닉네임_중복_체크">닉네임 중복 체크</a></li>
 </ul>
 </li>
 <li><a href="#_chat">Chat</a>
@@ -1056,7 +1050,7 @@ uploadFile
 Content-Disposition: form-data; name=info
 Content-Type: application/json
 
-{"mail":"tmp@sangmyung.kr","file":null}
+{"mail":"tmp@sangmyung.kr"}
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
@@ -1106,11 +1100,6 @@ Content-Type: application/json
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>mail</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">@sangmyung.kr로 끝나는 메일</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>file</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Null</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">NULL입력</p></td>
 </tr>
 </tbody>
 </table>
@@ -1304,13 +1293,10 @@ Content-Length: 556
 </table>
 </div>
 </div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_닉네임_중복_체크"><a class="link" href="#_닉네임_중복_체크">닉네임 중복 체크</a></h2>
-<div class="sectionbody">
 <div class="sect2">
-<h3 id="_닉네임_중복_체크_http_request"><a class="link" href="#_닉네임_중복_체크_http_request">HTTP request</a></h3>
+<h3 id="_닉네임_중복_체크"><a class="link" href="#_닉네임_중복_체크">닉네임 중복 체크</a></h3>
+<div class="sect3">
+<h4 id="_닉네임_중복_체크_http_request"><a class="link" href="#_닉네임_중복_체크_http_request">HTTP request</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">GET /api/v1/user/check/nickname/test HTTP/1.1
@@ -1318,8 +1304,8 @@ Host: localhost:8080</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_닉네임_중복_체크_http_response"><a class="link" href="#_닉네임_중복_체크_http_response">HTTP response</a></h3>
+<div class="sect3">
+<h4 id="_닉네임_중복_체크_http_response"><a class="link" href="#_닉네임_중복_체크_http_response">HTTP response</a></h4>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code class="language-http hljs" data-lang="http">HTTP/1.1 200 OK
@@ -1335,8 +1321,8 @@ Content-Length: 63
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_닉네임_중복_체크_response_fields"><a class="link" href="#_닉네임_중복_체크_response_fields">Response fields</a></h3>
+<div class="sect3">
+<h4 id="_닉네임_중복_체크_response_fields"><a class="link" href="#_닉네임_중복_체크_response_fields">Response fields</a></h4>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 33.3333%;">
@@ -1363,6 +1349,7 @@ Content-Length: 63
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 </div>

@@ -8,10 +8,7 @@ import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.filters.JwtAuthenticationFilter;
 import com.smusoak.restapi.models.User;
 import com.smusoak.restapi.restdocs.AbstractRestDocsTests;
-import com.smusoak.restapi.services.AuthenticationService;
-import com.smusoak.restapi.services.JwtService;
-import com.smusoak.restapi.services.RedisService;
-import com.smusoak.restapi.services.UserService;
+import com.smusoak.restapi.services.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -46,6 +43,8 @@ public class UserControllerTest extends AbstractRestDocsTests {
     JwtService jwtService;
     @MockBean
     UserService userService;
+    @MockBean
+    S3Service s3Service;
 
     @Test
     void UpdateUserDetailsTest() throws Exception {
@@ -115,8 +114,7 @@ public class UserControllerTest extends AbstractRestDocsTests {
                                         partWithName("info").description("이미지 정보 (JSON)")
                                 ),
                                 requestPartFields("info",
-                                        fieldWithPath("mail").type(JsonFieldType.STRING).description("@sangmyung.kr로 끝나는 메일"),
-                                        fieldWithPath("file").type(JsonFieldType.NULL).description("NULL입력")
+                                        fieldWithPath("mail").type(JsonFieldType.STRING).description("@sangmyung.kr로 끝나는 메일")
                                 ),
                                 responseFields(
                                         fieldWithPath("success").type(JsonFieldType.BOOLEAN).description("성공 여부"),
