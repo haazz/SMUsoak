@@ -15,6 +15,5 @@ public class ImgDto {
     public static class UpdateUserImgRequest {
         @NotBlank
         private String mail;
-        private MultipartFile file;
     }
 }
