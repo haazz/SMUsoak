@@ -11,7 +11,9 @@ import com.smusoak.restapi.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.*;
 import java.util.*;
 
 @Service
@@ -21,6 +23,7 @@ public class ChatService {
     private final UserRepository userRepository;
     private final RedisService redisService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
+    private final S3Service s3Service;
 
     // 웹소켓을 구독 중이지 않은 사용자들에게 FCM을 사용하여 알림 보내기
     public void sendMessage(ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
@@ -101,34 +104,9 @@ public class ChatService {
         return roomId;
     }
 
-//    @Transactional(readOnly = true)
-//    public ChatRoomDto.Detail getRoomDetail(Long roomId) {
-//        Optional<ChatRoomDto.Detail> room = chatRoomRepository.findById(roomId).map(ChatRoomDto.Detail::of);
-//        return room.orElseThrow();
-//    }
-
-//    public List<ChatRoom> findListByMemberId(Long id) {
-//        return entityManager.createQuery("select r from ChatRoom r where r.customer.id = :id or r.seller.id = :id", ChatRoom.class)
-//                .setParameter("id", id)
-//                .getResultList();
-//    }
-//
-//    private boolean checkDuplicatiedChatRoom(List<Long> userIdList){
-//        Optional<ChatRoom> chatRoomList = entityManager.createQuery("select r from ChatRoom r where r.customer.id = :customerId and r.seller.id = :sellerId and r.product.id = :productId", ChatRoom.class)
-//                .setParameter("customerId", customerId)
-//                .setParameter("sellerId", sellerId)
-//                .setParameter("productId", productId)
-//                .getResultList().stream().findFirst();
-//        return chatRoomList.isPresent();
-//    }
-//    @Transactional(rollbackFor = Exception.class)
-//    public void saveMessage(ChatDto.SendMessageRequest message) {
-//        messageRepository.save(Message.builder()
-//                .message(message.getMessage())
-//                .sender(userRepository.findByMail(message.getSenderMail()).get())
-//                .chatRoom(ChatRoom.builder().id(message.getRoomId()).build())
-//                .sendAt(LocalDateTime.now())
-//                .build());
-//    }
-
+    public String updateImg(String roomId, MultipartFile file) {
+        String fileName = roomId + "/" + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+        s3Service.updateImg(fileName, file);
+        return fileName;
+    }
 }
