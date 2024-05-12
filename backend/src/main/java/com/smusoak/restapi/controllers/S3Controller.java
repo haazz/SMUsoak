@@ -13,10 +13,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1")
 public class S3Controller {
     private final S3Service s3Service;
-
     @GetMapping("/download/img/{fileName}")
     public ResponseEntity<byte[]> downloadImg(@PathVariable String fileName) {
         return s3Service.downloadFile(fileName);
     }
 
+    @GetMapping("/download/img/{path}/{fileName}")
+    public ResponseEntity<byte[]> downloadImgWithDir(@PathVariable String path, @PathVariable String fileName) {
+        return s3Service.downloadFile(path + "/" + fileName);
+    }
 }

@@ -16,4 +16,17 @@ public class ImgDto {
         @NotBlank
         private String mail;
     }
+
+    @Data
+    @NoArgsConstructor
+    public static class UpdateChatImgRequest {
+        @NotBlank
+        private String roomId;
+    }
+
+    @Data
+    @Builder
+    public static class ImgNameResponse {
+        private String fileName;
+    }
 }
