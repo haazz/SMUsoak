@@ -41,11 +41,11 @@ interface RetrofitAPI {
         @Part file: MultipartBody.Part,
         @Part("info") info: RequestBody): Call<Retrofit.ResponseSuccess>
 
-    //프로필 가져오기
-    @POST("/api/v1/user/imgs")
-    fun userprofile(
+    //유저정보 가져오기
+    @POST("/api/v1/user/info")
+    fun userInfo(
         @Header("Authorization") token: String,
-        @Body request: Retrofit.RequestUserProfile): Call<Retrofit.ResponseUserProfile>
+        @Body request: Retrofit.RequestUser): Call<Retrofit.ResponseUser>
 
     //프로필 다운로드
     @GET("/api/v1/download/img/{fileName}")

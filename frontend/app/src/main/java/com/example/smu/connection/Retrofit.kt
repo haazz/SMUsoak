@@ -3,7 +3,7 @@ package com.example.smu.connection
 import com.google.gson.annotations.SerializedName
 
 class Retrofit {
-    //순서 1. 로그인 2. 회원가입 3. 메일 인증 4. 인증 번호 확인 5. 닉네임 중복 확인 6. 성공여부만 반환 7. 유저 프로필 가져오기 8. 채팅룸 리스트 가져오기
+    //순서 1. 로그인 2. 회원가입 3. 메일 인증 4. 인증 번호 확인 5. 닉네임 중복 확인 6. 성공여부만 반환 7. 유저 정보 가져오기 8. 채팅룸 리스트 가져오기
     //1. 로그인
     data class RequestSignIn(
         @SerializedName("mail")
@@ -77,26 +77,32 @@ class Retrofit {
         val success: Boolean
     )
 
-    //7. 유저 프로필 가져오기
-    data class RequestUserProfile(
-        @SerializedName("mail")
-        val mail: String,
+    //7. 유저 정보 가져오기
+    data class RequestUser(
         @SerializedName("mailList")
         val mailList: List<String>
     )
-    data class ResponseUserProfile(
+    data class ResponseUser(
         @SerializedName("success")
         val success: Boolean,
         @SerializedName("data")
-        val data: List<MailList>
+        val data: List<UserData>
     )
 
-    data class MailList(
+    data class UserData(
         @SerializedName("mail")
         val mail: String,
-        @SerializedName("url")
+        @SerializedName("nickname")
+        val nick: String,
+        @SerializedName("age")
+        val age: Int,
+        @SerializedName("gender")
+        val gender: String,
+        @SerializedName("mbti")
+        val mbti: String?,
+        @SerializedName("imgUrl")
         val url: String,
-        @SerializedName("type")
+        @SerializedName("imgType")
         val type: String
     )
 

@@ -28,12 +28,6 @@
             </intent-filter>
         </service>
         <activity
-            android:name=".ActivityTestDown"
-            android:exported="false" />
-        <activity
-            android:name=".ActivityTest2"
-            android:exported="false" />
-        <activity
             android:name=".ActivityImage"
             android:exported="false" />
         <activity

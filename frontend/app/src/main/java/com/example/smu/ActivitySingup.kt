@@ -207,21 +207,24 @@ class ActivitySingup : AppCompatActivity() {
                 val call = RetrofitObject.getRetrofitService.sendNum(Retrofit.RequestSendNum(email))
                 call.enqueue(object : Callback<Retrofit.ResponseSendNum> {
                     override fun onResponse(call: Call<Retrofit.ResponseSendNum>, response: Response<Retrofit.ResponseSendNum>) {
+                        Log.d("profile", response.toString())
                         if (response.isSuccessful) {
                             val response = response.body()
                             if (response != null) {
                                 if (response.success) {
                                     btnSendNum.text = "인증번호 재전송"
                                     Toast.makeText(this@ActivitySingup, "인증 번호가 발송되었습니다.", Toast.LENGTH_SHORT).show()
-                                    btnSendNum.isEnabled = true
                                     sendnumcheck = true
                                 }
                             }
+                        }else{
+                            btnSendNum.isEnabled = true
                         }
                     }
 
                     override fun onFailure(call: Call<Retrofit.ResponseSendNum>, t: Throwable) {
                         val errorMessage = "Call Failed: ${t.message}"
+                        btnSendNum.isEnabled = true
                         Log.d("Retrofit", errorMessage)
                     }
                 })

@@ -33,15 +33,11 @@ class ActivityProfile : AppCompatActivity() {
 
     private val binding: ActivityProfileBinding by lazy { ActivityProfileBinding.inflate(layoutInflater) }
     private lateinit var changeprofileimage: ImageButton
-    private lateinit var btn_next: Button
-    private lateinit var btn_end: Button
+    private lateinit var btnNext: Button
+    private lateinit var btnEnd: Button
     private lateinit var profile: CircleImageView
     private lateinit var imagePart: MultipartBody.Part
     private lateinit var mediaType: MediaType
-
-    private val user = MySharedPreference.user
-    private val token = "Bearer " + user.getString("token", "") //나중에 intent에서 가져오는걸로 수정이 필요함
-    private val mail = user.getString("mail", "")
 
     val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
@@ -62,25 +58,26 @@ class ActivityProfile : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        btn_next=binding.profileBtnNext
-        btn_end=binding.profileBtnEnd
+        val token = "Bearer " + intent.getStringExtra("token")
+        val mail = intent.getStringExtra("mail")
+
+        btnNext=binding.profileBtnNext
+        btnEnd=binding.profileBtnEnd
 
         changeprofileimage = binding.profileBtnChange
         profile = binding.profileImageProfile
 
-        btn_next.setOnClickListener {
+        btnNext.setOnClickListener {
             val intent = Intent(this@ActivityProfile, ActivityLogin::class.java)
             startActivity(intent)
             finish()
         }
 
-        btn_end.setOnClickListener {
+        btnEnd.setOnClickListener {
             val data = JSONObject()
             data.put("mail", mail)
             val email = data.toString().toRequestBody("application/json".toMediaType())
-            Log.d("profile", data.toString())
             val call = RetrofitObject.getRetrofitService.profile(token, imagePart, email)
-            Log.d("profile", email.toString())
             call.enqueue(object : Callback<Retrofit.ResponseSuccess> {
                 override fun onResponse(call: Call<Retrofit.ResponseSuccess>, response: Response<Retrofit.ResponseSuccess>) {
                     Log.d("profile", response.toString())
@@ -155,7 +152,7 @@ class ActivityProfile : AppCompatActivity() {
         val imageRequestBody = file.asRequestBody(mediaType)
         imagePart = MultipartBody.Part.createFormData("file", file.name, imageRequestBody)
 
-        btn_end.isEnabled=true
+        btnEnd.isEnabled=true
 
         profile.setOnClickListener {
             val intent = Intent(this, ActivityImage::class.java)
