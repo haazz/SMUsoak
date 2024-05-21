@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.databinding.ActivityChatBinding
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import org.json.JSONObject
 import ua.naiksoftware.stomp.Stomp
@@ -49,10 +50,10 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var chatAdapter: AdapterChat
     private lateinit var plusBtn: ImageButton
     private lateinit var stompClient: StompClient
-    private lateinit var disposable: Disposable
     private lateinit var roomId: String
     private lateinit var chatMessage: String
     private lateinit var chatList:MutableList<ChatMessage>
+    private val compositeDisposable = CompositeDisposable()
     private var open = false
     private val user = MySharedPreference.user
     private val sender = user.getString("mail","")
@@ -159,7 +160,7 @@ class ActivityChat : AppCompatActivity() {
         stompClient.connect(headers)
         roomId = intent.getStringExtra("roomId")!!
 
-        disposable = stompClient.topic("/topic/$roomId").subscribe(
+        val topicDisposable = stompClient.topic("/topic/$roomId").subscribe(
             { topicMessage ->
                 val payload = topicMessage.payload
                 val jsonObject = JSONObject(payload)
@@ -200,7 +201,9 @@ class ActivityChat : AppCompatActivity() {
             }
         )
 
-        stompClient.lifecycle().subscribe { lifecycleEvent ->
+        compositeDisposable.add(topicDisposable)
+
+        val lifecycleDisposable = stompClient.lifecycle().subscribe { lifecycleEvent ->
             when (lifecycleEvent.type) {
                 LifecycleEvent.Type.OPENED -> {
                     open=true
@@ -217,6 +220,8 @@ class ActivityChat : AppCompatActivity() {
                 }
             }
         }
+
+        compositeDisposable.add(lifecycleDisposable)
 
         chatList=databaseHelper.getAllMessages(roomId)
 
@@ -282,7 +287,7 @@ class ActivityChat : AppCompatActivity() {
 
     override fun onDestroy() {
         super.onDestroy()
-        disposable.dispose()
+        compositeDisposable.clear()
         stompClient.disconnect()
     }
 
