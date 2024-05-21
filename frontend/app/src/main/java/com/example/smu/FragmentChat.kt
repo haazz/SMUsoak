@@ -23,7 +23,7 @@ class FragmentChat : Fragment() {
 
     private val user=MySharedPreference.user
     private val token="Bearer " + user.getString("token","")
-    private val mail=user.getString("mail","")
+    private val userMail=user.getString("mail","")
     private lateinit var recyclerViewChatRoom: RecyclerView
     private lateinit var chatRoomAdapter: AdapterChatRoom
 
@@ -43,69 +43,82 @@ class FragmentChat : Fragment() {
         return binding.root
     }
 
+    //룸 아이디와 채팅방 안에 있는 사람의 메일 리스트를 가져옴
     private fun getChatRooms() {
-        val callChatList = RetrofitObject.getRetrofitService.chatList(token, mail!!)
+        val callChatList = RetrofitObject.getRetrofitService.chatList(token, userMail!!)
         callChatList.enqueue(object : Callback<Retrofit.ResponseChatroom> {
             override fun onResponse(call: Call<Retrofit.ResponseChatroom>, response: Response<Retrofit.ResponseChatroom>) {
                 if (response.isSuccessful) {
                     val responseBody = response.body()
                     if (responseBody != null && responseBody.success) {
                         val rooms = responseBody.data
-                        loadImagesForChatRooms(rooms.toMutableList())
+                        loadUserInfoForChatRooms(rooms.toMutableList())
                     }
                 }
             }
 
             override fun onFailure(call: Call<Retrofit.ResponseChatroom>, t: Throwable) {
                 val errorMessage = "Call Failed: ${t.message}"
-                Log.d("Retrofit", errorMessage)
+                Log.d("Retrofit get room", errorMessage)
             }
         })
     }
 
-    private fun loadImagesForChatRooms(rooms: MutableList<Retrofit.Chatroom>) {
+    //유저 정보 다운
+    private fun loadUserInfoForChatRooms(rooms: MutableList<Retrofit.Chatroom>) {
+        val userMap = hashMapOf<String, String>()
+        var count = rooms.size
+
         for (room in rooms) {
-            val pairList = mutableListOf<Pair<String, String>>()
-            val call = RetrofitObject.getRetrofitService.userprofile(token, Retrofit.RequestUserProfile(mail!!, room.mails))
-            call.enqueue(object : Callback<Retrofit.ResponseUserProfile> {
-                override fun onResponse(call: Call<Retrofit.ResponseUserProfile>, response: Response<Retrofit.ResponseUserProfile>) {
+            val call = RetrofitObject.getRetrofitService.userInfo(token, Retrofit.RequestUser(room.mails))
+            call.enqueue(object : Callback<Retrofit.ResponseUser> {
+                override fun onResponse(call: Call<Retrofit.ResponseUser>, response: Response<Retrofit.ResponseUser>) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
                         if (responseBody != null) {
                             if (responseBody.success) {
                                 for (item in responseBody.data) {
-                                    val email = item.mail
-                                    val url = item.url
-                                    pairList.add(Pair(email, url))
+                                    userMap[item.mail]=item.url
+                                    Log.d("userMap", item.toString())
                                 }
                             }
                         }
                     }
+                    count--
+                    if (count == 0) {
+                        loadUserProfileImage(userMap, rooms)
+                    }
                 }
-                override fun onFailure(call: Call<Retrofit.ResponseUserProfile>, t: Throwable) {
+                override fun onFailure(call: Call<Retrofit.ResponseUser>, t: Throwable) {
                     val errorMessage = "Call Failed: ${t.message}"
-                    Log.d("Retrofit", errorMessage)
+                    Log.d("Retrofit get info", errorMessage)
                 }
             })
-            for ((email, url) in pairList) {
-                if (!databaseHelper.checkExist(email)) {
-                    val callDown = RetrofitObject.getRetrofitService.profileDown(token, url)
-                    callDown.enqueue(object : Callback<ResponseBody> {
-                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                            if (response.isSuccessful) {
-                                val byteArray = response.body()?.bytes()
-                                if (byteArray != null) {
-                                    databaseHelper.insertImage(mail, byteArray)
-                                }
+        }
+    }
+
+    //유저 이미지 다운
+    private fun loadUserProfileImage(userMap: HashMap<String, String>, rooms: MutableList<Retrofit.Chatroom>) {
+        Log.d("userMap", userMap.toString())
+        for (mail in userMap.keys) {
+            if (userMap[mail] != null) {
+                val url = userMap[mail]!!
+                val callDown = RetrofitObject.getRetrofitService.profileDown(token, url)
+                callDown.enqueue(object : Callback<ResponseBody> {
+                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                        if (response.isSuccessful) {
+                            val byteArray = response.body()?.bytes()
+                            if (byteArray != null) {
+                                Log.d("image down", "success")
+                                databaseHelper.insertImage(mail, byteArray)
                             }
                         }
-
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            val errorMessage = "Call Failed: ${t.message}"
-                            Log.d("Retrofit", errorMessage)
-                        }
-                    })
-                }
+                    }
+                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                        val errorMessage = "Call Failed: ${t.message}"
+                        Log.d("Retrofit get image", errorMessage)
+                    }
+                })
             }
         }
 
@@ -118,5 +131,4 @@ class FragmentChat : Fragment() {
         chatRoomAdapter = AdapterChatRoom(rooms, requireContext())
         recyclerViewChatRoom.adapter = chatRoomAdapter
     }
-
 }

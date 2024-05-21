@@ -2,7 +2,9 @@ package com.example.smu
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.Intent
 import android.graphics.BitmapFactory
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +28,17 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>, pri
         @SuppressLint("SetTextI18n")
         fun bind(list : Retrofit.Chatroom) {
             val mailList = list.mails.toMutableList()
+
+            itemView.setOnClickListener{
+                val intent = Intent(itemView.context, ActivityChat::class.java)
+                intent.putExtra("roomId", list.roomId.toString())
+                intent.putExtra("room", "4")
+                Log.d("roomId adapter", list.roomId.toString())
+                binding.root.context.startActivity(intent)
+            }
+
+            binding.rvChatRoomTitle.text = list.roomId.toString()
+
             mailList.remove(mail)
             when (list.mails.size) {
                 2 -> {

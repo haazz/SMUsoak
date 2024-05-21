@@ -21,9 +21,14 @@ class ActivityLogin : AppCompatActivity() {
     //자동 로그인 설정
     private val user = MySharedPreference.user
     private val editor = user.edit()
+
+    private val databaseHelper: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext)}
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        databaseHelper.deleteChatroom("1")
 
         val btnSignIn = binding.loginBtnSignin
         val btnFindPw = binding.loginBtnFindpw
@@ -49,9 +54,11 @@ class ActivityLogin : AppCompatActivity() {
         }
 
         btnSignIn.setOnClickListener {
+            btnSignIn.isEnabled = false
             id = binding.loginEditId.text.toString()+"@sangmyung.kr"
             pw = binding.loginEditPw.text.toString()
             val fcmToken = user.getString("fcm token", "")
+            Log.d("fcmToken", fcmToken.toString())
             val call = RetrofitObject.getRetrofitService.signIn(Retrofit.RequestSignIn(id, pw, fcmToken!!))
             call.enqueue(object : Callback<Retrofit.ResponseToken> {
                 override fun onResponse(call: Call<Retrofit.ResponseToken>, response: Response<Retrofit.ResponseToken>) {
@@ -60,7 +67,7 @@ class ActivityLogin : AppCompatActivity() {
                         if(responseBody != null){
                             if(responseBody.success) {
                                 val token = responseBody.data.token
-                                Log.d("tttt", token)
+                                Log.d("token", token)
                                 editor.putString("token", token)
                                 editor.putString("mail", id)
                                 if(autologin){
@@ -83,6 +90,7 @@ class ActivityLogin : AppCompatActivity() {
                     Log.d("Retrofit", errorMessage)
                 }
             })
+            btnSignIn.isEnabled = true
         }
 
         btnFindPw.setOnClickListener {

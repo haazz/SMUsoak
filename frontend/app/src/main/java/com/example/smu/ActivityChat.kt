@@ -121,7 +121,6 @@ class ActivityChat : AppCompatActivity() {
                 data.put("message", imageText)
                 data.put("senderMail", "$sender")
                 data.put("time", currentTime)
-                data.put("img", true)
                 stompClient.send("/topic/$roomId", data.toString()).subscribe()
             }
         }
@@ -158,8 +157,9 @@ class ActivityChat : AppCompatActivity() {
         stompClient =  Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
         stompClient.withServerHeartbeat(10000)
         stompClient.connect(headers)
-        roomId = "2"
-        disposable = stompClient.topic("/topic/$roomId").subscribe(//임시 방번호
+        roomId = intent.getStringExtra("roomId")!!
+
+        disposable = stompClient.topic("/topic/$roomId").subscribe(
             { topicMessage ->
                 val payload = topicMessage.payload
                 val jsonObject = JSONObject(payload)
@@ -167,7 +167,6 @@ class ActivityChat : AppCompatActivity() {
                 val message = jsonObject.getString("message")
                 val sender = jsonObject.getString("senderMail")
                 val time = jsonObject.getString("time")
-                val img = jsonObject.getBoolean("img")
 
                 val currentTime=getCurrentTime()
                 val currentDate=getCurrentDate()
@@ -185,7 +184,7 @@ class ActivityChat : AppCompatActivity() {
                 }
 
                 if(chatList.size >= 2){
-                    if(chatList[chatList.size-1].sender.split(" ")[1] == sender.split(" ")[1] && chatList[chatList.size-1].time == time){
+                    if(chatList[chatList.size-1].sender == sender && chatList[chatList.size-1].time == time){
                         chatList[chatList.size-1].time = ""
                     }
                 }
@@ -255,7 +254,6 @@ class ActivityChat : AppCompatActivity() {
                     data.put("roomId", roomId)
                     data.put("message", chatMessage)
                     data.put("senderMail", "$sender")
-                    data.put("img", false)
                     data.put("time", currentTime)
                     stompClient.send("/topic/$roomId", data.toString()).subscribe()
                     chatEdit.setText("")
