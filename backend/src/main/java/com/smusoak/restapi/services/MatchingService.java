@@ -17,9 +17,17 @@ public class MatchingService {
     }
 
     public void matchUsers(MatchingInfo matchingInfo) {
+        if (matchingInfo == null || matchingInfo.getUser() == null) {
+            throw new IllegalArgumentException("MatchingInfo or its User cannot be null");
+        }
+
         List<MatchingInfo> matchingInfos = matchingInfoRepository.findAll();
 
         for (MatchingInfo otherMatchingInfo : matchingInfos) {
+            if (otherMatchingInfo == null || otherMatchingInfo.getUser() == null) {
+                continue; // Skip any null entries
+            }
+
             if (isMatch(matchingInfo, otherMatchingInfo)) {
                 // 매칭이 되었을 때의 처리
                 matchingInfoRepository.delete(otherMatchingInfo);
@@ -42,6 +50,10 @@ public class MatchingService {
 
     private boolean isMyPreferencesMatch(MatchingInfo myMatchingInfo, MatchingInfo otherMatchingInfo) {
         // 나의 나이 및 성별이 상대방의 최소 및 최대 나이 조건과 성별과 부합하는지 확인
+        if (myMatchingInfo.getUser() == null || otherMatchingInfo.getUser() == null) {
+            return false; // If either user is null, cannot match
+        }
+
         int myAge = myMatchingInfo.getUser().getAge();
         return myAge >= otherMatchingInfo.getMinPartnerAge() && myAge <= otherMatchingInfo.getMaxPartnerAge() &&
                 myMatchingInfo.getPartnerGender() == otherMatchingInfo.getUser().getGender();
@@ -49,8 +61,23 @@ public class MatchingService {
 
     private boolean isOtherPreferencesMatch(MatchingInfo myMatchingInfo, MatchingInfo otherMatchingInfo) {
         // 상대방의 나이 및 성별이 나의 최소 및 최대 나이 조건과 성별과 부합하는지 확인
+        if (myMatchingInfo.getUser() == null || otherMatchingInfo.getUser() == null) {
+            return false; // If either user is null, cannot match
+        }
+
         int otherAge = otherMatchingInfo.getUser().getAge();
         return otherAge >= myMatchingInfo.getMinPartnerAge() && otherAge <= myMatchingInfo.getMaxPartnerAge() &&
                 otherMatchingInfo.getPartnerGender() == myMatchingInfo.getUser().getGender();
     }
 }
+
+//java.lang.NullPointerException: Cannot invoke "com.smusoak.restapi.models.User.getAge()" because the return value of "com.smusoak.restapi.models.MatchingInfo.getUser()" is null
+
+//{
+// "minpartnerAge":"20",
+// "maxpartnerAge": "22",
+// "partnerGender":"M",
+// "user_mail": "smusoak@gmail.com"
+//}
+
+//ALTER TABLE MatchingInfo DROP FOREIGN KEY FK_User_Email;

@@ -12,7 +12,7 @@ public class OpenGroupChatDto {
         private String title;
         private String description;
 
-        private String mail;
+        private String creator;
         private LocalDateTime createdAt;
     }
     @Builder
