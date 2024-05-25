@@ -13,5 +13,5 @@ import java.util.Set;
 
 public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByMail(String mail);
-    Set<User> findByChatRoomsId(Long id);
+    List<User> findByChatRoomsId(Long id);
 }
