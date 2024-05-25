@@ -12,7 +12,11 @@ public class ChatDto {
     public static class SendMessageRequest {
         private String message;
         private String senderMail;
+        // 0 or null = text
+        // 1 = image
+        private Long flag;
         private Long roomId;
+        private String time;
     }
 
     @Data
