@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,8 +50,8 @@ public class OpenChatRoomService {
         LocalDateTime createdAt = request.getCreatedAt();
 
         ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder().build());
-        chatRoom.setUserList(new ArrayList<>());
-        chatRoom.getUserList().add(creator); // 생성자를 채팅방에 추가
+        chatRoom.setUsers(new HashSet<>());
+        chatRoom.getUsers().add(creator); // 생성자를 채팅방에 추가
 
         OpenGroupChat groupChat = OpenGroupChat.builder()
                 .title(request.getTitle())
