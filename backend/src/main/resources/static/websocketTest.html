@@ -1,0 +1,65 @@
+<html>
+<head>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/sockjs-client/1.6.1/sockjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/stomp.js/2.3.3/stomp.js"></script>
+    <script type="text/javascript">
+
+        var stompClient = null;
+        var roomid = 0
+
+        function subscribe() {
+            roomid = document.getElementById('roomid').value;
+
+            if (stompClient != null) {
+                stompClient.disconnect();
+            }
+            var socket = new SockJS('/ws');
+            stompClient = Stomp.over(socket);
+            stompClient.connect({}, function(frame) {
+                console.log(frame);
+                stompClient.subscribe('/topic/' + roomid, function(result) {
+                    show(JSON.parse(result.body));
+                });
+            });
+            var messageContainer = document.getElementById('message-container');
+            messageContainer.style.display = 'block';
+        }
+
+
+        function sendMessage() {
+            var text = document.getElementById('text').value;
+            var sender = document.getElementById('sender').value;
+            stompClient.send("/app/send", {},
+                JSON.stringify({'message':text, 'senderMail': sender, 'roomId': roomid}));
+        }
+
+        function show(message) {
+            var response = document.getElementById('messages');
+            var p = document.createElement('p');
+            p.innerHTML= "message: "  + message.message + "<br />" + "sender: " + message.senderMail;
+            response.appendChild(p);
+        }
+    </script>
+</head>
+<body>
+<div>
+    <div>
+        <button id="subscribe" onclick="subscribe();">Subscribe</button>
+        <input type="text" id="roomid" placeholder="RoomId"/>
+        <div id="message-container" style="display: none;" >
+            <button id="sendMessage" onclick="sendMessage();">Send</button>
+            <input type="text" id="text" placeholder="Text"/>
+            <input type="text" id="sender" placeholder="sender"/>
+        </div>
+
+    </div>
+    <br />
+    <br />
+    <br />
+
+    <div id="messages"></div>
+
+</div>
+
+</body>
+</html>

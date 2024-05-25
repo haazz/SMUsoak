@@ -33,10 +33,10 @@ public class ChatController {
 
     // Mapped as app/send
     @MessageMapping("/send")
-    public ResponseEntity<ApiResponseEntity> send(@Payload ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
+    public void send(@Payload ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
+        System.out.println("/controllers/ChatController/send: " + request.toString());
         messagingTemplate.convertAndSend("/topic/" + request.getRoomId(), request);
         chatService.sendMessage(request);
-        return ApiResponseEntity.toResponseEntity();
     }
 
     @GetMapping("/room/list/{mail}")

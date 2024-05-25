@@ -76,21 +76,6 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
             redisService.setListOps(sessionId, userMail);
             redisService.setExpire(sessionId, sessionExpirationms);
         }
-        else if(accessor.getCommand().equals(StompCommand.SEND)) {
-            try {
-                // 메시지에 담겨있는 채팅룸번호와 현재 구독 중인 채팅룸번호가 같은지 확인
-                JSONParser parser = new JSONParser();
-                JSONObject jsonObject = (JSONObject) parser.parse(new String((byte[]) message.getPayload()));
-                String roomId = (String) jsonObject.get("roomId");
-
-                System.out.println("WS:(send) accessor.Dest: " + accessor.getDestination() + "roomId: " + roomId);
-                if (!accessor.getDestination().equals("/topic/" + roomId)) {
-                    throw new CustomException(ErrorCode.BAD_REQUEST);
-                }
-            } catch (ParseException e) {
-                throw new RuntimeException(e);
-            }
-        }
         return message;
     }
 

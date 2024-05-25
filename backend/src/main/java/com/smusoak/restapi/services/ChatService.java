@@ -28,13 +28,12 @@ public class ChatService {
     // 웹소켓을 구독 중이지 않은 사용자들에게 FCM을 사용하여 알림 보내기
     public void sendMessage(ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
         List<String> sessionList = redisService.getListOps("/topic/" + request.getRoomId());
-        System.out.println(sessionList);
         Set<String> chatRoomMails = this.getUserMailsByRoomId(request.getRoomId());
         for(String session: sessionList) {
             String socketMail = redisService.getListOpsByIndex(session, 0);
             chatRoomMails.remove(socketMail);
         }
-
+        System.out.println("/services/ChatService/sendMessage roomId=" + request.getRoomId() + " sessionList=" + sessionList + " chatRoomMails=" + chatRoomMails);
         // chatRoomMails에 남아 있는 메일에 FCM 메시지를 전송
         for(String chatRoomMail: chatRoomMails) {
             firebaseCloudMessageService.sendMessageByToken(request.getSenderMail(), request.getMessage(), this.getFcmTokenByMail(chatRoomMail));
@@ -81,7 +80,7 @@ public class ChatService {
     }
 
     public Set<String> getUserMailsByRoomId(Long roomId) {
-        Set<User> users = userRepository.findByChatRoomsId(roomId);
+        List<User> users = userRepository.findByChatRoomsId(roomId);
         Set<String> mails = new HashSet<>();
         for(User user: users) {
             String mail = user.getMail();
