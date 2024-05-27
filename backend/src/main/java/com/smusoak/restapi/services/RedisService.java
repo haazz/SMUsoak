@@ -69,7 +69,7 @@ public class RedisService {
         ListOperations<String, Object> listOperations = redisTemplate.opsForList();
         Long len = listOperations.size(key);
         if(len == 0) {
-            return new ArrayList<>();
+            return null;
         }
         // List<Object>를 List<String>으로 변환
         return listOperations.range(key, 0, len-1)

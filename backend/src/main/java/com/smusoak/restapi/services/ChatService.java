@@ -29,6 +29,10 @@ public class ChatService {
     public void sendMessage(ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
         List<String> sessionList = redisService.getListOps("/topic/" + request.getRoomId());
         Set<String> chatRoomMails = this.getUserMailsByRoomId(request.getRoomId());
+        if(sessionList == null || chatRoomMails == null) {
+            System.out.println("/services/ChatService/sendMessage: session or chatroom not found");
+            return;
+        }
         for(String session: sessionList) {
             String socketMail = redisService.getListOpsByIndex(session, 0);
             chatRoomMails.remove(socketMail);

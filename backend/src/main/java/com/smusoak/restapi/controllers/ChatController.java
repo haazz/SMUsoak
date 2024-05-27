@@ -29,6 +29,7 @@ import java.util.stream.Collectors;
 public class ChatController {
     private final SimpMessagingTemplate messagingTemplate;
     private final ChatService chatService;
+    private final S3Service s3Service;
 
     // Mapped as app/send
     @MessageMapping("/send")
