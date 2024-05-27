@@ -45,12 +45,13 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
     @Override
     public Message<?> preSend(Message<?> message, MessageChannel channel) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        if(accessor.getCommand().equals(StompCommand.CONNECT)) {
-            System.out.println("DetailLogMessage " + accessor.getDetailedLogMessage(message.getPayload()));
-            System.out.println("Authorization: " + accessor.getFirstNativeHeader("Authorization"));
+        // log 찍기
+        System.out.println("DetailLogMessage " + accessor.getDetailedLogMessage(message.getPayload()));
 
+        if(accessor.getCommand().equals(StompCommand.CONNECT)) {
             // Authorization header 가져오고 검증
             String authHeader = accessor.getFirstNativeHeader("Authorization");
+            System.out.println("Authorization: " + authHeader);
             if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
                 System.out.println("config/CustomChannelInterceptor.java: JWT Token이 비어있거나 Bearer로 시작하지 않음 authHeader: " + authHeader);
                 throw new CustomException(ErrorCode.JWT_TOKEN_INVALID);
@@ -82,46 +83,60 @@ public class CustomChannelInterceptor implements ChannelInterceptor {
     @Override
     public void postSend(Message<?> message, MessageChannel channel, boolean sent) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
-        // log 찍기
-        System.out.println("DetailLogMessage " + accessor.getDetailedLogMessage(message.getPayload()));
-        if(accessor == null || accessor.getCommand() == null || accessor.getCommand().equals(StompCommand.CONNECT)) {
+        if(accessor == null || accessor.getCommand() == null) {
             return;
         }
         // 연결이 끊겼을 때 sessionId 삭제, 구독 중인 채팅 방에서 sessionId 삭제
         if(accessor.getCommand().equals(StompCommand.DISCONNECT)) {
-            List<String> sessionDataList = redisService.getListOps(accessor.getSessionId());
-            if(sessionDataList == null) {
+            List<String> sessionInfos = redisService.getListOps(accessor.getSessionId());
+            List<String> sessionList;
+
+            if(sessionInfos == null) {
                 return;
+            }
+            if(sessionInfos.size() < 2) {
+                redisService.deleteByKey(accessor.getSessionId());
+                return;
+            }
+            // 구독 중인 채팅방에서 세션 아이디 삭제
+            sessionList = redisService.getListOps(sessionInfos.get(1));
+            if(sessionList != null) {
+                sessionList.remove(accessor.getSessionId());
+                redisService.deleteByKey(sessionInfos.get(1));
+                if(!sessionList.isEmpty()) {
+                    redisService.setListOps(sessionInfos.get(1), sessionList);
+                    redisService.setExpire(sessionInfos.get(1), sessionExpirationms);
+                }
             }
             redisService.deleteByKey(accessor.getSessionId());
         }
         // 채팅 방을 구독할 때 roomId 데이터에 sessionId를 업데이트
         else if(accessor.getCommand().equals(StompCommand.SUBSCRIBE)) {
+            List<String> sessionInfos = new ArrayList<>();
             List<String> sessionList = redisService.getListOps(accessor.getDestination());
+
+            // sessionId에 subscribe 정보 업데이트
+            String mail = redisService.getListOpsByIndex(accessor.getSessionId(), 0);
+            if(mail == null) {
+                System.out.println("SUBSCRIBE: Session not found");
+                return;
+            }
+            sessionInfos.add(mail);
+            sessionInfos.add(accessor.getDestination());
+            redisService.deleteByKey(accessor.getSessionId());
+            redisService.setListOps(accessor.getSessionId(), sessionInfos);
+            redisService.setExpire(accessor.getSessionId(), sessionExpirationms);
+
             // 현제 sessionId가 redis에 저장 안돼 있다면 sessionList에 add
-            if(!sessionList.contains(accessor.getSessionId())) {
+            // 채팅 방에 접속 중인 유저 업데이트
+            if(sessionList == null) {
+                sessionList = new ArrayList<>();
                 sessionList.add(accessor.getSessionId());
             }
-            // 채팅 방에 접속 중인 유저 업데이트
-            redisService.deleteByKey(accessor.getDestination());
-            redisService.setListOps(accessor.getDestination(), sessionList);
-            redisService.setExpire(accessor.getDestination(), sessionExpirationms);
-        }
-        // 채팅 방 구독을 끊을 때 roomId 데이터에 sessionId를 제거
-        else if(accessor.getCommand().equals(StompCommand.UNSUBSCRIBE)) {
-
-            List<String> sessionList = redisService.getListOps(accessor.getDestination());
-            System.out.println(sessionList);
-            // 현제 sessionId가 roomList에 저장 안돼있다면 return
-            if(!sessionList.contains(accessor.getSessionId())) {
-                return;
+            else if(!sessionList.contains(accessor.getSessionId())) {
+                sessionList.add(accessor.getSessionId());
             }
-            sessionList.remove(accessor.getSessionId());
-            // 채팅 방에 접속 중인 유저 업데이트
             redisService.deleteByKey(accessor.getDestination());
-            if(sessionList.isEmpty()) {
-                return;
-            }
             redisService.setListOps(accessor.getDestination(), sessionList);
             redisService.setExpire(accessor.getDestination(), sessionExpirationms);
         }
