@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rv_chatting_mychat_const"
+        android:id="@+id/rv_chatting_const_my"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
@@ -28,7 +29,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/rv_chatting_mytext"
+            android:id="@+id/rv_chatting_text_my"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/radius_15_solid_chatcolor"
@@ -46,7 +47,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
-            android:id="@+id/rv_chatting_my_time"
+            android:id="@+id/rv_chatting_time_my"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="2dp"
@@ -54,13 +55,13 @@
             android:textColor="@color/time_gray"
             android:textSize="8sp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/rv_chatting_mytext"
-            app:layout_constraintEnd_toStartOf="@+id/rv_chatting_mytext" />
+            app:layout_constraintBottom_toBottomOf="@+id/rv_chatting_text_my"
+            app:layout_constraintEnd_toStartOf="@+id/rv_chatting_text_my" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/rv_chatting_otherchat_const"
+        android:id="@+id/rv_chatting_const1"
         android:layout_width="260dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="5dp"
@@ -70,22 +71,24 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/rv_chatting_othertext"
+            android:id="@+id/rv_chatting_chat1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/radius_20_solid_chat_gray"
-            android:maxWidth="215dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/radius_15_solid_chat_gray"
+            android:maxWidth="170dp"
             android:paddingStart="10dp"
             android:paddingTop="2dp"
             android:paddingEnd="10dp"
             android:paddingBottom="3dp"
             android:text="YourChat"
             android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@+id/rv_chatting_profile"
+            app:layout_constraintTop_toBottomOf="@+id/rv_chatting_nick" />
 
         <TextView
-            android:id="@+id/rv_chatting_other_time"
+            android:id="@+id/rv_chatting_time1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="2dp"
@@ -93,8 +96,27 @@
             android:textColor="@color/time_gray"
             android:textSize="8sp"
             android:visibility="visible"
-            app:layout_constraintBottom_toBottomOf="@+id/rv_chatting_othertext"
-            app:layout_constraintStart_toEndOf="@+id/rv_chatting_othertext" />
+            app:layout_constraintBottom_toBottomOf="@+id/rv_chatting_chat1"
+            app:layout_constraintStart_toEndOf="@+id/rv_chatting_chat1" />
+
+        <ImageView
+            android:id="@+id/rv_chatting_profile"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/custom_image_radius10"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/svg_profile" />
+
+        <TextView
+            android:id="@+id/rv_chatting_nick"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="nickname"
+            app:layout_constraintStart_toEndOf="@+id/rv_chatting_profile"
+            app:layout_constraintTop_toTopOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -122,6 +144,46 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/rv_chatting_const2"
+        android:layout_width="260dp"
+        android:layout_height="match_parent"
+        android:layout_marginStart="5dp"
+        android:layout_marginTop="2dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <TextView
+            android:id="@+id/rv_chatting_chat2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="45dp"
+            android:background="@drawable/radius_15_solid_chat_gray"
+            android:maxWidth="170dp"
+            android:paddingStart="10dp"
+            android:paddingTop="2dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="3dp"
+            android:text="YourChat"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/rv_chatting_time2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="2dp"
+            android:text="오전 00:01"
+            android:textColor="@color/time_gray"
+            android:textSize="8sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/rv_chatting_chat2" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

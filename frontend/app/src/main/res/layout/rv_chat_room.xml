@@ -13,7 +13,6 @@
         android:layout_marginTop="10dp"
         android:layout_marginBottom="10dp"
         android:background="@drawable/custom_image_radius20"
-        android:clipToOutline="true"
         android:src="@drawable/svg_profile"
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="parent"

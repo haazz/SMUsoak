@@ -11,14 +11,21 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>) : RecyclerVie
     private val user = MySharedPreference.user
     private val senderMail = user.getString("mail","")
 
-    inner class ViewHolder(private val binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
+    inner class ViewHolder(binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
 
-        private val myChatConst = binding.rvChattingMychatConst
-        private val myChat = binding.rvChattingMytext
-        private val myChatTime = binding.rvChattingMyTime
-        private val otherChatConst = binding.rvChattingOtherchatConst
-        private val otherChat = binding.rvChattingOthertext
-        private val otherChatTime = binding.rvChattingOtherTime
+        private val myChatConst = binding.rvChattingConstMy
+        private val myChat = binding.rvChattingTextMy
+        private val myChatTime = binding.rvChattingTimeMy
+
+        private val otherConst1 = binding.rvChattingConst1
+        private val otherChat1 = binding.rvChattingChat1
+        private val otherTime1 = binding.rvChattingTime1
+        private val profile = binding.rvChattingProfile
+
+        private val otherConst2 = binding.rvChattingConst2
+        private val otherChat2 = binding.rvChattingChat2
+        private val otherTime2 = binding.rvChattingTime2
+
         private val dateChatConst = binding.rvChattingDay
         private val dateChat = binding.rvChattingDayText
 
@@ -26,31 +33,26 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>) : RecyclerVie
             when (list.sender) {
                 "message $senderMail" -> {
                     myChatConst.visibility= View.VISIBLE
-                    otherChatConst.visibility= View.GONE
+                    otherConst1.visibility= View.GONE
+                    otherConst2.visibility= View.GONE
                     dateChatConst.visibility= View.GONE
                     myChat.text=list.message
-                    if(list.time.length>=9){
-                        myChatTime.text=list.time.substring(9)
-                    }else{
-                        myChatTime.text=list.time
-                    }
+                    myChatTime.text=list.time.substring(9)
                 }
                 "system" -> {
                     dateChatConst.visibility= View.VISIBLE
-                    otherChatConst.visibility= View.GONE
+                    otherConst1.visibility= View.GONE
+                    otherConst2.visibility= View.GONE
                     myChatConst.visibility= View.GONE
                     dateChat.text=list.message
                 }
                 else -> {
-                    otherChatConst.visibility= View.VISIBLE
+                    otherConst1.visibility= View.VISIBLE
+                    profile.clipToOutline = true
+                    otherConst2.visibility= View.GONE
                     myChatConst.visibility= View.GONE
                     dateChatConst.visibility= View.GONE
-                    otherChat.text=list.message
-                    if(list.time.length>=9){
-                        otherChatTime.text=list.time.substring(9)
-                    }else{
-                        otherChatTime.text=list.time
-                    }
+                    myChatTime.text=list.time.substring(9)
                 }
             }
         }

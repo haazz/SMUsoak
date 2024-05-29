@@ -17,6 +17,7 @@ class ActivityLogin : AppCompatActivity() {
     private val binding: ActivityLoginBinding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private lateinit var id: String
     private lateinit var pw: String
+    private var autologin = false
 
     //자동 로그인 설정
     private val user = MySharedPreference.user
@@ -28,13 +29,18 @@ class ActivityLogin : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        if (user.getBoolean("autologin", false)){
+            val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
+            startActivity(intent)
+            finish()
+        }
+
         databaseHelper.deleteChatroom("1")
 
         val btnSignIn = binding.loginBtnSignin
         val btnFindPw = binding.loginBtnFindpw
         val btnSignUp = binding.loginBtnSingup
         val autoCheck = binding.loginCheck
-        var autologin = false
 
         autoCheck.setOnCheckedChangeListener { check, isChecked ->
             autologin = if (isChecked) {
@@ -70,13 +76,10 @@ class ActivityLogin : AppCompatActivity() {
                                 Log.d("token", token)
                                 editor.putString("token", token)
                                 editor.putString("mail", id)
-                                if(autologin){
-                                    editor.putString("id", id)
-                                    editor.putString("pw", pw)
-                                }
                                 editor.apply()
                                 val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
                                 startActivity(intent)
+                                finish()
                             }
                         }
                     }

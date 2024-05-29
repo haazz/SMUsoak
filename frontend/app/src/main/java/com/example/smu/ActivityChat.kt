@@ -192,7 +192,6 @@ class ActivityChat : AppCompatActivity() {
 
                 chatList.add(ChatMessage(sender, message, time))
                 databaseHelper.insertMessage(roomId,sender,message,time)
-                Log.d("chatList", databaseHelper.getAllMessages("2").toString())
 
                 mainHandler.post(updateRecyclerViewRunnable)
             },
@@ -260,7 +259,7 @@ class ActivityChat : AppCompatActivity() {
                     data.put("message", chatMessage)
                     data.put("senderMail", "$sender")
                     data.put("time", currentTime)
-                    stompClient.send("/topic/$roomId", data.toString()).subscribe()
+                    stompClient.send("/app/send", data.toString()).subscribe()
                     chatEdit.setText("")
                 }
             }
