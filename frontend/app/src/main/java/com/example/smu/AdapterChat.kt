@@ -31,7 +31,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>) : RecyclerVie
 
         fun bind(list : ChatMessage) {
             when (list.sender) {
-                "message $senderMail" -> {
+                "$senderMail" -> {
                     myChatConst.visibility= View.VISIBLE
                     otherConst1.visibility= View.GONE
                     otherConst2.visibility= View.GONE
@@ -47,12 +47,22 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>) : RecyclerVie
                     dateChat.text=list.message
                 }
                 else -> {
-                    otherConst1.visibility= View.VISIBLE
-                    profile.clipToOutline = true
-                    otherConst2.visibility= View.GONE
-                    myChatConst.visibility= View.GONE
-                    dateChatConst.visibility= View.GONE
-                    myChatTime.text=list.time.substring(9)
+                    if(list.flag == 1){
+                        otherConst1.visibility= View.VISIBLE
+                        profile.clipToOutline = true
+                        otherConst2.visibility= View.GONE
+                        myChatConst.visibility= View.GONE
+                        dateChatConst.visibility= View.GONE
+                        otherChat1.text=list.message
+                        otherTime1.text=list.time.substring(9)
+                    }else{
+                        otherConst2.visibility= View.VISIBLE
+                        otherConst1.visibility= View.GONE
+                        myChatConst.visibility= View.GONE
+                        dateChatConst.visibility= View.GONE
+                        otherChat2.text=list.message
+                        otherTime2.text=list.time.substring(9)
+                    }
                 }
             }
         }

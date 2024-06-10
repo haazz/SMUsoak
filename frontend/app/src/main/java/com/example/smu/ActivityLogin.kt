@@ -85,15 +85,16 @@ class ActivityLogin : AppCompatActivity() {
                     }
                     else{
                         Toast.makeText(this@ActivityLogin,"학번 및 비밀번호를 다시 확인해 주세요.",Toast.LENGTH_SHORT).show()
+                        btnSignIn.isEnabled = true
                     }
                 }
 
                 override fun onFailure(call: Call<Retrofit.ResponseToken>, t: Throwable) {
                     val errorMessage = "Call Failed: ${t.message}"
                     Log.d("Retrofit", errorMessage)
+                    btnSignIn.isEnabled = true
                 }
             })
-            btnSignIn.isEnabled = true
         }
 
         btnFindPw.setOnClickListener {

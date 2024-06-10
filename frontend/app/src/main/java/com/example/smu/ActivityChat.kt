@@ -16,6 +16,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Base64
 import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.activity.result.PickVisualMediaRequest
@@ -23,6 +24,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.databinding.ActivityChatBinding
@@ -52,7 +54,10 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var stompClient: StompClient
     private lateinit var roomId: String
     private lateinit var chatMessage: String
-    private lateinit var chatList:MutableList<ChatMessage>
+    private lateinit var chatList: MutableList<ChatMessage>
+    private lateinit var drawerLayout: DrawerLayout
+    private lateinit var drawerView: View
+    private lateinit var menu: ImageButton
     private val compositeDisposable = CompositeDisposable()
     private var open = false
     private val user = MySharedPreference.user
@@ -151,6 +156,10 @@ class ActivityChat : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
+        drawerLayout = binding.chatDrawLayout
+        drawerView = binding.chatDrawer
+        menu = binding.chatBtnMenu
+
         setupView() //키보드 열린지 체크
 
         val url = BaseUrl.Socket_URL
@@ -173,25 +182,24 @@ class ActivityChat : AppCompatActivity() {
                 val currentDate=getCurrentDate()
 
                 if(chatList.size == 0) {
-                    chatList.add(ChatMessage("system", currentDate, currentTime))
-                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime)
+                    chatList.add(ChatMessage("system", currentDate, currentTime, 0))
+                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, 0)
                 }else{
                     val lTime = chatList[chatList.size-1].time.split(" ")
                     val cTime = currentTime.split(" ")
                     if(lTime[0]!=cTime[0]) {
-                        chatList.add(ChatMessage("system", currentDate, currentTime))
-                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime)
+                        chatList.add(ChatMessage("system", currentDate, currentTime, 0))
+                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime, 0)
                     }
                 }
 
-                if(chatList.size >= 2){
-                    if(chatList[chatList.size-1].sender == sender && chatList[chatList.size-1].time == time){
-                        chatList[chatList.size-1].time = ""
-                    }
+                if(chatList[chatList.size-1].sender == sender){
+                    chatList.add(ChatMessage(sender, message, time, 2))
+                    databaseHelper.insertMessage(roomId,sender,message,time, 2)
+                }else{
+                    chatList.add(ChatMessage(sender, message, time, 1))
+                    databaseHelper.insertMessage(roomId,sender,message,time, 1)
                 }
-
-                chatList.add(ChatMessage(sender, message, time))
-                databaseHelper.insertMessage(roomId,sender,message,time)
 
                 mainHandler.post(updateRecyclerViewRunnable)
             },
@@ -238,6 +246,11 @@ class ActivityChat : AppCompatActivity() {
         chatConst = binding.chatConst
         chatEdit = binding.chatEdit
         chatEdit.addTextChangedListener(chatline)
+
+        //서랍 열기
+        menu.setOnClickListener {
+            drawerLayout.openDrawer(drawerView)
+        }
 
         //보내기 버튼 눌렀을 때
         send.setOnClickListener{
@@ -297,11 +310,11 @@ class ActivityChat : AppCompatActivity() {
     //KeyBoard open/close 확인
     private fun setupView() {
         // Layout 변화가 있을 때 마다 호출 됨
-        binding.chatLayout.viewTreeObserver.addOnGlobalLayoutListener {
+        drawerLayout.viewTreeObserver.addOnGlobalLayoutListener {
             val rect = Rect()
-            binding.chatLayout.getWindowVisibleDisplayFrame(rect)
+            drawerLayout.getWindowVisibleDisplayFrame(rect)
 
-            val rootViewHeight = binding.chatLayout.rootView.height
+            val rootViewHeight = drawerLayout.rootView.height
             val heightDiff = rootViewHeight - rect.height()
             val isOpen = heightDiff > rootViewHeight * 0.25 // true == 키보드 올라감
 

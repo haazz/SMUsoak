@@ -17,6 +17,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
         private const val COLUMN_SENDER = "sender"
         private const val COLUMN_MESSAGE = "message"
         private const val COLUMN_TIME = "time"
+        private const val COLUMN_FLAG = "flag"
 
         @Volatile
         private var instance: DatabaseChat?= null
@@ -30,7 +31,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_ROOM_ID TEXT, $COLUMN_SENDER TEXT, $COLUMN_MESSAGE TEXT, $COLUMN_TIME TEXT)"
+        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_ROOM_ID TEXT, $COLUMN_SENDER TEXT, $COLUMN_MESSAGE TEXT, $COLUMN_TIME TEXT, $COLUMN_FLAG INTEGER)"
         db.execSQL(createTableQuery)
     }
 
@@ -41,13 +42,14 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
         }
     }
 
-    fun insertMessage(roomId: String, sender: String, message: String, timestamp: String) {
+    fun insertMessage(roomId: String, sender: String, message: String, timestamp: String, flag: Int) {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply{
             put(COLUMN_ROOM_ID, roomId)
             put(COLUMN_SENDER, sender)
             put(COLUMN_MESSAGE, message)
             put(COLUMN_TIME, timestamp)
+            put(COLUMN_FLAG, flag)
         }
         db.insert(TABLE_NAME, null, contentValues)
         db.close()
@@ -72,14 +74,8 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
                 val sender = it.getString(2)
                 val message = it.getString(3)
                 val timestamp = it.getString(4)
-                val chatMessage = ChatMessage(sender, message, timestamp)
-                if(messages.size>1){
-                    val lSender=messages[messages.size-1].sender.split(" ")[1]
-                    val lTimestamp=messages[messages.size-1].time
-                    if(lSender==sender.split(" ")[1] && lTimestamp==timestamp){
-                        messages[messages.size-1].time=""
-                    }
-                }
+                val flag = it.getInt(5)
+                val chatMessage = ChatMessage(sender, message, timestamp, flag)
                 messages.add(chatMessage)
             }
         }
