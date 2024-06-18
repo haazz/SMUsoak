@@ -9,6 +9,7 @@ import com.smusoak.restapi.repositories.UserRepository;
 import com.smusoak.restapi.response.CustomException;
 import com.smusoak.restapi.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,6 +25,9 @@ public class ChatService {
     private final RedisService redisService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final S3Service s3Service;
+
+    @Value("${cloud.aws.s3.url}")
+    private String downloadUrl;
 
     // 웹소켓을 구독 중이지 않은 사용자들에게 FCM을 사용하여 알림 보내기
     public void sendMessage(ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
@@ -110,6 +114,6 @@ public class ChatService {
     public String updateImg(String roomId, MultipartFile file) {
         String fileName = roomId + "/" + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
         s3Service.updateImg(fileName, file);
-        return fileName;
+        return downloadUrl + fileName;
     }
 }
