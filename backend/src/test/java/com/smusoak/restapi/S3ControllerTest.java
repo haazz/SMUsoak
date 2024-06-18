@@ -38,13 +38,9 @@ public class S3ControllerTest extends AbstractRestDocsTests {
 
     @Test
     void DownloadImg() throws Exception {
-        mockMvc.perform(get("/api/v1/download/img/{fileName}", "test")
-                        .header("Authorization", "Bearer " +
-                                jwtService.generateToken(User
-                                        .builder()
-                                        .mail("tmp")
-                                        .build())
-                        ))
+        mockMvc.perform(get("/api/v1/download/img/{path}/{fileName}", "testPath", "testFileName")
+                        .header("Authorization", "Bearer ")
+                        )
                 .andExpect(status().isOk());
     }
 }

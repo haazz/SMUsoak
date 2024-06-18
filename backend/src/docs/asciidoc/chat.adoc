@@ -2,3 +2,6 @@
 
 === 채팅방 리스트 가져오기
 operation::chat-controller-test/chat-room-list-test[snippets='http-request,http-response,response-fields']
+
+=== 채팅방 이미지 업데이트
+operation::chat-controller-test/update-chat-img-test[snippets='http-request,request-parts,request-part-info-fields,http-response,response-fields']

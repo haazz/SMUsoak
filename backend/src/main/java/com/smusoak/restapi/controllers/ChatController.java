@@ -46,9 +46,9 @@ public class ChatController {
     @PostMapping(value = "/update/img", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponseEntity> updateChatImg(@RequestPart(value="info", required=true) ImgDto.UpdateChatImgRequest request,
                                                            @RequestPart(value="file", required=true) MultipartFile file) {
-        String fileName = chatService.updateImg(request.getRoomId(), file);
+        String downloadUrl = chatService.updateImg(request.getRoomId(), file);
         return ApiResponseEntity.toResponseEntity(ImgDto.ImgNameResponse.builder()
-                .fileName(fileName)
+                .downloadUrl(downloadUrl)
                 .build());
     }
 }

@@ -27,6 +27,6 @@ public class ImgDto {
     @Data
     @Builder
     public static class ImgNameResponse {
-        private String fileName;
+        private String downloadUrl;
     }
 }
