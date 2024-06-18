@@ -112,7 +112,7 @@ public class ChatService {
     }
 
     public String updateImg(String roomId, MultipartFile file) {
-        String fileName = roomId + "/" + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
+        String fileName = "chat/" + roomId + "/" + UUID.randomUUID().toString() + "-" + file.getOriginalFilename();
         s3Service.updateImg(fileName, file);
         return downloadUrl + fileName;
     }

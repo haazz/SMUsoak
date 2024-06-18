@@ -33,7 +33,7 @@ public class UserController {
     @PostMapping(value = "/update/img", consumes = { MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE })
     public ResponseEntity<ApiResponseEntity> updateUserImg(@RequestPart(value="info", required=true) ImgDto.UpdateUserImgRequest request,
                                                            @RequestPart(value="file", required=true) MultipartFile file) {
-        s3Service.updateImg(request.getMail(), file);
+        s3Service.updateImg("user/" + request.getMail(), file);
         return ApiResponseEntity.toResponseEntity();
     }
 

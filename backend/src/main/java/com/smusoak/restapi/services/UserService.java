@@ -103,7 +103,7 @@ public class UserService {
                     .age(userDetail.get().getAge())
                     .gender(userDetail.get().getGender())
                     .mbti(userDetail.get().getMbti())
-                    .imgUrl(downloadUrl + mail)
+                    .imgUrl(downloadUrl + "user/" + mail)
                     .imgType(type)
                     .build());
             try {
