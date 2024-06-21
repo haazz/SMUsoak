@@ -1,6 +1,6 @@
 package com.smusoak.restapi.controllers;
 
-import com.smusoak.restapi.dto.JwtAuthenticationResponse;
+import com.smusoak.restapi.dto.JwtTokenDto;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.services.AuthenticationService;
@@ -29,17 +29,24 @@ public class AuthenticationController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<ApiResponseEntity> createUser(@RequestBody @Valid UserDto.SignupRequest request) throws Exception{
+    public ResponseEntity<ApiResponseEntity> createUser(@Valid @RequestBody UserDto.SignupRequest request) throws Exception{
         System.out.println(request);
-        String token =  authenticationService.createUser(request);
+        JwtTokenDto.JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.createUser(request);
         return ApiResponseEntity.toResponseEntity(
-                JwtAuthenticationResponse.builder().token(token).build());
+                jwtAuthenticationResponse);
     }
 
     @PostMapping("/signin")
     public ResponseEntity<ApiResponseEntity> signin(@Valid @RequestBody UserDto.SigninRequest request) throws Exception {
-        String token =  authenticationService.signin(request);
+        JwtTokenDto.JwtAuthenticationResponse jwtAuthenticationResponse =  authenticationService.signin(request);
         return ApiResponseEntity.toResponseEntity(
-                JwtAuthenticationResponse.builder().token(token).build());
+                jwtAuthenticationResponse);
+    }
+
+    @PostMapping("/refresh-token")
+    public ResponseEntity<ApiResponseEntity> refreshToken(@Valid  @RequestBody JwtTokenDto.RefreshTokenRequest request) {
+        JwtTokenDto.JwtAuthenticationResponse jwtAuthenticationResponse = authenticationService.refreshToken(request.getRefreshToken());
+        return ApiResponseEntity.toResponseEntity(
+                jwtAuthenticationResponse);
     }
 }

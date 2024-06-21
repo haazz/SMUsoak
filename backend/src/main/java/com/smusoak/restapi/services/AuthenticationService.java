@@ -1,20 +1,18 @@
 package com.smusoak.restapi.services;
 
-import com.smusoak.restapi.dto.JwtAuthenticationResponse;
+import com.smusoak.restapi.dto.JwtTokenDto;
 import com.smusoak.restapi.dto.UserDto;
 import com.smusoak.restapi.models.Role;
 import com.smusoak.restapi.models.User;
 import com.smusoak.restapi.models.UserDetail;
 import com.smusoak.restapi.repositories.UserDetailRepository;
 import com.smusoak.restapi.repositories.UserRepository;
-import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.response.CustomException;
 import com.smusoak.restapi.response.ErrorCode;
 import jakarta.mail.MessagingException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -22,7 +20,6 @@ import org.springframework.stereotype.Service;
 
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
-import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Random;
 
@@ -43,7 +40,7 @@ public class AuthenticationService {
     @Value("${spring.mail.auth-code-expirationms}")
     private long authCodeExpirationMillis;
 
-    public String signin(UserDto.SigninRequest request) {
+    public JwtTokenDto.JwtAuthenticationResponse signin(UserDto.SigninRequest request) {
         try {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getMail(), request.getPassword()));
@@ -58,11 +55,10 @@ public class AuthenticationService {
             userRepository.save(user);
         }
         // JWT Token 생성
-        var jwt = jwtService.generateToken(user);
-        return jwt;
+        return jwtService.generateToken(user);
     }
 
-    public String createUser(UserDto.SignupRequest request) {
+    public JwtTokenDto.JwtAuthenticationResponse createUser(UserDto.SignupRequest request) {
 
         // verifiedCode를 거치면 "true"가 redis에 저장되어 있어야 함
         String auth = redisService.getListOpsByIndex(request.getMail(), AUTH_CODE_INDEX);
@@ -98,8 +94,7 @@ public class AuthenticationService {
         userRepository.save(user);
         redisService.deleteByKey(request.getMail());
         // JWT Token 생성
-        var jwt = jwtService.generateToken(user);
-        return jwt;
+        return jwtService.generateToken(user);
     }
 
     // 메일 인증 코드 전송
@@ -135,6 +130,16 @@ public class AuthenticationService {
         redisService.deleteByKey(request.getMail());
         redisService.setListOps(request.getMail(), "true");
         redisService.setExpire(request.getMail(), authCodeExpirationMillis);
+    }
+
+    public JwtTokenDto.JwtAuthenticationResponse refreshToken(String refreshToken) {
+        String username = jwtService.extractIssuer(refreshToken);
+        String storedRefreshToken = redisService.getValues("/refreshToken/" + username);
+        System.out.println("username: " + username + " refreshToken: " + storedRefreshToken);
+        if(storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
+            throw new CustomException(ErrorCode.JWT_TOKEN_INVALID);
+        }
+        return jwtService.generateToken(username);
     }
 
     // 메일 인증 코드 생성
