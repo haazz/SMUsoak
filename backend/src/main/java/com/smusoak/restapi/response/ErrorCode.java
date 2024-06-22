@@ -19,8 +19,8 @@ public enum ErrorCode {
     REDIS_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "Redis 데이터가 존재하지 않거나 만료되었습니다."),
     S3_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "S3 데이터가 존재하지 않거나 만료되었습니다."),
     NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "알고리즘을 사용할 수 없습니다."),
-    JWT_TOKEN_EXPIRED(HttpStatus.FORBIDDEN, "JWT 토큰이 만료되었습니다."),
-    JWT_TOKEN_INVALID(HttpStatus.FORBIDDEN, "잘못된 JWT 토큰입니다."),
+    JWT_TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "JWT 토큰이 만료되었습니다."),
+    JWT_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "잘못된 JWT 토큰입니다."),
     ;
 
     private final HttpStatus httpStatus;

@@ -37,25 +37,34 @@ public class JwtAuthenticationFilter  extends OncePerRequestFilter {
         final String userMail;
 
         if (StringUtils.isEmpty(authHeader) || !StringUtils.startsWith(authHeader, "Bearer ")) {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             filterChain.doFilter(request, response);
             return;
         }
 
         jwt = authHeader.substring(7);
         log.debug("JWT -{}", jwt.toString());
-        userMail = jwtService.extractUserName(jwt);
-        if(StringUtils.isNotEmpty(userMail) && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userMail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                log.debug("User - {}", userDetails);
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userDetails, null, userDetails.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                context.setAuthentication(authToken);
-                SecurityContextHolder.setContext(context);
+
+        try {
+            userMail = jwtService.extractUserName(jwt);
+            if(StringUtils.isNotEmpty(userMail) && SecurityContextHolder.getContext().getAuthentication() == null) {
+                UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userMail);
+                if (jwtService.isTokenValid(jwt, userDetails)) {
+                    log.debug("User - {}", userDetails);
+                    SecurityContext context = SecurityContextHolder.createEmptyContext();
+                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                            userDetails, null, userDetails.getAuthorities());
+                    authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    context.setAuthentication(authToken);
+                    SecurityContextHolder.setContext(context);
+                }
             }
+        } catch (Exception e) {
+            log.error("JWT authentication failed", e);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            return;
         }
+
         filterChain.doFilter(request, response);
     }
 }
