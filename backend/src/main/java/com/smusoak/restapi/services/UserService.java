@@ -75,7 +75,7 @@ public class UserService {
             if(!userDetail.isPresent()) {
                 continue;
             }
-            S3Object o = s3Service.getObject(mail);
+            S3Object o = s3Service.getObject("user/" + mail);
             if(o == null) {
                 userInfoResponses.add(UserDto.UserInfoResponse.builder()
                         .mail(mail)
