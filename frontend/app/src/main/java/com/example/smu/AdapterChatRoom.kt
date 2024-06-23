@@ -12,7 +12,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.connection.Retrofit
 import com.example.smu.databinding.RvChatRoomBinding
 
-class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>, private val context: Context) : RecyclerView.Adapter<AdapterChatRoom.ViewHolder>() {
+class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
+                      private val context: Context,
+                      private val userNick: HashMap<Int, MutableList<String>>,
+                      private val userMail: HashMap<Int, MutableList<String>>) : RecyclerView.Adapter<AdapterChatRoom.ViewHolder>() {
 
     private val databaseHelper: DatabaseImage by lazy{ DatabaseImage.getInstance(context)}
 
@@ -32,7 +35,8 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>, pri
             itemView.setOnClickListener{
                 val intent = Intent(itemView.context, ActivityChat::class.java)
                 intent.putExtra("roomId", list.roomId.toString())
-                intent.putExtra("room", "4")
+                intent.putExtra("userNick", ArrayList(userNick[list.roomId]!!))
+                intent.putExtra("userMail", ArrayList(userMail[list.roomId]!!))
                 Log.d("roomId adapter", list.roomId.toString())
                 binding.root.context.startActivity(intent)
             }
@@ -47,9 +51,6 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>, pri
                     constTwo.visibility = View.INVISIBLE
                     constThree.visibility = View.INVISIBLE
                     constFour.visibility = View.INVISIBLE
-//                    val imageBytes = databaseHelper.getImage(mailList[0])
-//                    val bitmap = BitmapFactory.decodeByteArray(imageBytes, 0, imageBytes!!.size)
-//                    profile.setImageBitmap(bitmap)
                 }
                 3 -> {
                     profile.visibility = View.INVISIBLE

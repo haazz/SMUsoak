@@ -24,6 +24,8 @@ class FragmentChat : Fragment() {
     private val user=MySharedPreference.user
     private val token="Bearer " + user.getString("token","")
     private val userMail=user.getString("mail","")
+    private val userNickList = hashMapOf<Int, MutableList<String>>()
+    private val userMailList = hashMapOf<Int, MutableList<String>>()
     private lateinit var recyclerViewChatRoom: RecyclerView
     private lateinit var chatRoomAdapter: AdapterChatRoom
 
@@ -52,6 +54,7 @@ class FragmentChat : Fragment() {
                     val responseBody = response.body()
                     if (responseBody != null && responseBody.success) {
                         val rooms = responseBody.data
+                        Log.d("chat room", rooms.toString())
                         loadUserInfoForChatRooms(rooms.toMutableList())
                     }
                 }
@@ -78,6 +81,13 @@ class FragmentChat : Fragment() {
                         if (responseBody != null) {
                             if (responseBody.success) {
                                 for (item in responseBody.data) {
+                                    if (userNickList.containsKey(room.roomId)) {
+                                        userNickList[room.roomId]!!.add("null")
+                                        userMailList[room.roomId]!!.add(item.mail)
+                                    } else {
+                                        userNickList[room.roomId] = mutableListOf("null")
+                                        userMailList[room.roomId] = mutableListOf(item.mail)
+                                    }
                                     userMap[item.mail]=item.url
                                     Log.d("userMap", item.toString())
                                 }
@@ -128,7 +138,7 @@ class FragmentChat : Fragment() {
 
     private fun updateChatRoomList(rooms: MutableList<Retrofit.Chatroom>) {
         recyclerViewChatRoom.layoutManager = LinearLayoutManager(requireContext())
-        chatRoomAdapter = AdapterChatRoom(rooms, requireContext())
+        chatRoomAdapter = AdapterChatRoom(rooms, requireContext(), userNickList, userMailList)
         recyclerViewChatRoom.adapter = chatRoomAdapter
     }
 }

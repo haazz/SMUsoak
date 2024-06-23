@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.databinding.ActivityChatBinding
 import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.disposables.Disposable
 import org.json.JSONObject
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
@@ -58,6 +57,10 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var drawerLayout: DrawerLayout
     private lateinit var drawerView: View
     private lateinit var menu: ImageButton
+    private lateinit var drawerRecyclerView: RecyclerView
+    private lateinit var drawerAdapter: AdapterDrawer
+    private lateinit var userNick: MutableList<String>
+    private lateinit var userMail: MutableList<String>
     private val compositeDisposable = CompositeDisposable()
     private var open = false
     private val user = MySharedPreference.user
@@ -160,9 +163,17 @@ class ActivityChat : AppCompatActivity() {
         drawerView = binding.chatDrawer
         menu = binding.chatBtnMenu
 
+        userNick = intent.getStringArrayListExtra("userNick")!!
+        userMail = intent.getStringArrayListExtra("userMail")!!
+
+        drawerRecyclerView = findViewById(R.id.chat_drawer_rv)
+        drawerRecyclerView.layoutManager = LinearLayoutManager(this)
+        drawerAdapter = AdapterDrawer(userNick, userMail, this)
+        drawerRecyclerView.adapter = drawerAdapter
+
         setupView() //키보드 열린지 체크
 
-        val url = BaseUrl.Socket_URL
+        val url = BaseUrl.SOCKET_URL
 
         stompClient =  Stomp.over(Stomp.ConnectionProvider.OKHTTP, url)
         stompClient.withServerHeartbeat(10000)
@@ -236,7 +247,7 @@ class ActivityChat : AppCompatActivity() {
         recyclerViewChat = binding.chatRv
         recyclerViewChat.layoutManager =
             LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false)
-        chatAdapter = AdapterChat(chatList)
+        chatAdapter = AdapterChat(chatList, this)
         recyclerViewChat.adapter = chatAdapter
 
         //변수 초기화
