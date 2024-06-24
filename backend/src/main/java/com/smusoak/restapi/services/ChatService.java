@@ -30,9 +30,9 @@ public class ChatService {
     private String downloadUrl;
 
     // 웹소켓을 구독 중이지 않은 사용자들에게 FCM을 사용하여 알림 보내기
-    public void sendMessage(ChatDto.SendMessageRequest request) throws FirebaseMessagingException {
-        List<String> sessionList = redisService.getListOps("/topic/" + request.getRoomId());
-        Set<String> chatRoomMails = this.getUserMailsByRoomId(request.getRoomId());
+    public void sendMessage(ChatDto.SendMessageRequest messageRequest) throws FirebaseMessagingException {
+        List<String> sessionList = redisService.getListOps("/topic/" + messageRequest.getRoomId());
+        Set<String> chatRoomMails = this.getUserMailsByRoomId(messageRequest.getRoomId());
         if(sessionList == null || chatRoomMails == null) {
             System.out.println("/services/ChatService/sendMessage: session or chatroom not found");
             return;
@@ -41,10 +41,30 @@ public class ChatService {
             String socketMail = redisService.getListOpsByIndex(session, 0);
             chatRoomMails.remove(socketMail);
         }
-        System.out.println("/services/ChatService/sendMessage roomId=" + request.getRoomId() + " sessionList=" + sessionList + " chatRoomMails=" + chatRoomMails);
+        System.out.println("/services/ChatService/sendMessage roomId=" + messageRequest.getRoomId() +
+                " sessionList=" + sessionList + " chatRoomMails=" + chatRoomMails);
         // chatRoomMails에 남아 있는 메일에 FCM 메시지를 전송
         for(String chatRoomMail: chatRoomMails) {
-            firebaseCloudMessageService.sendMessageByToken(request.getSenderMail(), request.getMessage(), this.getFcmTokenByMail(chatRoomMail));
+            Map<String, String> fcmData = new HashMap<>();
+            if(messageRequest.getFlag() == null) {
+                fcmData.put("flag", "0");
+            } else {
+                fcmData.put("flag", messageRequest.getFlag());
+            }
+            fcmData.put("mail", messageRequest.getSenderMail());
+            fcmData.put("roomId", messageRequest.getRoomId().toString());
+            if(messageRequest.getSenderName() == null) {
+                messageRequest.setSenderName("unknown");
+            }
+
+            if(messageRequest.getFlag() == "1") {
+                fcmData.put("imgUrl", messageRequest.getMessage());
+                firebaseCloudMessageService.sendMessageByToken(messageRequest.getSenderName(),
+                       "사진", fcmData, this.getFcmTokenByMail(chatRoomMail));
+            } else {
+                firebaseCloudMessageService.sendMessageByToken(messageRequest.getSenderName(),
+                        messageRequest.getMessage(), fcmData, this.getFcmTokenByMail(chatRoomMail));
+            }
         }
     }
 

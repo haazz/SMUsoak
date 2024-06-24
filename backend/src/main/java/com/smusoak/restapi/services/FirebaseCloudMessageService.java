@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
+import java.util.Map;
 
 @Service
 public class FirebaseCloudMessageService {
@@ -35,9 +36,10 @@ public class FirebaseCloudMessageService {
         FirebaseApp.initializeApp(options);
     }
 
-    public void sendMessageByToken(String title, String body, String token) throws FirebaseMessagingException {
+    public void sendMessageByToken(String title, String body, Map<String, String> data, String token) throws FirebaseMessagingException {
         // FirebaseOptions에 초기화해둔 정보를 기반으로 메시지 전송
         FirebaseMessaging.getInstance().send(Message.builder()
+                .putAllData(data)
                 .setNotification(Notification.builder()
                         .setTitle(title)
                         .setBody(body)
