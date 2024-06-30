@@ -11,10 +11,12 @@ public class ChatDto {
     @NoArgsConstructor
     public static class SendMessageRequest {
         private String message;
+        @NotBlank
         private String senderMail;
+        private String senderName;
         // 0 or null = text
         // 1 = image
-        private Long flag;
+        private String flag;
         private Long roomId;
         private String time;
     }

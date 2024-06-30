@@ -48,7 +48,7 @@ public class TestController {
     @PostMapping("/firebase")
     public ResponseEntity<ApiResponseEntity> sendFcm(@RequestBody TestDto.FcmRequest request) throws FirebaseMessagingException {
         System.out.println(request);
-        firebaseCloudMessageService.sendMessageByToken(request.getTitle(), request.getBody(), request.getToken());
+        firebaseCloudMessageService.sendMessageByToken(request.getTitle(), request.getBody(), null, request.getToken());
         return ApiResponseEntity.toResponseEntity();
     }
 
