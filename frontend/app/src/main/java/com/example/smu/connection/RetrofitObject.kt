@@ -1,5 +1,6 @@
 package com.example.smu.connection
 
+import com.example.smu.AuthInterceptor
 import com.example.smu.BaseUrl
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -10,9 +11,7 @@ object RetrofitObject {
     private val getRetrofit by lazy {
 
         val clientBuilder = OkHttpClient.Builder()
-            .connectTimeout(60, TimeUnit.SECONDS) // 연결 타임아웃: 60초
-            .readTimeout(60, TimeUnit.SECONDS)    // 읽기 타임아웃: 60초
-            .writeTimeout(60, TimeUnit.SECONDS)   // 쓰기 타임아웃: 60초
+            .addInterceptor(AuthInterceptor())
 
         val client = clientBuilder.build()
 

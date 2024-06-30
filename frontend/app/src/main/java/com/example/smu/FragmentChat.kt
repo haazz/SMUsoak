@@ -22,7 +22,7 @@ class FragmentChat : Fragment() {
     private lateinit var binding: FragmentChatBinding
 
     private val user=MySharedPreference.user
-    private val token="Bearer " + user.getString("token","")
+    private val token="Bearer " + user.getString("accessToken","")
     private val userMail=user.getString("mail","")
     private val userNickList = hashMapOf<Int, MutableList<String>>()
     private val userMailList = hashMapOf<Int, MutableList<String>>()

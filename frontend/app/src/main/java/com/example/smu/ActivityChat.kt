@@ -65,7 +65,7 @@ class ActivityChat : AppCompatActivity() {
     private var open = false
     private val user = MySharedPreference.user
     private val sender = user.getString("mail","")
-    private val token= user.getString("token","")
+    private val token= user.getString("accessToken","")
     private val headers = listOf(StompHeader("Authorization", "Bearer $token"))
     private var isKeyboardOpened = false
 

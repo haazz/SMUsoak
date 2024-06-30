@@ -18,7 +18,7 @@ class FragmentHome : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val user = MySharedPreference.user
-    private val token = user.getString("token", "None")
+    private val token = user.getString("accessToken", "None")
     private val mailList = mutableListOf<String>()
 
     override fun onCreateView(

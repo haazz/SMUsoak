@@ -17,7 +17,6 @@ class ActivityLogin : AppCompatActivity() {
     private val binding: ActivityLoginBinding by lazy { ActivityLoginBinding.inflate(layoutInflater) }
     private lateinit var id: String
     private lateinit var pw: String
-    private var autologin = false
 
     //자동 로그인 설정
     private val user = MySharedPreference.user
@@ -29,35 +28,11 @@ class ActivityLogin : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 
-        if (user.getBoolean("autologin", false)){
-            val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
-            startActivity(intent)
-            finish()
-        }
-
         databaseHelper.deleteChatroom("1")
 
         val btnSignIn = binding.loginBtnSignin
         val btnFindPw = binding.loginBtnFindpw
         val btnSignUp = binding.loginBtnSingup
-        val autoCheck = binding.loginCheck
-
-        autoCheck.setOnCheckedChangeListener { check, isChecked ->
-            autologin = if (isChecked) {
-                editor.putBoolean("autologin", true)
-                true
-            } else {
-                editor.putBoolean("autologin", false)
-                false
-            }
-            editor.apply()
-        }
-
-        btnSignUp.setOnClickListener{
-            val intent = Intent(this, ActivitySingup::class.java)
-            startActivity(intent)
-            finish()
-        }
 
         btnSignIn.setOnClickListener {
             btnSignIn.isEnabled = false
@@ -72,9 +47,10 @@ class ActivityLogin : AppCompatActivity() {
                         val responseBody = response.body()
                         if(responseBody != null){
                             if(responseBody.success) {
-                                val token = responseBody.data.token
-                                Log.d("token", token)
-                                editor.putString("token", token)
+                                val accessToken = responseBody.data.accessToken
+                                val refreshToken = responseBody.data.refreshToken
+                                editor.putString("accessToken", accessToken)
+                                editor.putString("refreshToken", refreshToken)
                                 editor.putString("mail", id)
                                 editor.apply()
                                 val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
@@ -98,7 +74,15 @@ class ActivityLogin : AppCompatActivity() {
         }
 
         btnFindPw.setOnClickListener {
+            val intent = Intent(this@ActivityLogin, ActivityFindpw::class.java)
+            startActivity(intent)
+            finish()
+        }
 
+        btnSignUp.setOnClickListener{
+            val intent = Intent(this, ActivitySingup::class.java)
+            startActivity(intent)
+            finish()
         }
     }
 }

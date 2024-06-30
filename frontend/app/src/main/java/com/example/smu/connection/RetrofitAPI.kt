@@ -17,6 +17,10 @@ interface RetrofitAPI {
     @POST("/api/v1/auth/signin")
     fun signIn(@Body request: Retrofit.RequestSignIn): Call<Retrofit.ResponseToken>
 
+    //토큰 재반환
+    @POST("/api/v1/auth/refresh-token")
+    fun token(@Body request: Retrofit.RequestRefreshToken): Call<Retrofit.ResponseToken>
+
     //인증 메일 전송
     @POST("/api/v1/auth/mail/send-code")
     fun sendNum(@Body request: Retrofit.RequestSendNum): Call<Retrofit.ResponseSendNum>

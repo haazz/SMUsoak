@@ -330,7 +330,7 @@ class ActivitySingup : AppCompatActivity() {
                             val response = response.body()
                             if (response != null) {
                                 if (response.success) {
-                                    val token = response.data.token
+                                    val token = response.data.accessToken
                                     val intent = Intent(this@ActivitySingup, ActivityProfile::class.java)
                                     intent.putExtra("token", token)
                                     intent.putExtra("mail", email)
