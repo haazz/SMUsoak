@@ -3,6 +3,8 @@ package com.smusoak.restapi.models;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -20,4 +22,5 @@ public class UserDetail {
     private Integer age;
     private Character gender;
     private String mbti;
+    private LocalDateTime imgUpdateDate;
 }

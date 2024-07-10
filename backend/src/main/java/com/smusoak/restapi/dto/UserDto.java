@@ -79,5 +79,6 @@ public class UserDto {
         private String mbti;
         private String imgUrl;
         private String imgType;
+        private String imgUpdateDate;
     }
 }

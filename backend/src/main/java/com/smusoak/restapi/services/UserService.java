@@ -26,6 +26,8 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -105,6 +107,7 @@ public class UserService {
                     .mbti(userDetail.get().getMbti())
                     .imgUrl(downloadUrl + "user/" + mail)
                     .imgType(type)
+                    .imgUpdateDate(String.valueOf(userDetail.get().getImgUpdateDate()))
                     .build());
             try {
                 o.close();
@@ -121,5 +124,13 @@ public class UserService {
                 return userRepository.findByMail(username).orElseThrow(() -> new UsernameNotFoundException("Usernam not found"));
             }
         };
+    }
+
+    public void updateImgDate(String mail) {
+        Optional<UserDetail> userDetail = userDetailRepository.findByUserMail(mail);
+        if (userDetail.isPresent()) {
+            userDetail.get().setImgUpdateDate(LocalDateTime.now());
+            userDetailRepository.save(userDetail.get());
+        }
     }
 }
