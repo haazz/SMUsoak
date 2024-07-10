@@ -732,7 +732,7 @@ Host: localhost:8080
 <div class="content">
 <pre class="highlight nowrap"><code class="language-http" data-lang="http">HTTP/1.1 200 OK
 Content-Type: application/json;charset=UTF-8
-Content-Length: 556
+Content-Length: 712
 
 {
   "success" : true,
@@ -743,7 +743,8 @@ Content-Length: 556
     "gender" : "M",
     "mbti" : "ENTP",
     "imgUrl" : "URL",
-    "imgType" : "imge/jpeg"
+    "imgType" : "imge/jpeg",
+    "imgUpdateDate" : "2024-07-10T23:06:20.738351"
   }, {
     "mail" : "tmp2@sangmyung.kr",
     "nickname" : "tmp2",
@@ -751,7 +752,8 @@ Content-Length: 556
     "gender" : "M",
     "mbti" : "ENTP",
     "imgUrl" : "URL",
-    "imgType" : "imge/jpeg"
+    "imgType" : "imge/jpeg",
+    "imgUpdateDate" : "2024-07-10T23:06:20.738351"
   }, {
     "mail" : "tmp3@sangmyung.kr",
     "nickname" : "tmp3",
@@ -759,7 +761,8 @@ Content-Length: 556
     "gender" : "M",
     "mbti" : "ENTP",
     "imgUrl" : "URL",
-    "imgType" : "imge/jpeg"
+    "imgType" : "imge/jpeg",
+    "imgUpdateDate" : "2024-07-10T23:06:20.738351"
   } ]
 }</code></pre>
 </div>
@@ -820,6 +823,11 @@ Content-Length: 556
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].imgType</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이미지 타입</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>data.[].imgUpdateDate</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">이미지 업데이트 시간</p></td>
 </tr>
 </tbody>
 </table>

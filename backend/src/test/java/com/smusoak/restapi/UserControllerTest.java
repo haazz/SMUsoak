@@ -164,6 +164,7 @@ public class UserControllerTest extends AbstractRestDocsTests {
                     .mbti("ENTP")
                     .imgUrl("URL")
                     .imgType("imge/jpeg")
+                    .imgUpdateDate("2024-07-10T23:06:20.738351")
                     .build());
         }
         given(userService.getUserInfo(any(UserDto.UserInfoRequest.class)))
@@ -193,7 +194,8 @@ public class UserControllerTest extends AbstractRestDocsTests {
                                         fieldWithPath("gender").type(JsonFieldType.STRING).description("M 혹은 W Charter"),
                                         fieldWithPath("mbti").type(JsonFieldType.STRING).description("MBTI"),
                                         fieldWithPath("imgUrl").type(JsonFieldType.STRING).description("이미지 다운로드 링크"),
-                                        fieldWithPath("imgType").type(JsonFieldType.STRING).description("이미지 타입")
+                                        fieldWithPath("imgType").type(JsonFieldType.STRING).description("이미지 타입"),
+                                        fieldWithPath("imgUpdateDate").type(JsonFieldType.STRING).description("이미지 업데이트 시간")
                                 )
                         )
                 );
