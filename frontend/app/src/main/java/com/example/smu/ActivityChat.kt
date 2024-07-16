@@ -1,12 +1,18 @@
 package com.example.smu
 
+import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
+import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.Manifest.permission.READ_MEDIA_VISUAL_USER_SELECTED
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
@@ -19,17 +25,30 @@ import android.util.Log
 import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
+import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AlertDialog
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.smu.connection.Retrofit
+import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.ActivityChatBinding
 import io.reactivex.disposables.CompositeDisposable
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 import ua.naiksoftware.stomp.Stomp
 import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
@@ -61,6 +80,8 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var drawerAdapter: AdapterDrawer
     private lateinit var userNick: MutableList<String>
     private lateinit var userMail: MutableList<String>
+    private lateinit var imagePart: MultipartBody.Part
+    private lateinit var mediaType: MediaType
     private val compositeDisposable = CompositeDisposable()
     private var open = false
     private val user = MySharedPreference.user
@@ -108,30 +129,53 @@ class ActivityChat : AppCompatActivity() {
 
     //이미지 전송
     @SuppressLint("CheckResult")
-    val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
+    private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             val path = getRealPathFromUri(uri)
             val file = File(path!!)
-            var imageText =""
+            val json = JSONObject()
+            json.put("roomId", roomId)
+            val room = json.toString().toRequestBody("application/json".toMediaType())
+            val currentTime = getCurrentTime()
 
             //jpg, jpeg, png 인지 확인
-            if(file.toString().substring(file.toString().length-3)=="jpg" || file.toString().substring(file.toString().length-4)=="jpeg"){
-                imageText = encodeImageToBase64(path, "jpeg")!!
-            }else if(file.toString().substring(file.toString().length-3)=="png"){
-                imageText = encodeImageToBase64(path, "PNG")!!
+            if(file.toString().endsWith("jpg") || file.toString().endsWith("jpeg")){
+                mediaType = "image/jpeg".toMediaType()
+            }else if(file.toString().endsWith("png")){
+                mediaType = "image/png".toMediaType()
             }
 
-            Log.d("stomp", imageText.length.toString())
+            val imageRequestBody = file.asRequestBody(mediaType)
+            imagePart = MultipartBody.Part.createFormData("file", file.name, imageRequestBody)
 
-            if(open){
-                val data = JSONObject()
-                val currentTime = getCurrentTime()
-                data.put("roomId", roomId)
-                data.put("message", imageText)
-                data.put("senderMail", "$sender")
-                data.put("time", currentTime)
-                stompClient.send("/topic/$roomId", data.toString()).subscribe()
-            }
+            val call = RetrofitObject.getRetrofitService.chatImage("Bearer $token", imagePart, room)
+            call.enqueue(object : Callback<Retrofit.ResponseChatImage> {
+                override fun onResponse(call: Call<Retrofit.ResponseChatImage>, response: Response<Retrofit.ResponseChatImage>) {
+                    if (response.isSuccessful) {
+                        val chatImageResponse = response.body()
+                        if (chatImageResponse != null) {
+                            if (chatImageResponse.success) {
+                                val imageUrl = chatImageResponse.data.downloadUrl
+                                if(open) {
+                                    Log.d("chatting", chatImageResponse.toString())
+                                    val data = JSONObject()
+                                    data.put("roomId", roomId)
+                                    data.put("message", imageUrl)
+                                    data.put("senderMail", "$sender")
+                                    data.put("time", currentTime)
+                                    data.put("flag", 0)
+                                    stompClient.send("/app/send", data.toString()).subscribe()
+                                    Log.d("chatting", roomId.toString())
+                                }
+                            }
+                        }
+                    }
+                }
+                override fun onFailure(call: Call<Retrofit.ResponseChatImage>, t: Throwable) {
+                    val errorMessage = "Call Failed: ${t.message}"
+                    Log.d("Retrofit", errorMessage)
+                }
+            })
         }
     }
 
@@ -154,6 +198,7 @@ class ActivityChat : AppCompatActivity() {
     //DataBase 가져옴
     private val databaseHelper: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext)}
 
+    @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     @SuppressLint("CheckResult")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,28 +233,41 @@ class ActivityChat : AppCompatActivity() {
                 val message = jsonObject.getString("message")
                 val sender = jsonObject.getString("senderMail")
                 val time = jsonObject.getString("time")
+                val flag = jsonObject.getInt("flag")
+
+                Log.d("chatting", "$flag $message")
 
                 val currentTime=getCurrentTime()
                 val currentDate=getCurrentDate()
 
                 if(chatList.size == 0) {
-                    chatList.add(ChatMessage("system", currentDate, currentTime, 0))
-                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, 0)
+                    chatList.add(ChatMessage("system", currentDate, currentTime, flag))
+                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, flag)
                 }else{
                     val lTime = chatList[chatList.size-1].time.split(" ")
                     val cTime = currentTime.split(" ")
                     if(lTime[0]!=cTime[0]) {
-                        chatList.add(ChatMessage("system", currentDate, currentTime, 0))
-                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime, 0)
+                        chatList.add(ChatMessage("system", currentDate, currentTime, flag))
+                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime, flag)
                     }
                 }
 
                 if(chatList[chatList.size-1].sender == sender){
-                    chatList.add(ChatMessage(sender, message, time, 2))
-                    databaseHelper.insertMessage(roomId,sender,message,time, 2)
+                    if(flag != 1){
+                        chatList.add(ChatMessage(sender, message, time, 2))
+                        databaseHelper.insertMessage(roomId,sender,message,time, 2)
+                    }else{
+                        chatList.add(ChatMessage(sender, message, time, 12))
+                        databaseHelper.insertMessage(roomId,sender,message,time, 12)
+                    }
                 }else{
-                    chatList.add(ChatMessage(sender, message, time, 1))
-                    databaseHelper.insertMessage(roomId,sender,message,time, 1)
+                    if(flag != 1){
+                        chatList.add(ChatMessage(sender, message, time, 0))
+                        databaseHelper.insertMessage(roomId,sender,message,time, 0)
+                    }else{
+                        chatList.add(ChatMessage(sender, message, time, 10))
+                        databaseHelper.insertMessage(roomId,sender,message,time, 10)
+                    }
                 }
 
                 mainHandler.post(updateRecyclerViewRunnable)
@@ -283,6 +341,7 @@ class ActivityChat : AppCompatActivity() {
                     data.put("message", chatMessage)
                     data.put("senderMail", "$sender")
                     data.put("time", currentTime)
+                    data.put("flag", 0)
                     stompClient.send("/app/send", data.toString()).subscribe()
                     chatEdit.setText("")
                 }
@@ -291,19 +350,22 @@ class ActivityChat : AppCompatActivity() {
 
         plusBtn.setOnClickListener {
             when {
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
-                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                    // Android 13 이상
+                    if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        requestPermissions(arrayOf(READ_MEDIA_IMAGES), 1000)
+                    }
                 }
-
-                shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                -> {
-                    showPermissionContextPopup()
+                else -> {
+                    // Android 12 이하
+                    if (ContextCompat.checkSelfPermission(this, READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        requestPermissions(arrayOf(READ_EXTERNAL_STORAGE), 1000)
+                    }
                 }
-
-                else -> requestPermissions(
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                    1000
-                )
             }
         }
     }
@@ -368,31 +430,5 @@ class ActivityChat : AppCompatActivity() {
             }
         }
         return null
-    }
-
-    //Base64로 InCoding
-    private fun encodeImageToBase64(imagePath: String, type: String): String? {
-        val bitmap = BitmapFactory.decodeFile(imagePath)
-        val outputStream = ByteArrayOutputStream()
-        if(type=="PNG"){
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream)
-        }else{
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream)
-        }
-        val byteArray = outputStream.toByteArray()
-        return Base64.encodeToString(byteArray, Base64.DEFAULT)
-    }
-
-    //권한 요청
-    private fun showPermissionContextPopup() {
-        AlertDialog.Builder(this)
-            .setTitle("권한이 필요합니다.")
-            .setMessage("이미지를 전송하기 위해서는 갤러리 접근 권한이 필요합니다.")
-            .setPositiveButton("동의하기") { _, _ ->
-                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
-            }
-            .setNegativeButton("취소하기") { _, _ -> }
-            .create()
-            .show()
     }
 }

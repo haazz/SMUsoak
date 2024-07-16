@@ -82,10 +82,10 @@ class FragmentChat : Fragment() {
                             if (responseBody.success) {
                                 for (item in responseBody.data) {
                                     if (userNickList.containsKey(room.roomId)) {
-                                        userNickList[room.roomId]!!.add("null")
+                                        userNickList[room.roomId]!!.add(item.nick)
                                         userMailList[room.roomId]!!.add(item.mail)
                                     } else {
-                                        userNickList[room.roomId] = mutableListOf("null")
+                                        userNickList[room.roomId] = mutableListOf(item.nick)
                                         userMailList[room.roomId] = mutableListOf(item.mail)
                                     }
                                     userMap[item.mail]=item.url

@@ -125,6 +125,17 @@ class Retrofit {
         @SerializedName("mails")
         val mails: List<String>
     )
+    //채팅 이미지 url
+    data class ResponseChatImage(
+        @SerializedName("success")
+        val success: Boolean,
+        @SerializedName("data")
+        val data: DownUrl
+    )
+    data class DownUrl(
+        @SerializedName("downloadUrl")
+        val downloadUrl: String
+    )
 
     data class RequestTestRoom(
         @SerializedName("mails")

@@ -1,8 +1,11 @@
 package com.example.smu
 
+import android.Manifest
+import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
@@ -11,7 +14,6 @@ import android.widget.Button
 import android.widget.ImageButton
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
 import com.example.smu.connection.Retrofit
@@ -44,10 +46,10 @@ class ActivityProfile : AppCompatActivity() {
             val path = getRealPathFromUri(uri)
             val file = File(path)
             //jpg, jpeg, png인지 확인
-            if(file.toString().substring(file.toString().length-3)=="jpg" || file.toString().substring(file.toString().length-4)=="jpeg"){
+            if(file.toString().endsWith("jpg") || file.toString().endsWith("jpeg")){
                 mediaType = "image/jpeg".toMediaType()
                 changeProfile(uri, file)
-            }else if(file.toString().substring(file.toString().length-3)=="png"){
+            }else if(file.toString().endsWith("png")){
                 mediaType = "image/png".toMediaType()
                 changeProfile(uri, file)
             }
@@ -101,19 +103,24 @@ class ActivityProfile : AppCompatActivity() {
 
         changeprofileimage.setOnClickListener{
             when {
-                ContextCompat.checkSelfPermission(this, android.Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED -> {
-                    pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
+                    // Android 13 이상
+                    if (ContextCompat.checkSelfPermission(this, READ_MEDIA_IMAGES) == PackageManager.PERMISSION_GRANTED) {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        requestPermissions(arrayOf(READ_MEDIA_IMAGES), 1000)
+                    }
                 }
-
-                shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE)
-                -> {
-                    showPermissionContextPopup()
+                else -> {
+                    // Android 12 이하
+                    if (ContextCompat.checkSelfPermission(this,
+                            Manifest.permission.READ_EXTERNAL_STORAGE
+                        ) == PackageManager.PERMISSION_GRANTED) {
+                        pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+                    } else {
+                        requestPermissions(arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
+                    }
                 }
-
-                else -> requestPermissions(
-                    arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE),
-                    1000
-                )
             }
         }
     }
@@ -130,19 +137,6 @@ class ActivityProfile : AppCompatActivity() {
             }
         }
         return null
-    }
-
-    //권한 요청
-    private fun showPermissionContextPopup() {
-        AlertDialog.Builder(this)
-            .setTitle("권한이 필요합니다.")
-            .setMessage("프로필 이미지를 설정하기 위해서는 갤러리 접근 권한이 필요합니다.")
-            .setPositiveButton("동의하기") { _, _ ->
-                requestPermissions(arrayOf(android.Manifest.permission.READ_EXTERNAL_STORAGE), 1000)
-            }
-            .setNegativeButton("취소하기") { _, _ -> }
-            .create()
-            .show()
     }
 
     private fun changeProfile(uri: Uri, file: File){

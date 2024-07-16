@@ -56,7 +56,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                     dateChat.text=list.message
                 }
                 else -> {
-                    if(list.flag == 1){
+                    if(list.flag == 0){
                         otherConst1.visibility= View.VISIBLE
                         profile.clipToOutline = true
                         otherConst2.visibility= View.GONE
