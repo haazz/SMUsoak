@@ -5,6 +5,7 @@
     <color name="SMU">#0E207F</color>
     <color name="chat_color">#3A82F0</color>
     <color name="light_blue">#ADD8FF</color>
+    <color name="light_black">#F8F8F8</color>
     <color name="light_gray">#D9D9D9</color>
     <color name="dark_gray">#C0C0C0</color>
     <color name="time_gray">#909090</color>

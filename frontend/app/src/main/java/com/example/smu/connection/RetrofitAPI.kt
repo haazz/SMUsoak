@@ -45,6 +45,12 @@ interface RetrofitAPI {
         @Part file: MultipartBody.Part,
         @Part("info") info: RequestBody): Call<Retrofit.ResponseSuccess>
 
+    //유저 정보 업데이트
+    @POST("/api/v1/user/update/info")
+    fun userUpdate(
+        @Header("Authorization") token: String,
+        @Body request: Retrofit.RequestUser): Call<Retrofit.ResponseUser>
+
     //채팅 이미지 전송
     @Multipart
     @POST("/api/v1/chat/update/img")
