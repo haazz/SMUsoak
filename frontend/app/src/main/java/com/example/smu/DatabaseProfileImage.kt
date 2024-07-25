@@ -5,7 +5,7 @@ import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
-class DatabaseImage private constructor(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
+class DatabaseProfileImage private constructor(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
     companion object {
         private const val DATABASE_VERSION = 1
@@ -15,11 +15,11 @@ class DatabaseImage private constructor(context: Context) : SQLiteOpenHelper(con
         private const val COLUMN_IMAGE = "image"
 
         @Volatile
-        private var instance: DatabaseImage?= null
+        private var instance: DatabaseProfileImage?= null
 
         fun getInstance(context: Context)=
-            instance ?: synchronized(DatabaseImage::class.java){
-                instance ?: DatabaseImage(context).also{
+            instance ?: synchronized(DatabaseProfileImage::class.java){
+                instance ?: DatabaseProfileImage(context).also{
                     instance =it
                 }
             }

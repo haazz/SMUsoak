@@ -35,7 +35,6 @@
             android:background="@drawable/radius_15_solid_chatcolor"
             android:inputType="textMultiLine"
             android:maxWidth="215dp"
-            android:maxLines="5"
             android:paddingStart="10dp"
             android:paddingTop="2dp"
             android:paddingEnd="10dp"

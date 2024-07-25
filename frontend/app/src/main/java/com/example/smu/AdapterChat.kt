@@ -2,6 +2,7 @@ package com.example.smu
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -12,13 +13,21 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.example.smu.connection.Retrofit
+import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.RvChattingBinding
+import org.json.JSONObject
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class AdapterChat(private val chatList : MutableList<ChatMessage>,
     private val context : Context) : RecyclerView.Adapter<AdapterChat.ViewHolder>() {
 
     private val user = MySharedPreference.user
     private val senderMail = user.getString("mail","")
+
+    private val databaseHelper: DatabaseChatImage by lazy{ DatabaseChatImage.getInstance(context)}
 
     inner class ViewHolder(binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
 
@@ -40,7 +49,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
 
         fun bind(list : ChatMessage) {
             when (list.sender) {
-                "$senderMail" -> {
+                "$senderMail" -> { // 본인이 보낸 메세지
                     myChatConst.visibility= View.VISIBLE
                     otherConst1.visibility= View.GONE
                     otherConst2.visibility= View.GONE
@@ -48,15 +57,15 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                     myChat.text=list.message
                     myChatTime.text=list.time.substring(9)
                 }
-                "system" -> {
+                "system" -> { // 시스템 메세지
                     dateChatConst.visibility= View.VISIBLE
                     otherConst1.visibility= View.GONE
                     otherConst2.visibility= View.GONE
                     myChatConst.visibility= View.GONE
                     dateChat.text=list.message
                 }
-                else -> {
-                    if(list.flag == 0){
+                else -> { // 0상대가 보낸 첫 메세지, 2상대가 연속으로 보낸 메세지, 10 상대가 보낸 첫 이미지, 12 상대가 연속으로 보낸 이미지
+                    if(list.flag == 0){ //0이면 처음
                         otherConst1.visibility= View.VISIBLE
                         profile.clipToOutline = true
                         otherConst2.visibility= View.GONE
@@ -64,13 +73,45 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                         dateChatConst.visibility= View.GONE
                         otherChat1.text=list.message
                         otherTime1.text=list.time.substring(9)
-                    }else{
+                    }else if(list.flag == 2){ // 나머지는 연속
                         otherConst2.visibility= View.VISIBLE
                         otherConst1.visibility= View.GONE
                         myChatConst.visibility= View.GONE
                         dateChatConst.visibility= View.GONE
                         otherChat2.text=list.message
                         otherTime2.text=list.time.substring(9)
+                    }else if(list.flag == 10){
+                        val url = list.message
+
+//                        val call = RetrofitObject.getRetrofitService.chatImage("Bearer $token", imagePart, room)
+//                        call.enqueue(object : Callback<Retrofit.ResponseChatImage> {
+//                            override fun onResponse(call: Call<Retrofit.ResponseChatImage>, response: Response<Retrofit.ResponseChatImage>) {
+//                                if (response.isSuccessful) {
+//                                    val chatImageResponse = response.body()
+//                                    if (chatImageResponse != null && chatImageResponse.success) {
+//                                        val imageUrl = chatImageResponse.data.downloadUrl
+//                                        if(open) {
+//                                            Log.d("chatting", chatImageResponse.toString())
+//                                            val data = JSONObject()
+//                                            data.put("roomId", roomId)
+//                                            data.put("message", imageUrl)
+//                                            data.put("senderMail", "$sender")
+//                                            data.put("time", currentTime)
+//                                            data.put("flag", 1)
+//                                            stompClient.send("/app/send", data.toString()).subscribe()
+//                                            Log.d("chatting", roomId)
+//                                        }
+//                                    }
+//                                }
+//                            }
+//                            override fun onFailure(call: Call<Retrofit.ResponseChatImage>, t: Throwable) {
+//                                val errorMessage = "Call Failed: ${t.message}"
+//                                Log.d("Retrofit", errorMessage)
+//                            }
+//                        })
+
+                    }else if(list.flag == 12){
+
                     }
                 }
             }
