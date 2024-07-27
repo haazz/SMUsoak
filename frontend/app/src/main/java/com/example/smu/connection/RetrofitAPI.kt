@@ -65,7 +65,7 @@ interface RetrofitAPI {
         @Header("Authorization") token: String,
         @Body request: Retrofit.RequestUser): Call<Retrofit.ResponseUser>
 
-    //프로필 다운로드
+    //이미지 다운로드
     @GET("/api/v1/download/img/{fileName}")
     fun profileDown(
         @Header("Authorization") token: String,

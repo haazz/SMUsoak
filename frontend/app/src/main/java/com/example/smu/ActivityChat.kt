@@ -143,20 +143,18 @@ class ActivityChat : AppCompatActivity() {
                 override fun onResponse(call: Call<Retrofit.ResponseChatImage>, response: Response<Retrofit.ResponseChatImage>) {
                     if (response.isSuccessful) {
                         val chatImageResponse = response.body()
-                        if (chatImageResponse != null) {
-                            if (chatImageResponse.success) {
-                                val imageUrl = chatImageResponse.data.downloadUrl
-                                if(open) {
-                                    Log.d("chatting", chatImageResponse.toString())
-                                    val data = JSONObject()
-                                    data.put("roomId", roomId)
-                                    data.put("message", imageUrl)
-                                    data.put("senderMail", "$sender")
-                                    data.put("time", currentTime)
-                                    data.put("flag", 0)
-                                    stompClient.send("/app/send", data.toString()).subscribe()
-                                    Log.d("chatting", roomId.toString())
-                                }
+                        if (chatImageResponse != null && chatImageResponse.success) {
+                            val imageUrl = chatImageResponse.data.downloadUrl
+                            if(open) {
+                                Log.d("chatting", chatImageResponse.toString())
+                                val data = JSONObject()
+                                data.put("roomId", roomId)
+                                data.put("message", imageUrl)
+                                data.put("senderMail", "$sender")
+                                data.put("time", currentTime)
+                                data.put("flag", 1)
+                                stompClient.send("/app/send", data.toString()).subscribe()
+                                Log.d("chatting", roomId)
                             }
                         }
                     }
@@ -230,7 +228,7 @@ class ActivityChat : AppCompatActivity() {
                 val currentTime=getCurrentTime()
                 val currentDate=getCurrentDate()
 
-                if(chatList.size == 0) {
+                if(chatList.size == 0) { //시스템이 snder이면 flag는 뭐가 와도 상관이 없음
                     chatList.add(ChatMessage("system", currentDate, currentTime, flag))
                     databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, flag)
                 }else{
@@ -242,7 +240,8 @@ class ActivityChat : AppCompatActivity() {
                     }
                 }
 
-                if(chatList[chatList.size-1].sender == sender){
+                // flag 앞이 0이면 문자 1이면 이미지
+                if(chatList[chatList.size-1].sender == sender){ // 같은 사용자가 연속으로 보낼 때
                     if(flag != 1){
                         chatList.add(ChatMessage(sender, message, time, 2))
                         databaseHelper.insertMessage(roomId,sender,message,time, 2)
@@ -250,7 +249,7 @@ class ActivityChat : AppCompatActivity() {
                         chatList.add(ChatMessage(sender, message, time, 12))
                         databaseHelper.insertMessage(roomId,sender,message,time, 12)
                     }
-                }else{
+                }else{ // 다른 사용자가 보낼 때
                     if(flag != 1){
                         chatList.add(ChatMessage(sender, message, time, 0))
                         databaseHelper.insertMessage(roomId,sender,message,time, 0)
@@ -333,7 +332,7 @@ class ActivityChat : AppCompatActivity() {
                     data.put("time", currentTime)
                     data.put("flag", 0)
                     stompClient.send("/app/send", data.toString()).subscribe()
-                    chatEdit.setText("")
+                    chatEdit.text = null
                 }
             }
         }

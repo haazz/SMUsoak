@@ -8,7 +8,7 @@ import com.example.smu.databinding.RvUserListBinding
 
 class AdapterDrawer(private val userNick: MutableList<String>, private val userMail: MutableList<String>, private val context: Context) : RecyclerView.Adapter<AdapterDrawer.ViewHolder>() {
 
-    private val databaseHelper: DatabaseImage by lazy{ DatabaseImage.getInstance(context)}
+    private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(context)}
 
     inner class ViewHolder(private val binding: RvUserListBinding) : RecyclerView.ViewHolder(binding.root){
 

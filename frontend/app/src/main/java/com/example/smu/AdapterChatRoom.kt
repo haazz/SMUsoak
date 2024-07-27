@@ -3,7 +3,6 @@ package com.example.smu
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -17,7 +16,7 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
                       private val userNick: HashMap<Int, MutableList<String>>,
                       private val userMail: HashMap<Int, MutableList<String>>) : RecyclerView.Adapter<AdapterChatRoom.ViewHolder>() {
 
-    private val databaseHelper: DatabaseImage by lazy{ DatabaseImage.getInstance(context)}
+    private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(context)}
 
     inner class ViewHolder(private val binding: RvChatRoomBinding) : RecyclerView.ViewHolder(binding.root){
 

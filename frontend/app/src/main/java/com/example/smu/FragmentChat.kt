@@ -29,7 +29,7 @@ class FragmentChat : Fragment() {
     private lateinit var recyclerViewChatRoom: RecyclerView
     private lateinit var chatRoomAdapter: AdapterChatRoom
 
-    private val databaseHelper: DatabaseImage by lazy{ DatabaseImage.getInstance(requireContext())}
+    private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(requireContext())}
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
