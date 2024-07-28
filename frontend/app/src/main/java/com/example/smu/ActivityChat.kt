@@ -5,6 +5,7 @@ import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -36,6 +37,7 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -154,7 +156,6 @@ class ActivityChat : AppCompatActivity() {
                                 data.put("time", currentTime)
                                 data.put("flag", 1)
                                 stompClient.send("/app/send", data.toString()).subscribe()
-                                Log.d("chatting", roomId)
                             }
                         }
                     }
@@ -223,26 +224,51 @@ class ActivityChat : AppCompatActivity() {
                 val time = jsonObject.getString("time")
                 val flag = jsonObject.getInt("flag")
 
-                Log.d("chatting", "$flag $message")
+                if(flag == 1){
+                    Log.d("image url", message)
+                    val base = BaseUrl.BASE_URL.replace("http://", "")
+                    val imageDownUrl = message.replace(base, "")
+                    val call = RetrofitObject.getRetrofitService.profileDown("Bearer $token", imageDownUrl)
+                    call.enqueue(object : Callback<ResponseBody> {
+                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                            if (response.isSuccessful) {
+                                response.body()?.let { responseBody ->
+                                    // 이미지 데이터를 byte array로 변환
+                                    val imageData = responseBody.bytes()
+                                    val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
+
+                                    // 이미지 뷰에 비트맵 설정
+                                    binding.testimage.setImageBitmap(bitmap)
+
+                                    Log.d("image Data", imageData.toString())
+                                }
+                            }
+                        }
+                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
+                            val errorMessage = "Call Failed: ${t.message}"
+                            Log.d("Retrofit", errorMessage)
+                        }
+                    })
+                }
 
                 val currentTime=getCurrentTime()
                 val currentDate=getCurrentDate()
 
-                if(chatList.size == 0) { //시스템이 snder이면 flag는 뭐가 와도 상관이 없음
-                    chatList.add(ChatMessage("system", currentDate, currentTime, flag))
-                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, flag)
+                if(chatList.size == 0) {
+                    chatList.add(ChatMessage("system", currentDate, currentTime, 3))
+                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, 3)
                 }else{
                     val lTime = chatList[chatList.size-1].time.split(" ")
                     val cTime = currentTime.split(" ")
                     if(lTime[0]!=cTime[0]) {
-                        chatList.add(ChatMessage("system", currentDate, currentTime, flag))
-                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime, flag)
+                        chatList.add(ChatMessage("system", currentDate, currentTime, 3))
+                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime, 3)
                     }
                 }
 
                 // flag 앞이 0이면 문자 1이면 이미지
                 if(chatList[chatList.size-1].sender == sender){ // 같은 사용자가 연속으로 보낼 때
-                    if(flag != 1){
+                    if(flag == 0){
                         chatList.add(ChatMessage(sender, message, time, 2))
                         databaseHelper.insertMessage(roomId,sender,message,time, 2)
                     }else{
@@ -250,7 +276,7 @@ class ActivityChat : AppCompatActivity() {
                         databaseHelper.insertMessage(roomId,sender,message,time, 12)
                     }
                 }else{ // 다른 사용자가 보낼 때
-                    if(flag != 1){
+                    if(flag == 0){
                         chatList.add(ChatMessage(sender, message, time, 0))
                         databaseHelper.insertMessage(roomId,sender,message,time, 0)
                     }else{

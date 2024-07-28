@@ -11,6 +11,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import retrofit2.http.Path
+import retrofit2.http.Url
 
 interface RetrofitAPI {
     //로그인
@@ -66,10 +67,10 @@ interface RetrofitAPI {
         @Body request: Retrofit.RequestUser): Call<Retrofit.ResponseUser>
 
     //이미지 다운로드
-    @GET("/api/v1/download/img/{fileName}")
+    @GET
     fun profileDown(
         @Header("Authorization") token: String,
-        @Path("fileName") fileName: String): Call<ResponseBody>
+        @Url url: String): Call<ResponseBody>
 
     //채팅룸 리스트 가져오기
     @GET("/api/v1/chat/room/list/{mail}")

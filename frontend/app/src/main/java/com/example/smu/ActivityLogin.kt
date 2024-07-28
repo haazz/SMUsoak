@@ -48,6 +48,7 @@ class ActivityLogin : AppCompatActivity() {
                         if(responseBody != null){
                             if(responseBody.success) {
                                 val accessToken = responseBody.data.accessToken
+                                Log.d("accessToken", accessToken)
                                 val refreshToken = responseBody.data.refreshToken
                                 editor.putString("accessToken", accessToken)
                                 editor.putString("refreshToken", refreshToken)
