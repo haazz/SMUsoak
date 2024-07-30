@@ -63,7 +63,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/svg_plus" />
+                app:srcCompat="@drawable/svg_image_plus" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/chat_const"

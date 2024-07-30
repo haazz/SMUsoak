@@ -185,7 +185,8 @@ class ActivityChat : AppCompatActivity() {
     }
 
     //DataBase 가져옴
-    private val databaseHelper: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext)}
+    private val databaseChat: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext) }
+    private val databaseImage: DatabaseChatImage by lazy { DatabaseChatImage.getInstance(applicationContext) }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     @SuppressLint("CheckResult")
@@ -224,6 +225,22 @@ class ActivityChat : AppCompatActivity() {
                 val time = jsonObject.getString("time")
                 val flag = jsonObject.getInt("flag")
 
+                val currentTime=getCurrentTime()
+                val currentDate=getCurrentDate()
+
+
+                if(chatList.size == 0) {
+                    chatList.add(ChatMessage("system", currentDate, currentTime, 3))
+                    databaseChat.insertMessage(roomId,"system",currentDate,currentTime, 3)
+                }else{
+                    val lTime = chatList[chatList.size-1].time.split(" ")
+                    val cTime = currentTime.split(" ")
+                    if(lTime[0]!=cTime[0]) {
+                        chatList.add(ChatMessage("system", currentDate, currentTime, 3))
+                        databaseChat.insertMessage(roomId, "system", currentDate, currentTime, 3)
+                    }
+                }
+
                 if(flag == 1){
                     Log.d("image url", message)
                     val base = BaseUrl.BASE_URL.replace("http://", "")
@@ -237,10 +254,9 @@ class ActivityChat : AppCompatActivity() {
                                     val imageData = responseBody.bytes()
                                     val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
 
+                                    databaseImage.saveImage(roomId, message, imageData)
                                     // 이미지 뷰에 비트맵 설정
                                     binding.testimage.setImageBitmap(bitmap)
-
-                                    Log.d("image Data", imageData.toString())
                                 }
                             }
                         }
@@ -251,37 +267,22 @@ class ActivityChat : AppCompatActivity() {
                     })
                 }
 
-                val currentTime=getCurrentTime()
-                val currentDate=getCurrentDate()
-
-                if(chatList.size == 0) {
-                    chatList.add(ChatMessage("system", currentDate, currentTime, 3))
-                    databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, 3)
-                }else{
-                    val lTime = chatList[chatList.size-1].time.split(" ")
-                    val cTime = currentTime.split(" ")
-                    if(lTime[0]!=cTime[0]) {
-                        chatList.add(ChatMessage("system", currentDate, currentTime, 3))
-                        databaseHelper.insertMessage(roomId, "system", currentDate, currentTime, 3)
-                    }
-                }
-
                 // flag 앞이 0이면 문자 1이면 이미지
                 if(chatList[chatList.size-1].sender == sender){ // 같은 사용자가 연속으로 보낼 때
                     if(flag == 0){
                         chatList.add(ChatMessage(sender, message, time, 2))
-                        databaseHelper.insertMessage(roomId,sender,message,time, 2)
+                        databaseChat.insertMessage(roomId,sender,message,time, 2)
                     }else{
                         chatList.add(ChatMessage(sender, message, time, 12))
-                        databaseHelper.insertMessage(roomId,sender,message,time, 12)
+                        databaseChat.insertMessage(roomId,sender,message,time, 12)
                     }
                 }else{ // 다른 사용자가 보낼 때
                     if(flag == 0){
                         chatList.add(ChatMessage(sender, message, time, 0))
-                        databaseHelper.insertMessage(roomId,sender,message,time, 0)
+                        databaseChat.insertMessage(roomId,sender,message,time, 0)
                     }else{
                         chatList.add(ChatMessage(sender, message, time, 10))
-                        databaseHelper.insertMessage(roomId,sender,message,time, 10)
+                        databaseChat.insertMessage(roomId,sender,message,time, 10)
                     }
                 }
 
@@ -314,7 +315,8 @@ class ActivityChat : AppCompatActivity() {
 
         compositeDisposable.add(lifecycleDisposable)
 
-        chatList=databaseHelper.getAllMessages(roomId)
+        chatList=databaseChat.getAllMessages(roomId)
+        Log.d("chatList", chatList.toString())
 
         //recyclerView 초기 설정
         recyclerViewChat = binding.chatRv

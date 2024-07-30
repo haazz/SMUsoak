@@ -4,6 +4,8 @@ import android.content.ContentValues
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 
 class DatabaseChatImage private constructor(context: Context) : SQLiteOpenHelper(context, DATABASE_NAME, null, DATABASE_VERSION) {
 
@@ -11,7 +13,7 @@ class DatabaseChatImage private constructor(context: Context) : SQLiteOpenHelper
         private const val DATABASE_VERSION = 1
         private const val DATABASE_NAME = "chat_image.db"
         private const val TABLE_NAME = "image_url"
-        private const val COLUMN_URL = "roomId"
+        private const val COLUMN_URL = "url"
         private const val COLUMN_ROOM = "roomId"
         private const val COLUMN_IMAGE = "image"
 
@@ -55,17 +57,18 @@ class DatabaseChatImage private constructor(context: Context) : SQLiteOpenHelper
         db.close()
     }
 
-    fun getImage(url:String): ByteArray? {
+    fun getImage(url:String): Bitmap? {
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT $COLUMN_IMAGE FROM $TABLE_NAME WHERE $COLUMN_URL = '$url'", null)
-        var imageByteArray: ByteArray? = null
+        var image: Bitmap? = null
 
         if (cursor.moveToFirst()) {
             val columnIndex = cursor.getColumnIndex(COLUMN_IMAGE)
-            imageByteArray = cursor.getBlob(columnIndex)
+            val imageByteArray = cursor.getBlob(columnIndex)
+            image = BitmapFactory.decodeByteArray(imageByteArray, 0, imageByteArray.size)
         }
 
         cursor.close()
-        return imageByteArray
+        return image
     }
 }

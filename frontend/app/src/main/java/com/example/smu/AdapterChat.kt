@@ -13,6 +13,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.RvChattingBinding
@@ -44,6 +45,8 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
         private val otherChat2 = binding.rvChattingChat2
         private val otherTime2 = binding.rvChattingTime2
 
+        private val myImage = binding.rvChattingMyimage
+
         private val dateChatConst = binding.rvChattingDay
         private val dateChat = binding.rvChattingDayText
 
@@ -54,8 +57,17 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 otherConst1.visibility= View.GONE
                 otherConst2.visibility= View.GONE
                 dateChatConst.visibility= View.GONE
+                myImage.visibility= View.GONE
                 myChat.text=list.message
                 myChatTime.text=list.time.substring(9)
+            }
+
+            fun myImageChatting(){
+                myChatConst.visibility= View.GONE
+                otherConst1.visibility= View.GONE
+                otherConst2.visibility= View.GONE
+                dateChatConst.visibility= View.GONE
+                myImage.visibility= View.VISIBLE
             }
 
             when (list.flag) {
@@ -72,7 +84,12 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                     }
                 }
                 12 -> { // 연속 이미지
-
+                    if(list.sender == senderMail){
+                        Glide.with(context)
+                            .load(databaseHelper.getImage(list.message))
+                            .into(myImage)
+                        myImageChatting()
+                    }
                 }
                 0 -> { // 다른 문자
                     if(list.sender == senderMail){
@@ -87,7 +104,12 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                     }
                 }
                 10 -> { // 다른 이미지
-
+                    if(list.sender == senderMail){
+                        myImageChatting()
+                        Glide.with(context)
+                            .load(databaseHelper.getImage(list.message))
+                            .into(myImage)
+                    }
                 }
                 3 -> { // 시스템
                     dateChatConst.visibility= View.VISIBLE
