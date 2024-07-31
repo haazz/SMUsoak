@@ -11,9 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +23,8 @@ public class OpenChatRoomService {
 
     // 1:1 대화 생성
     public Long createOpenChat(OpenChatDto.OneToOneRequest request) {
-        User creator = userRepository.findByMail(request.getCreator())
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getCreator()));
+        User creator = userRepository.findByMail(request.getMail())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getMail()));
 
         LocalDateTime createdAt = request.getCreatedAt();
 
@@ -43,14 +41,17 @@ public class OpenChatRoomService {
 
     // 그룹 대화 생성
     public Long createGroupChat(OpenGroupChatDto.GroupRequest request) {
-        User creator = userRepository.findByMail(request.getCreator())
-                .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getCreator()));
+        User creator = userRepository.findByMail(request.getMail())
+                .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getMail()));
 
         LocalDateTime createdAt = request.getCreatedAt();
-
-        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder().build());
-        chatRoom.setUserList(new ArrayList<>());
-        chatRoom.getUserList().add(creator); // 생성자를 채팅방에 추가
+        Set<User> users = new HashSet<>();
+        users.add(creator);
+        ChatRoom chatRoom  = ChatRoom.builder().users(users).build();
+        chatRoomRepository.save(chatRoom);
+//        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder().build());
+//        chatRoom.setUserList(new ArrayList<>());
+//        chatRoom.getUserList().add(creator); // 생성자를 채팅방에 추가
 
         OpenGroupChat groupChat = OpenGroupChat.builder()
                 .title(request.getTitle())
