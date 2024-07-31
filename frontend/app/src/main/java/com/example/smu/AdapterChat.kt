@@ -14,6 +14,9 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.CenterInside
+import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.RvChattingBinding
@@ -85,10 +88,14 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 }
                 12 -> { // 연속 이미지
                     if(list.sender == senderMail){
+                        myImageChatting()
+                        val widthPx = dpToPx(context, 300)
                         Glide.with(context)
                             .load(databaseHelper.getImage(list.message))
+                            .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)  // 가로를 300dp로 제한
+                            .transform(FitCenter())  // 세로 비율 유지
                             .into(myImage)
-                        myImageChatting()
+                        myImage.clipToOutline = true
                     }
                 }
                 0 -> { // 다른 문자
@@ -106,9 +113,13 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 10 -> { // 다른 이미지
                     if(list.sender == senderMail){
                         myImageChatting()
+                        val widthPx = dpToPx(context, 300)
                         Glide.with(context)
                             .load(databaseHelper.getImage(list.message))
+                            .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)  // 가로를 300dp로 제한
+                            .transform(FitCenter())  // 세로 비율 유지
                             .into(myImage)
+                        myImage.clipToOutline = true
                     }
                 }
                 3 -> { // 시스템
@@ -165,4 +176,9 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
     }
 
     override fun getItemCount() = chatList.size
+
+    private fun dpToPx(context: Context, dp: Int): Int {
+        val density = context.resources.displayMetrics.density
+        return (dp * density).toInt()
+    }
 }

@@ -6,12 +6,11 @@
 
     <ImageView
         android:id="@+id/rv_chatting_myimage"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="2dp"
         android:layout_marginEnd="5dp"
         android:background="@drawable/custom_image_radius10"
-        android:scaleType="fitEnd"
         android:src="@drawable/svg_no_image"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
