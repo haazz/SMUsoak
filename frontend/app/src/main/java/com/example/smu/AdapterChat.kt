@@ -3,24 +3,19 @@ package com.example.smu
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.util.Log
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.bitmap.CenterCrop
-import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.FitCenter
-import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.RvChattingBinding
-import org.json.JSONObject
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -31,7 +26,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
     private val user = MySharedPreference.user
     private val senderMail = user.getString("mail","")
 
-    private val databaseHelper: DatabaseChatImage by lazy{ DatabaseChatImage.getInstance(context)}
+    private val databaseImage: DatabaseChatImage by lazy{ DatabaseChatImage.getInstance(context)}
 
     inner class ViewHolder(binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
 
@@ -91,7 +86,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                         myImageChatting()
                         val widthPx = dpToPx(context, 300)
                         Glide.with(context)
-                            .load(databaseHelper.getImage(list.message))
+                            .load(databaseImage.getImage(list.message))
                             .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)  // 가로를 300dp로 제한
                             .transform(FitCenter())  // 세로 비율 유지
                             .into(myImage)
@@ -112,15 +107,15 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 }
                 10 -> { // 다른 이미지
                     if(list.sender == senderMail){
-                        myImageChatting()
+                        myImage.clipToOutline = true
                         val widthPx = dpToPx(context, 300)
                         Glide.with(context)
-                            .load(databaseHelper.getImage(list.message))
+                            .load(databaseImage.getImage(list.message))
                             .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)  // 가로를 300dp로 제한
                             .transform(FitCenter())  // 세로 비율 유지
                             .into(myImage)
-                        myImage.clipToOutline = true
                     }
+                    myImageChatting()
                 }
                 3 -> { // 시스템
                     dateChatConst.visibility= View.VISIBLE
