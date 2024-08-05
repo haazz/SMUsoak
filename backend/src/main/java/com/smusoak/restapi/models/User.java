@@ -1,5 +1,6 @@
 package com.smusoak.restapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,12 +19,13 @@ import java.util.Set;
 @AllArgsConstructor
 @Entity
 @ToString
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "userDetail"})
 public class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String mail;
     private String password;
     private LocalDateTime createdAt;
@@ -33,10 +35,24 @@ public class User implements UserDetails {
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "user_detail_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private UserDetail userDetail;
 
     @ManyToMany(mappedBy = "users")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private Set<ChatRoom> chatRooms;
+
+    @OneToMany(mappedBy = "creator")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private List<OpenChat> openChats;
+
+    @OneToMany(mappedBy = "creator")
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private List<OpenGroupChat> openGroupChats;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    private Set<MatchingInfo> matchingInfos;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

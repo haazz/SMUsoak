@@ -3,6 +3,7 @@ package com.smusoak.restapi.models;
 //import javax.persistence.GeneratedValue;
 //import javax.persistence.GenerationType;
 //import javax.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.*;
 import jakarta.persistence.Entity;
@@ -13,7 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 import java.util.Objects;
 
-// 유저를 폴린키로 or id를 폴린키로?
 @Entity
 @Getter
 @Setter
@@ -24,10 +24,10 @@ public class MatchingInfo {
 
     private int minPartnerAge; // 상대방의 최소 나이 조건
     private int maxPartnerAge; // 상대방의 최대 나이 조건
-    private char partnerGender; // 상대방의 성별 조건
-
-    @ManyToOne
-    @JoinColumn(name = "user_mail")
+    private String partnerGender; // 상대방의 성별 조건
+//    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_mail", referencedColumnName = "mail")
     private User user;
 }
 
