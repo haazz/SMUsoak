@@ -2,6 +2,7 @@ package com.example.smu
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.graphics.drawable.Drawable
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -14,9 +15,12 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.CenterInside
 import com.bumptech.glide.load.resource.bitmap.FitCenter
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.RvChattingBinding
@@ -24,6 +28,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import javax.sql.DataSource
 
 class AdapterChat(private val chatList : MutableList<ChatMessage>,
     private val context : Context) : RecyclerView.Adapter<AdapterChat.ViewHolder>() {
@@ -48,6 +53,8 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
         private val otherChat2 = binding.rvChattingChat2
         private val otherTime2 = binding.rvChattingTime2
 
+        private val myImageConst = binding.rvChattingConstMyImage
+        private val myImageTime = binding.rvChattingMyImageTime
         private val myImage = binding.rvChattingMyimage
 
         private val dateChatConst = binding.rvChattingDay
@@ -60,7 +67,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 otherConst1.visibility= View.GONE
                 otherConst2.visibility= View.GONE
                 dateChatConst.visibility= View.GONE
-                myImage.visibility= View.GONE
+                myImageConst.visibility= View.GONE
                 myChat.text=list.message
                 myChatTime.text=list.time.substring(9)
             }
@@ -70,7 +77,8 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 otherConst1.visibility= View.GONE
                 otherConst2.visibility= View.GONE
                 dateChatConst.visibility= View.GONE
-                myImage.visibility= View.VISIBLE
+                myImageConst.visibility= View.VISIBLE
+                myImageTime.text=list.time.substring(9)
             }
 
             when (list.flag) {
