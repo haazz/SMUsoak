@@ -11,14 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-<<<<<<< HEAD
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-=======
 import java.util.*;
->>>>>>> feature/matching-fix
 
 @Service
 @RequiredArgsConstructor
@@ -52,12 +45,6 @@ public class OpenChatRoomService {
                 .orElseThrow(() -> new RuntimeException("User not found with email: " + request.getMail()));
 
         LocalDateTime createdAt = request.getCreatedAt();
-<<<<<<< HEAD
-
-        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder().build());
-        chatRoom.setUsers(new HashSet<>());
-        chatRoom.getUsers().add(creator); // 생성자를 채팅방에 추가
-=======
         Set<User> users = new HashSet<>();
         users.add(creator);
         ChatRoom chatRoom  = ChatRoom.builder().users(users).build();
@@ -65,7 +52,6 @@ public class OpenChatRoomService {
 //        ChatRoom chatRoom = chatRoomRepository.save(ChatRoom.builder().build());
 //        chatRoom.setUserList(new ArrayList<>());
 //        chatRoom.getUserList().add(creator); // 생성자를 채팅방에 추가
->>>>>>> feature/matching-fix
 
         OpenGroupChat groupChat = OpenGroupChat.builder()
                 .title(request.getTitle())
