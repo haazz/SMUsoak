@@ -148,7 +148,6 @@ class ActivitySingup : AppCompatActivity() {
 
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
             textCheckNick.visibility=View.INVISIBLE
-            nickcheck=false
             val inputText = s.toString()
             if(inputText.length<2 || inputText.length>8) {
                 btnCheckNick.isEnabled = false
@@ -268,6 +267,7 @@ class ActivitySingup : AppCompatActivity() {
         }
 
         btnCheckNick.setOnClickListener {
+            btnCheckNick.isEnabled = false
             val call = RetrofitObject.getRetrofitService.checkNick(editNickname.text.toString())
             call.enqueue(object : Callback<Retrofit.ResponseCheckNick> {
                 override fun onResponse(call: Call<Retrofit.ResponseCheckNick>, response: Response<Retrofit.ResponseCheckNick>) {
@@ -286,10 +286,11 @@ class ActivitySingup : AppCompatActivity() {
                             }
                         }
                     }
+                    btnCheckNick.isEnabled = true
                 }
 
                 override fun onFailure(call: Call<Retrofit.ResponseCheckNick>, t: Throwable) {
-                    btnCheckNum.isEnabled = true
+                    btnCheckNick.isEnabled = true
                     val errorMessage = "Call Failed: ${t.message}"
                     Log.d("Retrofit", errorMessage)
                 }

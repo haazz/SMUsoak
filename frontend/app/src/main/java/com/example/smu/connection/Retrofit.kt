@@ -83,20 +83,14 @@ class Retrofit {
         val success: Boolean
     )
 
-    //유저 닉 업데이트
-    data class ResponseUpdateNick(
+    //유저 정보 업데이트
+    data class RequestUpdateInfo(
         @SerializedName("mail")
         val mail: String,
         @SerializedName("nickname")
-        val nick: String
-    )
-
-    //유저 mbti 업데이트
-    data class ResponseUpdateMBTI(
-        @SerializedName("mail")
-        val mail: String,
+        val nick: String?,
         @SerializedName("mbti")
-        val mbti: String
+        val mbti: String?
     )
 
     //유저 정보 가져오기

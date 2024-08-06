@@ -50,7 +50,7 @@ interface RetrofitAPI {
     @POST("/api/v1/user/update/info")
     fun userUpdate(
         @Header("Authorization") token: String,
-        @Body request: Retrofit.RequestUser): Call<Retrofit.ResponseUser>
+        @Body request: Retrofit.RequestUpdateInfo): Call<Retrofit.ResponseSuccess>
 
     //채팅 이미지 전송
     @Multipart

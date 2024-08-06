@@ -13,8 +13,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.Spinner
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -39,9 +41,9 @@ class FragmentProfile : Fragment() {
     private lateinit var imagePart: MultipartBody.Part
     private lateinit var mediaType: MediaType
     private lateinit var profile: ImageView
-    private lateinit var btnChangeProfile: Button
-    private lateinit var btnChangeNick: Button
+    private lateinit var spinner: Spinner
     private val user = MySharedPreference.user
+    private val edit = user.edit()
     private val mail = user.getString("mail", "")
     private val token = user.getString("accessToken", "")
 
@@ -85,10 +87,9 @@ class FragmentProfile : Fragment() {
         binding = FragmentProfileBinding.inflate(layoutInflater)
 
         profile = binding.fproImgProfile
-        btnChangeProfile = binding.fproBtnProfile
-        btnChangeNick = binding.fproBtnNick
+        spinner = binding.fproSpinner
 
-        btnChangeProfile.setOnClickListener {
+        binding.fproImgProfile.setOnClickListener {
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
                     // Android 13 이상
@@ -109,6 +110,18 @@ class FragmentProfile : Fragment() {
                     }
                 }
             }
+        }
+
+        binding.fproBtnNick.setOnClickListener {
+            startActivity(Intent(requireContext(), ActivityChangeNick::class.java))
+        }
+
+
+
+        binding.fproBtnSignout.setOnClickListener {
+            edit.clear()
+            startActivity(Intent(requireContext(), ActivityLogin::class.java))
+            requireActivity().finish()
         }
 
         return binding.root
