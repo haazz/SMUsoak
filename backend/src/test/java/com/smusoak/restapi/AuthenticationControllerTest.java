@@ -89,7 +89,7 @@ public class AuthenticationControllerTest extends AbstractRestDocsTests {
         createUserDto.setGender('M');
         createUserDto.setMail("ENTP");
 
-        given(authenticationService.createUser(any(UserDto.SignupRequest.class)))
+        given(authenticationService.signup(any(UserDto.SignupRequest.class)))
                 .willReturn(JwtTokenDto.JwtAuthenticationResponse.builder()
                         .accessToken("accessToken")
                         .refreshToken("refreshToken")
