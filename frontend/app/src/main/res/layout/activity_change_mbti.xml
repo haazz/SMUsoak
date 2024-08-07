@@ -7,4 +7,49 @@
     android:layout_height="match_parent"
     tools:context=".ActivityChangeMBTI">
 
+    <NumberPicker
+        android:id="@+id/change_mbti_picker"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/change_mbti_btn"
+        android:layout_width="300dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/radius_8_solid_smu"
+        android:text="변경하기"
+        android:textColor="@color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/change_mbti_picker" />
+
+    <ImageButton
+        android:id="@+id/change_mbti_back"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:background="@android:color/transparent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/svg_back" />
+
+    <TextView
+        android:id="@+id/change_mbti_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="MBTI 변경"
+        android:textColor="@color/SMU"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="@+id/change_mbti_back"
+        app:layout_constraintStart_toEndOf="@+id/change_mbti_back"
+        app:layout_constraintTop_toTopOf="@+id/change_mbti_back" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

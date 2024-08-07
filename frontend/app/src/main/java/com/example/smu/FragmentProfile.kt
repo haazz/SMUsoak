@@ -41,7 +41,6 @@ class FragmentProfile : Fragment() {
     private lateinit var imagePart: MultipartBody.Part
     private lateinit var mediaType: MediaType
     private lateinit var profile: ImageView
-    private lateinit var spinner: Spinner
     private val user = MySharedPreference.user
     private val edit = user.edit()
     private val mail = user.getString("mail", "")
@@ -87,7 +86,6 @@ class FragmentProfile : Fragment() {
         binding = FragmentProfileBinding.inflate(layoutInflater)
 
         profile = binding.fproImgProfile
-        spinner = binding.fproSpinner
 
         binding.fproImgProfile.setOnClickListener {
             when {
@@ -116,7 +114,9 @@ class FragmentProfile : Fragment() {
             startActivity(Intent(requireContext(), ActivityChangeNick::class.java))
         }
 
-
+        binding.fproBtnMbti.setOnClickListener {
+            startActivity(Intent(requireContext(), ActivityChangeMBTI::class.java))
+        }
 
         binding.fproBtnSignout.setOnClickListener {
             edit.clear()
