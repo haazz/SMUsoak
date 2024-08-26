@@ -137,8 +137,12 @@ class FragmentChat : Fragment() {
     }
 
     private fun updateChatRoomList(rooms: MutableList<Retrofit.Chatroom>) {
-        recyclerViewChatRoom.layoutManager = LinearLayoutManager(requireContext())
-        chatRoomAdapter = AdapterChatRoom(rooms, requireContext(), userNickList, userMailList)
-        recyclerViewChatRoom.adapter = chatRoomAdapter
+        context?.let { ctx ->
+            recyclerViewChatRoom.layoutManager = LinearLayoutManager(ctx)
+            chatRoomAdapter = AdapterChatRoom(rooms, ctx, userNickList, userMailList)
+            recyclerViewChatRoom.adapter = chatRoomAdapter
+        } ?: run {
+            Log.d("FragmentChat", "Context is null")
+        }
     }
 }

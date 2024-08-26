@@ -252,11 +252,8 @@ class ActivityChat : AppCompatActivity() {
                                 response.body()?.let { responseBody ->
                                     // 이미지 데이터를 byte array로 변환
                                     val imageData = responseBody.bytes()
-                                    val bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.size)
-
                                     databaseImage.saveImage(roomId, message, imageData)
                                     // 이미지 뷰에 비트맵 설정
-                                    binding.testimage.setImageBitmap(bitmap)
                                 }
                             }
                         }

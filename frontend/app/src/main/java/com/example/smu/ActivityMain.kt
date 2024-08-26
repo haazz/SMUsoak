@@ -39,7 +39,7 @@ class ActivityMain : AppCompatActivity() {
                 R.id.bnv_chat -> {
                     supportFragmentManager
                         .beginTransaction()
-                        .replace(binding.mainFrame.id, FragmentChat())
+                        .replace(binding.mainFrame.id, FragmentChatMain())
                         .commitAllowingStateLoss()
                     binding.mainToolbar.title = "채팅"
                     true
