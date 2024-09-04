@@ -48,9 +48,10 @@ public class AuthenticationService {
         User user = userRepository.findByMail(request.getMail())
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
         // FCM token 업데이트
-        if (request.getFcmToken() != null && !user.getFcmToken().equals(request.getFcmToken())) {
+        if (Objects.nonNull(request.getFcmToken()) && !user.getFcmToken().equals(request.getFcmToken())) {
             user.setFcmToken(request.getFcmToken());
             userRepository.save(user);
+            log.info("Update FCM token for user : {}", user.getMail());
         }
         // JWT Token 생성
         return jwtService.generateToken(user);
@@ -62,6 +63,7 @@ public class AuthenticationService {
         UserDetail userDetail = createUserDetail(request);
         User user = createUser(request, userDetail);
         redisService.deleteByKey(request.getMail());
+        log.info("Create user : {}", user.getMail());
         // JWT Token 생성
         return jwtService.generateToken(user);
     }
@@ -83,6 +85,7 @@ public class AuthenticationService {
         redisService.setListOps(request.getMail(), authCode);
         redisService.setExpire(request.getMail(), authCodeExpirationMillis);
         mailService.sendMail(request.getMail(), title, htmlContent);
+        log.info("Send code to mail : {}", request.getMail());
     }
 
     // 메일 인증 코드 검증
@@ -91,7 +94,7 @@ public class AuthenticationService {
         checkDuplicatiedMail(request.getMail());
         String redisAuthCode = redisService.getListOpsByIndex(request.getMail(), AUTH_CODE_INDEX);
 
-        if (redisAuthCode == null || redisAuthCode.isEmpty()) {
+        if (Objects.isNull(redisAuthCode) || redisAuthCode.isEmpty()) {
             throw new CustomException(ErrorCode.REDIS_DATA_NOT_FOUND);
         } else if (!redisAuthCode.equals(request.getAuthCode()) && !redisAuthCode.equals("true")) {
             throw new CustomException(ErrorCode.WRONG_AUTH_CODE);
@@ -99,15 +102,17 @@ public class AuthenticationService {
         redisService.deleteByKey(request.getMail());
         redisService.setListOps(request.getMail(), "true");
         redisService.setExpire(request.getMail(), authCodeExpirationMillis);
+        log.info("Verify success mail : {}", request.getMail());
     }
 
     public JwtTokenDto.JwtAuthenticationResponse refreshToken(String refreshToken) {
         String username = jwtService.extractIssuer(refreshToken);
         String storedRefreshToken = redisService.getValues("/refreshToken/" + username);
-        System.out.println("username: " + username + " refreshToken: " + storedRefreshToken);
-        if (storedRefreshToken == null || !storedRefreshToken.equals(refreshToken)) {
+        if (Objects.isNull(storedRefreshToken) || !storedRefreshToken.equals(refreshToken)) {
+            log.warn("Invalid refresh token for username : {} storedToken : {}", username, storedRefreshToken);
             throw new CustomException(ErrorCode.JWT_TOKEN_INVALID);
         }
+        log.info("Refresh token for username : {} storedToken : {}", username, storedRefreshToken);
         return jwtService.generateToken(username);
     }
 
@@ -153,7 +158,6 @@ public class AuthenticationService {
             }
             return builder.toString();
         } catch (NoSuchAlgorithmException e) {
-            log.debug("userService.createCode() exception occur");
             throw new CustomException(ErrorCode.NO_SUCH_ALGORITHM);
         }
     }
@@ -161,7 +165,6 @@ public class AuthenticationService {
     private void checkDuplicatiedMail(String mail) {
         userRepository.findByMail(mail)
                 .ifPresent(user -> {
-                    log.debug("UserService.checkDuplicatedMail exception occur mail: " + mail);
                     throw new CustomException(ErrorCode.USER_MAIL_DUPLICATE);
                 });
     }
@@ -169,7 +172,6 @@ public class AuthenticationService {
     private void checkDuplicatiedNickname(String nickname) {
         userDetailRepository.findByNickname(nickname)
                 .ifPresent((userDetail) -> {
-                    log.debug("UserService.checkDuplicatedNickname exception occur nickname: " + nickname);
                     throw new CustomException(ErrorCode.USER_NICKNAME_DUPLICATE);
                 });
     }
