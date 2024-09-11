@@ -11,6 +11,7 @@ import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.response.CustomException;
 import com.smusoak.restapi.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import net.coobird.thumbnailator.Thumbnails;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@Slf4j
 @RequiredArgsConstructor
 public class UserService {
 
@@ -105,13 +107,14 @@ public class UserService {
                     .age(userDetail.get().getAge())
                     .gender(userDetail.get().getGender())
                     .mbti(userDetail.get().getMbti())
-                    .imgUrl(downloadUrl + "user/" + mail)
+                    .imgUrl(s3Service.createPresignedGetUrl("user/" + mail))
                     .imgType(type)
                     .imgUpdateDate(String.valueOf(userDetail.get().getImgUpdateDate()))
                     .build());
             try {
                 o.close();
             } catch (IOException e) {
+                throw new RuntimeException();
             }
         }
         return userInfoResponses;

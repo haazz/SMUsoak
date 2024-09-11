@@ -21,10 +21,4 @@ public class S3Controller {
                                                      @PathVariable String fileName) {
         return s3Service.downloadFile(path1 + "/" + path2 + "/" + fileName);
     }
-
-    @PostMapping("/get/img")
-    public ResponseEntity<ApiResponseEntity> getImgUrl() {
-        String presignedGetUrl = s3Service.createPresignedGetUrl("user/201910911@sangmyung.kr");
-        return ApiResponseEntity.toResponseEntity(presignedGetUrl);
-    }
 }
