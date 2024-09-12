@@ -2,6 +2,7 @@ package com.example.smu
 
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.example.smu.databinding.RvChattingBinding
+import java.time.LocalDateTime
 
 class AdapterChat(private val chatList : MutableList<ChatMessage>,
     private val context : Context) : RecyclerView.Adapter<AdapterChat.ViewHolder>() {
@@ -165,6 +167,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
 
     override fun onBindViewHolder(holder: AdapterChat.ViewHolder, position: Int) {
         holder.bind(chatList[position])
+        Log.d("이미지 추적 : 화면 업데이트", LocalDateTime.now().toString())
     }
 
     override fun getItemCount() = chatList.size

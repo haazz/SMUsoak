@@ -48,6 +48,7 @@ import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 import java.io.File
 import java.text.SimpleDateFormat
+import java.time.LocalDateTime
 import java.util.Calendar
 
 class ActivityChat : AppCompatActivity() {
@@ -140,6 +141,7 @@ class ActivityChat : AppCompatActivity() {
             val imageRequestBody = file.asRequestBody(mediaType)
             imagePart = MultipartBody.Part.createFormData("file", file.name, imageRequestBody)
 
+            Log.d("이미지 추적 : url다운 요청", LocalDateTime.now().toString())
             val call = RetrofitObject.getRetrofitService.chatImage("Bearer $token", imagePart, room)
             call.enqueue(object : Callback<Retrofit.ResponseChatImage> {
                 override fun onResponse(call: Call<Retrofit.ResponseChatImage>, response: Response<Retrofit.ResponseChatImage>) {
@@ -156,6 +158,7 @@ class ActivityChat : AppCompatActivity() {
                                 data.put("time", currentTime)
                                 data.put("flag", 1)
                                 stompClient.send("/app/send", data.toString()).subscribe()
+                                Log.d("이미지 추적 : 이미지 url 다운 및 url 송신", LocalDateTime.now().toString())
                             }
                         }
                     }
@@ -217,6 +220,7 @@ class ActivityChat : AppCompatActivity() {
 
         val topicDisposable = stompClient.topic("/topic/$roomId").subscribe(
             { topicMessage ->
+                Log.d("이미지 추적 : 메시지 수신", LocalDateTime.now().toString())
                 val payload = topicMessage.payload
                 val jsonObject = JSONObject(payload)
                 val roomId = jsonObject.getString("roomId")
@@ -242,18 +246,19 @@ class ActivityChat : AppCompatActivity() {
                 }
 
                 if(flag == 1){
-                    Log.d("image url", message)
+                    Log.d("이미지 추적 : 이미지 다운 요청", LocalDateTime.now().toString())
                     val base = BaseUrl.BASE_URL.replace("http://", "")
                     val imageDownUrl = message.replace(base, "")
-                    val call = RetrofitObject.getRetrofitService.profileDown("Bearer $token", imageDownUrl)
+                    val call = RetrofitObject.getRetrofitService.profileDown("Bearer $token", "http://ec2-43-200-30-120.ap-northeast-2.compute.amazonaws.com:8080/api/v1/download/img/user/201910912@sangmyung.kr")
                     call.enqueue(object : Callback<ResponseBody> {
                         override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
+                            Log.d("Stomp : 통신", response.body().toString())
                             if (response.isSuccessful) {
                                 response.body()?.let { responseBody ->
                                     // 이미지 데이터를 byte array로 변환
                                     val imageData = responseBody.bytes()
                                     databaseImage.saveImage(roomId, message, imageData)
-                                    // 이미지 뷰에 비트맵 설정
+                                    Log.d("이미지 추적 : 이미지 다운 받음", LocalDateTime.now().toString())
                                 }
                             }
                         }
