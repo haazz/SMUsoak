@@ -12,10 +12,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.FragmentChatBinding
-import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 class FragmentChat : Fragment() {
 
@@ -29,7 +30,7 @@ class FragmentChat : Fragment() {
     private lateinit var recyclerViewChatRoom: RecyclerView
     private lateinit var chatRoomAdapter: AdapterChatRoom
 
-    private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(requireContext())}
+    private val databaseProfile: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(requireContext())}
 
     @SuppressLint("NotifyDataSetChanged")
     override fun onCreateView(
@@ -67,9 +68,7 @@ class FragmentChat : Fragment() {
         })
     }
 
-    //유저 정보 다운
-    private fun loadUserInfoForChatRooms(rooms: MutableList<Retrofit.Chatroom>) {
-        val userMap = hashMapOf<String, String>()
+    private fun loadUserInfoForChatRooms(rooms: MutableList<Retrofit.Chatroom>){
         var count = rooms.size
 
         for (room in rooms) {
@@ -78,25 +77,20 @@ class FragmentChat : Fragment() {
                 override fun onResponse(call: Call<Retrofit.ResponseUser>, response: Response<Retrofit.ResponseUser>) {
                     if (response.isSuccessful) {
                         val responseBody = response.body()
-                        if (responseBody != null) {
-                            if (responseBody.success) {
-                                for (item in responseBody.data) {
-                                    if (userNickList.containsKey(room.roomId)) {
-                                        userNickList[room.roomId]!!.add(item.nick)
-                                        userMailList[room.roomId]!!.add(item.mail)
-                                    } else {
-                                        userNickList[room.roomId] = mutableListOf(item.nick)
-                                        userMailList[room.roomId] = mutableListOf(item.mail)
+                        if (responseBody!!.success) {
+                            for (item in responseBody.data) {
+                                val mail = item.mail
+                                if(databaseProfile.checkExist(mail)) {
+                                    if(item.date != getCurrentISOTime()){
+
                                     }
-                                    userMap[item.mail]=item.url
-                                    Log.d("userMap", item.toString())
                                 }
                             }
                         }
                     }
                     count--
                     if (count == 0) {
-                        loadUserProfileImage(userMap, rooms)
+                        updateChatRoomList(rooms)
                     }
                 }
                 override fun onFailure(call: Call<Retrofit.ResponseUser>, t: Throwable) {
@@ -107,35 +101,6 @@ class FragmentChat : Fragment() {
         }
     }
 
-    //유저 이미지 다운
-    private fun loadUserProfileImage(userMap: HashMap<String, String>, rooms: MutableList<Retrofit.Chatroom>) {
-        Log.d("userMap", userMap.toString())
-        for (mail in userMap.keys) {
-            if (userMap[mail] != null) {
-                val url = userMap[mail]!!
-                val callDown = RetrofitObject.getRetrofitService.profileDown(token, url)
-                callDown.enqueue(object : Callback<ResponseBody> {
-                    override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                        if (response.isSuccessful) {
-                            val byteArray = response.body()?.bytes()
-                            if (byteArray != null) {
-                                Log.d("image down", "success")
-                                databaseHelper.insertImage(mail, byteArray)
-                            }
-                        }
-                    }
-                    override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                        val errorMessage = "Call Failed: ${t.message}"
-                        Log.d("Retrofit get image", errorMessage)
-                    }
-                })
-            }
-        }
-
-        // 이미지 가져오는 요청이 완료되면 채팅방 목록을 업데이트
-        updateChatRoomList(rooms)
-    }
-
     private fun updateChatRoomList(rooms: MutableList<Retrofit.Chatroom>) {
         context?.let { ctx ->
             recyclerViewChatRoom.layoutManager = LinearLayoutManager(ctx)
@@ -144,5 +109,11 @@ class FragmentChat : Fragment() {
         } ?: run {
             Log.d("FragmentChat", "Context is null")
         }
+    }
+
+    fun getCurrentISOTime(): String {
+        val currentDateTime = LocalDateTime.now()
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
+        return currentDateTime.format(formatter)
     }
 }

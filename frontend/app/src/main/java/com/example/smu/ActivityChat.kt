@@ -5,7 +5,6 @@ import android.Manifest.permission.READ_MEDIA_IMAGES
 import android.annotation.SuppressLint
 import android.content.pm.PackageManager
 import android.content.res.Resources
-import android.graphics.BitmapFactory
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Build
@@ -37,7 +36,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.ResponseBody
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
@@ -243,30 +241,6 @@ class ActivityChat : AppCompatActivity() {
                         chatList.add(ChatMessage("system", currentDate, currentTime, 3))
                         databaseChat.insertMessage(roomId, "system", currentDate, currentTime, 3)
                     }
-                }
-
-                if(flag == 1){
-                    Log.d("이미지 추적 : 이미지 다운 요청", LocalDateTime.now().toString())
-                    val base = BaseUrl.BASE_URL.replace("http://", "")
-                    val imageDownUrl = message.replace(base, "")
-                    val call = RetrofitObject.getRetrofitService.profileDown("Bearer $token", "http://ec2-43-200-30-120.ap-northeast-2.compute.amazonaws.com:8080/api/v1/download/img/user/201910912@sangmyung.kr")
-                    call.enqueue(object : Callback<ResponseBody> {
-                        override fun onResponse(call: Call<ResponseBody>, response: Response<ResponseBody>) {
-                            Log.d("Stomp : 통신", response.body().toString())
-                            if (response.isSuccessful) {
-                                response.body()?.let { responseBody ->
-                                    // 이미지 데이터를 byte array로 변환
-                                    val imageData = responseBody.bytes()
-                                    databaseImage.saveImage(roomId, message, imageData)
-                                    Log.d("이미지 추적 : 이미지 다운 받음", LocalDateTime.now().toString())
-                                }
-                            }
-                        }
-                        override fun onFailure(call: Call<ResponseBody>, t: Throwable) {
-                            val errorMessage = "Call Failed: ${t.message}"
-                            Log.d("Retrofit", errorMessage)
-                        }
-                    })
                 }
 
                 // flag 앞이 0이면 문자 1이면 이미지

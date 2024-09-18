@@ -119,7 +119,9 @@ class Retrofit {
         @SerializedName("imgUrl")
         val url: String,
         @SerializedName("imgType")
-        val type: String
+        val type: String,
+        @SerializedName("imgUpdateDate")
+        val date: String
     )
 
     //채팅룸 리스트 가져오기

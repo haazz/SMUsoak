@@ -13,6 +13,7 @@ class DatabaseProfileImage private constructor(context: Context) : SQLiteOpenHel
         private const val TABLE_NAME = "mail_profile"
         private const val COLUMN_MAIL = "mail"
         private const val COLUMN_IMAGE = "image"
+        private const val COLUMN_TIME = "update_time"
 
         @Volatile
         private var instance: DatabaseProfileImage?= null
@@ -26,7 +27,7 @@ class DatabaseProfileImage private constructor(context: Context) : SQLiteOpenHel
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_MAIL TEXT PRIMARY KEY, $COLUMN_IMAGE BLOB)"
+        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_MAIL TEXT PRIMARY KEY, $COLUMN_IMAGE TEXT, $COLUMN_TIME TEXT)"
         db.execSQL(createTableQuery)
     }
 
@@ -37,11 +38,12 @@ class DatabaseProfileImage private constructor(context: Context) : SQLiteOpenHel
         }
     }
 
-    fun insertImage(mail: String, image: ByteArray) {
+    fun insertImage(mail: String, image: String, time: String) {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply{
             put(COLUMN_MAIL, mail)
             put(COLUMN_IMAGE, image)
+            put(COLUMN_TIME, time)
         }
         db.insert(TABLE_NAME, null, contentValues)
         db.close()
@@ -53,18 +55,29 @@ class DatabaseProfileImage private constructor(context: Context) : SQLiteOpenHel
         db.close()
     }
 
-    fun getImage(mail:String): ByteArray? {
+    fun getImage(mail:String): String? {
         val db = readableDatabase
         val cursor = db.rawQuery("SELECT $COLUMN_IMAGE FROM $TABLE_NAME WHERE $COLUMN_MAIL = '$mail'", null)
-        var imageByteArray: ByteArray? = null
+        var imageUrl: String? = null
 
         if (cursor.moveToFirst()) {
             val columnIndex = cursor.getColumnIndex(COLUMN_IMAGE)
-            imageByteArray = cursor.getBlob(columnIndex)
+            imageUrl = cursor.getString(columnIndex)
         }
 
         cursor.close()
-        return imageByteArray
+        return imageUrl
+    }
+
+    fun getTime(mail:String): String? {
+        val db = readableDatabase
+        val cursor = db.rawQuery("SELECT $COLUMN_TIME FROM $TABLE_NAME WHERE $COLUMN_MAIL = '$mail'", null)
+
+        if (cursor.moveToFirst()) {
+            val columnIndex = cursor.getColumnIndex(COLUMN_TIME)
+            return cursor.getString(columnIndex)
+        }
+        return null
     }
 
     fun checkExist(mail:String): Boolean{
@@ -78,7 +91,7 @@ class DatabaseProfileImage private constructor(context: Context) : SQLiteOpenHel
         return recordExists
     }
 
-    fun updateImage(mail: String, newImage: ByteArray) {
+    fun updateImage(mail: String, newImage: String) {
         val db = writableDatabase
         val values = ContentValues().apply {
             put(COLUMN_IMAGE, newImage)

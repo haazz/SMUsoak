@@ -22,8 +22,6 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
     private val user = MySharedPreference.user
     private val senderMail = user.getString("mail","")
 
-    private val databaseImage: DatabaseChatImage by lazy{ DatabaseChatImage.getInstance(context)}
-
     inner class ViewHolder(binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
 
         private val myChatConst = binding.rvChattingConstMy
@@ -85,7 +83,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                         myImageChatting()
                         val widthPx = dpToPx(context, 300)
                         Glide.with(context)
-                            .load(databaseImage.getImage(list.message))
+                            .load(list.message)
                             .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)  // 가로를 300dp로 제한
                             .transform(FitCenter())  // 세로 비율 유지
                             .into(myImage)
@@ -109,7 +107,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                         myImage.clipToOutline = true
                         val widthPx = dpToPx(context, 300)
                         Glide.with(context)
-                            .load(databaseImage.getImage(list.message))
+                            .load(list.message)
                             .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)  // 가로를 300dp로 제한
                             .transform(FitCenter())  // 세로 비율 유지
                             .into(myImage)
