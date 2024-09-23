@@ -8,13 +8,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.smu.connection.Retrofit
 import com.example.smu.databinding.RvChatRoomBinding
 
 class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
                       private val context: Context,
-                      private val userNick: HashMap<Int, MutableList<String>>,
-                      private val userMail: HashMap<Int, MutableList<String>>) : RecyclerView.Adapter<AdapterChatRoom.ViewHolder>() {
+                      private val userNick: HashMap<Int, MutableList<String>>) : RecyclerView.Adapter<AdapterChatRoom.ViewHolder>() {
 
     private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(context)}
 
@@ -25,27 +25,26 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
         private val constFour = binding.rvChatRoomConstFour
         private val profile = binding.rvChatRoomProfile
         private val user = MySharedPreference.user
-        private val mail = user.getString("mail","")
 
         @SuppressLint("SetTextI18n")
         fun bind(list : Retrofit.Chatroom) {
-            val mailList = list.mails.toMutableList()
-
             itemView.setOnClickListener{
                 val intent = Intent(itemView.context, ActivityChat::class.java)
                 intent.putExtra("roomId", list.roomId.toString())
                 intent.putExtra("userNick", ArrayList(userNick[list.roomId]!!))
-                intent.putExtra("userMail", ArrayList(userMail[list.roomId]!!))
+                intent.putExtra("userMail", ArrayList(list.mails))
                 Log.d("roomId adapter", list.roomId.toString())
                 binding.root.context.startActivity(intent)
             }
 
             binding.rvChatRoomTitle.text = list.roomId.toString()
 
-            mailList.remove(mail)
             when (list.mails.size) {
                 2 -> {
                     profile.visibility = View.VISIBLE
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[0]))
+                        .into(profile)
                     profile.clipToOutline = true
                     constTwo.visibility = View.INVISIBLE
                     constThree.visibility = View.INVISIBLE
@@ -56,6 +55,12 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
                     constTwo.visibility = View.VISIBLE
                     constThree.visibility = View.INVISIBLE
                     constFour.visibility = View.INVISIBLE
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[0]))
+                        .into(binding.rvChatRoomTwo1)
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[1]))
+                        .into(binding.rvChatRoomTwo2)
                     binding.rvChatRoomTwo1.clipToOutline = true
                     binding.rvChatRoomTwo2.clipToOutline = true
                     databaseHelper.getImage(list.mails[0])
@@ -66,6 +71,15 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
                     constTwo.visibility = View.INVISIBLE
                     constThree.visibility = View.VISIBLE
                     constFour.visibility = View.INVISIBLE
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[0]))
+                        .into(binding.rvChatRoomThree1)
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[1]))
+                        .into(binding.rvChatRoomThree2)
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[2]))
+                        .into(binding.rvChatRoomThree3)
                     binding.rvChatRoomThree1.clipToOutline = true
                     binding.rvChatRoomThree2.clipToOutline = true
                     binding.rvChatRoomThree3.clipToOutline = true
@@ -75,6 +89,15 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
                     constTwo.visibility = View.INVISIBLE
                     constThree.visibility = View.INVISIBLE
                     constFour.visibility = View.VISIBLE
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[0]))
+                        .into(binding.rvChatRoomFour1)
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[1]))
+                        .into(binding.rvChatRoomFour1)
+                    Glide.with(context)
+                        .load(databaseHelper.getImage(list.mails[2]))
+                        .into(binding.rvChatRoomFour1)
                     binding.rvChatRoomFour1.clipToOutline = true
                     binding.rvChatRoomFour2.clipToOutline = true
                     binding.rvChatRoomFour3.clipToOutline = true

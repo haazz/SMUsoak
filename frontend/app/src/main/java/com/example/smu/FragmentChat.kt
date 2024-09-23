@@ -26,7 +26,6 @@ class FragmentChat : Fragment() {
     private val token="Bearer " + user.getString("accessToken","")
     private val userMail=user.getString("mail","")
     private val userNickList = hashMapOf<Int, MutableList<String>>()
-    private val userMailList = hashMapOf<Int, MutableList<String>>()
     private lateinit var recyclerViewChatRoom: RecyclerView
     private lateinit var chatRoomAdapter: AdapterChatRoom
 
@@ -79,11 +78,21 @@ class FragmentChat : Fragment() {
                         val responseBody = response.body()
                         if (responseBody!!.success) {
                             for (item in responseBody.data) {
+                                if (userNickList.containsKey(room.roomId)) {
+                                    userNickList[room.roomId]!!.add(item.nick)
+                                } else {
+                                    userNickList[room.roomId] = mutableListOf(item.nick)
+                                }
                                 val mail = item.mail
+                                //프로필이 존재할 때
                                 if(databaseProfile.checkExist(mail)) {
-                                    if(item.date != getCurrentISOTime()){
-
+                                    //변경 날짜가 다를 때
+                                    if(item.date != databaseProfile.getTime(item.mail)){
+                                        Log.d("프로필 이미지", "${item.date} ${databaseProfile.getTime((item.mail))} ${item.url}")
+                                        databaseProfile.updateImage(item.mail, item.url)
                                     }
+                                }else{
+                                    databaseProfile.insertImage(item.mail, item.url, item.date)
                                 }
                             }
                         }
@@ -104,16 +113,10 @@ class FragmentChat : Fragment() {
     private fun updateChatRoomList(rooms: MutableList<Retrofit.Chatroom>) {
         context?.let { ctx ->
             recyclerViewChatRoom.layoutManager = LinearLayoutManager(ctx)
-            chatRoomAdapter = AdapterChatRoom(rooms, ctx, userNickList, userMailList)
+            chatRoomAdapter = AdapterChatRoom(rooms, ctx, userNickList)
             recyclerViewChatRoom.adapter = chatRoomAdapter
         } ?: run {
             Log.d("FragmentChat", "Context is null")
         }
-    }
-
-    fun getCurrentISOTime(): String {
-        val currentDateTime = LocalDateTime.now()
-        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSSSS")
-        return currentDateTime.format(formatter)
     }
 }

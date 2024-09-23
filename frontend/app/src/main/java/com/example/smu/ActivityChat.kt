@@ -201,6 +201,7 @@ class ActivityChat : AppCompatActivity() {
 
         userNick = intent.getStringArrayListExtra("userNick")!!
         userMail = intent.getStringArrayListExtra("userMail")!!
+        Log.d("리스트", userNick.toString()+"  "+userMail.toString())
 
         drawerRecyclerView = findViewById(R.id.chat_drawer_rv)
         drawerRecyclerView.layoutManager = LinearLayoutManager(this)
