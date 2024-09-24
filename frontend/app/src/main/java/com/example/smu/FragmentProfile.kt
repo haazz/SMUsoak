@@ -87,7 +87,7 @@ class FragmentProfile : Fragment() {
 
         profile = binding.fproImgProfile
 
-        binding.fproImgProfile.setOnClickListener {
+        binding.fproBtnProfile.setOnClickListener {
             when {
                 Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU -> {
                     // Android 13 이상

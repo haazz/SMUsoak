@@ -10,7 +10,8 @@
         android:id="@+id/image_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:scaleType="centerInside"
+        android:scaleType="fitCenter"
+        android:background="@color/white"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageButton

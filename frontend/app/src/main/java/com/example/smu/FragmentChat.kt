@@ -84,11 +84,11 @@ class FragmentChat : Fragment() {
                                     userNickList[room.roomId] = mutableListOf(item.nick)
                                 }
                                 val mail = item.mail
+                                Log.d("프로필 이미지", "${item.date} ${databaseProfile.getTime((item.mail))} ${item.url}")
                                 //프로필이 존재할 때
                                 if(databaseProfile.checkExist(mail)) {
                                     //변경 날짜가 다를 때
                                     if(item.date != databaseProfile.getTime(item.mail)){
-                                        Log.d("프로필 이미지", "${item.date} ${databaseProfile.getTime((item.mail))} ${item.url}")
                                         databaseProfile.updateImage(item.mail, item.url)
                                     }
                                 }else{
