@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.READ_MEDIA_VISUAL_USER_SELECTED" />
 
     <application
-        android:name=".MySharedPreference"
+        android:name=".Application"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -29,10 +29,6 @@
         <activity
             android:name=".ActivityChangeNick"
             android:exported="false" />
-        <activity
-            android:name=".MainActivity"
-            android:exported="false" />
-
         <service
             android:name=".FirebaseMessag"
             android:enabled="true"

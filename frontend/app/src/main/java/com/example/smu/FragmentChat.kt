@@ -15,14 +15,12 @@ import com.example.smu.databinding.FragmentChatBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class FragmentChat : Fragment() {
 
     private lateinit var binding: FragmentChatBinding
 
-    private val user=MySharedPreference.user
+    private val user=Application.user
     private val token="Bearer " + user.getString("accessToken","")
     private val userMail=user.getString("mail","")
     private val userNickList = hashMapOf<Int, MutableList<String>>()

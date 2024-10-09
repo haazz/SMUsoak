@@ -12,7 +12,7 @@ class AuthInterceptor : Interceptor {
     @Volatile
     private var isRefreshing = false // 토큰 재발급 중인지 여부를 나타내는 플래그
 
-    private val sharedPreferences = MySharedPreference.user
+    private val sharedPreferences = Application.user
 
     override fun intercept(chain: Interceptor.Chain): Response {
         var request = chain.request()

@@ -17,7 +17,7 @@ import retrofit2.Response
 class FragmentHome : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
-    private val user = MySharedPreference.user
+    private val user = Application.user
     private val token = user.getString("accessToken", "None")
     private val mailList = mutableListOf<String>()
 

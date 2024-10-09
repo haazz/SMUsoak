@@ -16,7 +16,7 @@ class FirebaseMessag : FirebaseMessagingService() {
     private lateinit var chatList: MutableList<ChatMessage>
 
     override fun onNewToken(token: String) {
-        val user = MySharedPreference.user
+        val user = Application.user
         val editor = user.edit()
         editor.putString("fcm token", token)
         editor.apply()

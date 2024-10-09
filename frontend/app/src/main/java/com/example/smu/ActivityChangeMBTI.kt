@@ -3,7 +3,6 @@ package com.example.smu
 import android.os.Bundle
 import android.util.Log
 import android.widget.NumberPicker
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
@@ -17,7 +16,7 @@ class ActivityChangeMBTI : AppCompatActivity() {
     private val binding: ActivityChangeMbtiBinding by lazy { ActivityChangeMbtiBinding.inflate(layoutInflater) }
 
     private lateinit var numberPicker: NumberPicker
-    private val user = MySharedPreference.user
+    private val user = Application.user
     private val token = user.getString("accessToken", "")
     private val mail = user.getString("mail", "")
 

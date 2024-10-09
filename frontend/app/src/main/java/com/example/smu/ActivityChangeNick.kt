@@ -24,7 +24,7 @@ class ActivityChangeNick : AppCompatActivity() {
     private lateinit var textNickCheck: TextView
     private lateinit var btnNickCheck: Button
     private lateinit var editNick: EditText
-    private val user = MySharedPreference.user
+    private val user = Application.user
     private val token = user.getString("accessToken", "")
     private val mail = user.getString("mail", "")
     private var nickCheck = false

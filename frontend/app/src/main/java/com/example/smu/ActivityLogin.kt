@@ -19,7 +19,7 @@ class ActivityLogin : AppCompatActivity() {
     private lateinit var pw: String
 
     //자동 로그인 설정
-    private val user = MySharedPreference.user
+    private val user = Application.user
     private val editor = user.edit()
 
     private val databaseHelper: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext)}

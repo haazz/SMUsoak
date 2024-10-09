@@ -13,10 +13,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.Button
 import android.widget.ImageView
-import android.widget.Spinner
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
@@ -41,7 +38,7 @@ class FragmentProfile : Fragment() {
     private lateinit var imagePart: MultipartBody.Part
     private lateinit var mediaType: MediaType
     private lateinit var profile: ImageView
-    private val user = MySharedPreference.user
+    private val user = Application.user
     private val edit = user.edit()
     private val mail = user.getString("mail", "")
     private val token = user.getString("accessToken", "")

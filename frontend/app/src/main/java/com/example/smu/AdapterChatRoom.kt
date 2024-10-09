@@ -24,7 +24,7 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
         private val constThree = binding.rvChatRoomConstThree
         private val constFour = binding.rvChatRoomConstFour
         private val profile = binding.rvChatRoomProfile
-        private val user = MySharedPreference.user
+        private val user = Application.user
 
         @SuppressLint("SetTextI18n")
         fun bind(list : Retrofit.Chatroom) {

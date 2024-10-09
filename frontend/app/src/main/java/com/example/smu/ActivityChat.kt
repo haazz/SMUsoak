@@ -75,7 +75,7 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var mediaType: MediaType
     private val compositeDisposable = CompositeDisposable()
     private var open = false
-    private val user = MySharedPreference.user
+    private val user = Application.user
     private val sender = user.getString("mail","")
     private val token= user.getString("accessToken","")
     private val headers = listOf(StompHeader("Authorization", "Bearer $token"))

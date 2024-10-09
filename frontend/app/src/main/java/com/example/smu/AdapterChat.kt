@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 class AdapterChat(private val chatList : MutableList<ChatMessage>,
     private val context : Context) : RecyclerView.Adapter<AdapterChat.ViewHolder>() {
 
-    private val user = MySharedPreference.user
+    private val user = Application.user
     private val senderMail = user.getString("mail","")
 
     inner class ViewHolder(binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
