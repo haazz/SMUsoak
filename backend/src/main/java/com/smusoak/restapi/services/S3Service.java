@@ -45,6 +45,7 @@ public class S3Service {
     public void updateImg(String title, MultipartFile file) {
         log.info("services.S3Service.updateImg 파일 이름:" + title);
         MultipartFile multipartFile = resizeImg(file);
+//        MultipartFile multipartFile = file;
         this.updateS3Img(title, multipartFile, file.getContentType());
     }
 
@@ -122,6 +123,32 @@ public class S3Service {
             // Amazon S3 couldn't be contacted for a response, or the client
             // couldn't parse the response from Amazon S3.
             log.error(e.getStackTrace().toString());
+            throw new CustomException(ErrorCode.S3_DATA_NOT_FOUND);
+        }
+    }
+
+    public String createPresignedPutUrl(String fileName) {
+        // Set the pre-signed URL to expire after 12 hours.
+        java.util.Date expiration = new java.util.Date();
+        long expirationInMs = expiration.getTime();
+        expirationInMs += 1000 * 60 * 60 * 12;
+        expiration.setTime(expirationInMs);
+
+        try {
+            GeneratePresignedUrlRequest generatePresignedUrlRequest = new GeneratePresignedUrlRequest(bucket,
+                    fileName)
+                    .withMethod(HttpMethod.PUT)
+                    .withExpiration(expiration);
+            URL url = amazonS3Client.generatePresignedUrl(generatePresignedUrlRequest);
+            // print URL
+            log.info("\n\rGenerated URL: " + url.toString());
+            // Print curl command to consume URL
+            log.info("\n\rExample command to use URL for file upload: \n\r");
+            log.info("curl --request PUT --upload-file /path/to/" + fileName + " '" + url.toString()
+                    + "' -# > /dev/null");
+            return url.toString();
+        } catch (AmazonServiceException e) {
+            log.error(e.getErrorMessage());
             throw new CustomException(ErrorCode.S3_DATA_NOT_FOUND);
         }
     }

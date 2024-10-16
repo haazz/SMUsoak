@@ -21,4 +21,11 @@ public class S3Controller {
                                                      @PathVariable String fileName) {
         return s3Service.downloadFile(path1 + "/" + path2 + "/" + fileName);
     }
+
+    @GetMapping("/put/img/{path1}/{path2}/{fileName}")
+    public ResponseEntity<ApiResponseEntity> GetPresignedPutUrl(@PathVariable String path1, @PathVariable String path2,
+                                                                @PathVariable String fileName) {
+        String url = s3Service.createPresignedPutUrl(path1 + "/" + path2 + "/" + fileName);
+        return ApiResponseEntity.toResponseEntity(url);
+    }
 }
