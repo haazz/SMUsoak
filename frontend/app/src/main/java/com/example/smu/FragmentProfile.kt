@@ -2,6 +2,7 @@ package com.example.smu
 
 import android.Manifest
 import android.Manifest.permission.READ_MEDIA_IMAGES
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,10 +15,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.FragmentProfileBinding
@@ -38,10 +41,15 @@ class FragmentProfile : Fragment() {
     private lateinit var imagePart: MultipartBody.Part
     private lateinit var mediaType: MediaType
     private lateinit var profile: ImageView
+    private lateinit var nickText: TextView
+    private lateinit var mbtiText: TextView
+    private lateinit var mailText: TextView
     private val user = Application.user
     private val edit = user.edit()
     private val mail = user.getString("mail", "")
     private val token = user.getString("accessToken", "")
+
+    private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(requireContext())}
 
     private val pickMedia = registerForActivityResult(ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
@@ -83,6 +91,17 @@ class FragmentProfile : Fragment() {
         binding = FragmentProfileBinding.inflate(layoutInflater)
 
         profile = binding.fproImgProfile
+        Glide.with(requireContext())
+            .load(databaseHelper.getImage(user.getString("mail","").toString()))
+            .into(profile)
+
+        nickText = binding.fproTextNick
+        mbtiText = binding.fproTextMBTI
+        mailText = binding.fproTextEmail
+
+        nickText.text = user.getString("nick", "")
+        mbtiText.text = user.getString("mbti", "미설정")
+        mailText.text = user.getString("mail", "")
 
         binding.fproBtnProfile.setOnClickListener {
             when {
@@ -116,9 +135,19 @@ class FragmentProfile : Fragment() {
         }
 
         binding.fproBtnSignout.setOnClickListener {
-            edit.clear()
-            startActivity(Intent(requireContext(), ActivityLogin::class.java))
-            requireActivity().finish()
+            AlertDialog.Builder(requireContext())
+                .setTitle("로그아웃")  // 제목 설정
+                .setMessage("로그아웃하시겠습니까?")  // 메시지 설정
+                .setPositiveButton("확인") { dialog, which ->
+                    edit.clear()
+                    edit.apply()
+                    startActivity(Intent(requireContext(), ActivityLogin::class.java))
+                    requireActivity().finish()
+                }
+                .setNegativeButton("취소") { dialog, which ->
+                    dialog.dismiss()  // 창 닫기
+                }
+                .show()
         }
 
         return binding.root

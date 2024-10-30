@@ -18,14 +18,20 @@ class FragmentHome : Fragment() {
 
     private lateinit var binding: FragmentHomeBinding
     private val user = Application.user
+    private val edit = user.edit()
     private val token = user.getString("accessToken", "None")
     private val mailList = mutableListOf<String>()
+    private val userMail = user.getString("mail", "").toString()
+
+    private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(requireContext())}
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater)
+
+        myInfo()
 
         mailList.add("201910911@sangmyung.kr")
         mailList.add("201910912@sangmyung.kr")
@@ -52,5 +58,35 @@ class FragmentHome : Fragment() {
         }
 
         return binding.root
+    }
+
+    private fun myInfo() {
+        val call = RetrofitObject.getRetrofitService.userInfo("Bearer $token", Retrofit.RequestUser(listOf(userMail)))
+        call.enqueue(object : Callback<Retrofit.ResponseUser> {
+            override fun onResponse(call: Call<Retrofit.ResponseUser>, response: Response<Retrofit.ResponseUser>) {
+                if (response.isSuccessful) {
+                    val responseBody = response.body()
+                    if(responseBody != null){
+                        if(responseBody.success) {
+                            val info = responseBody.data[0]
+                            edit.putString("nick", info.nick)
+                            edit.putString("mbti", info.mbti)
+                            edit.apply()
+                            if(databaseHelper.getTime(userMail) != info.date || databaseHelper.getTime(userMail) == null){
+                                databaseHelper.insertImage(userMail, info.url, info.date)
+                                edit.putString("nick", info.nick)
+                                edit.putString("mbti", info.mbti)
+                                edit.apply()
+                            }
+                        }
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<Retrofit.ResponseUser>, t: Throwable) {
+                val errorMessage = "Call Failed: ${t.message}"
+                Log.d("Retrofit", errorMessage)
+            }
+        })
     }
 }

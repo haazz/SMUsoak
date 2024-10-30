@@ -4,7 +4,9 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
+import com.example.smu.Application.Companion
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.ActivityLoginBinding
@@ -27,6 +29,14 @@ class ActivityLogin : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
+
+        val loginStatus = Application.user.getBoolean("login", false)
+
+        if(loginStatus){
+            startActivity(Intent(this, ActivityMain::class.java))
+        }else{
+            binding.loginConstBack.visibility = View.GONE
+        }
 
         databaseHelper.deleteChatroom("1")
 
@@ -53,6 +63,7 @@ class ActivityLogin : AppCompatActivity() {
                                 editor.putString("accessToken", accessToken)
                                 editor.putString("refreshToken", refreshToken)
                                 editor.putString("mail", id)
+                                editor.putBoolean("login", true)
                                 editor.apply()
                                 val intent = Intent(this@ActivityLogin, ActivityMain::class.java)
                                 startActivity(intent)
