@@ -30,6 +30,7 @@ class FirebaseMessag : FirebaseMessagingService() {
         super.onMessageReceived(message)
 
         Log.d("message", message.notification!!.body.toString())
+        Log.d("message", message.data["roomId"].toString())
 
         val roomId = message.data["roomId"]!!
         val flag = message.data["flag"]!!.toInt()
