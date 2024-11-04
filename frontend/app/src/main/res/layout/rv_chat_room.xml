@@ -15,6 +15,7 @@
         android:background="@drawable/custom_image_radius20"
         android:src="@drawable/svg_profile"
         android:visibility="invisible"
+        android:scaleType="centerCrop"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -87,6 +88,7 @@
             android:layout_height="24dp"
             android:background="@drawable/custom_image_radius10"
             android:src="@drawable/svg_profile"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -97,6 +99,7 @@
             android:layout_height="24dp"
             android:background="@drawable/custom_image_radius10"
             android:src="@drawable/svg_profile"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -121,6 +124,7 @@
             android:layout_height="24dp"
             android:background="@drawable/custom_image_radius10"
             android:src="@drawable/svg_profile"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -131,6 +135,7 @@
             android:layout_height="24dp"
             android:background="@drawable/custom_image_radius10"
             android:src="@drawable/svg_profile"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
@@ -140,6 +145,7 @@
             android:layout_height="24dp"
             android:background="@drawable/custom_image_radius10"
             android:src="@drawable/svg_profile"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
@@ -162,6 +168,7 @@
             android:layout_height="24dp"
             android:background="@drawable/custom_image_radius10"
             android:src="@drawable/svg_profile"
+            android:scaleType="centerCrop"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -171,6 +178,7 @@
             android:layout_height="24dp"
             android:background="@drawable/custom_image_radius10"
             android:src="@drawable/svg_profile"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -180,6 +188,7 @@
             android:layout_height="24dp"
             android:background="@drawable/custom_image_radius10"
             android:src="@drawable/svg_profile"
+            android:scaleType="centerCrop"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 

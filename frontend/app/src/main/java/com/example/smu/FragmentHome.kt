@@ -74,9 +74,6 @@ class FragmentHome : Fragment() {
                             edit.apply()
                             if(databaseHelper.getTime(userMail) != info.date || databaseHelper.getTime(userMail) == null){
                                 databaseHelper.insertImage(userMail, info.url, info.date)
-                                edit.putString("nick", info.nick)
-                                edit.putString("mbti", info.mbti)
-                                edit.apply()
                             }
                         }
                     }

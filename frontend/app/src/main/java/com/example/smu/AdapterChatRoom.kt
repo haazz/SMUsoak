@@ -25,6 +25,7 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
         private val constFour = binding.rvChatRoomConstFour
         private val profile = binding.rvChatRoomProfile
         private val user = Application.user
+        private val userMail = user.getString("mail", "")
 
         @SuppressLint("SetTextI18n")
         fun bind(list : Retrofit.Chatroom) {
@@ -38,47 +39,49 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
             }
 
             binding.rvChatRoomTitle.text = list.roomId.toString()
+            val mailList = list.mails.toMutableList()
+            mailList.remove(userMail)
 
-            when (list.mails.size) {
-                2 -> {
+            when (mailList.size) {
+                1 -> {
                     profile.visibility = View.VISIBLE
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[0]))
+                        .load(databaseHelper.getImage(mailList[0]))
                         .into(profile)
                     profile.clipToOutline = true
                     constTwo.visibility = View.INVISIBLE
                     constThree.visibility = View.INVISIBLE
                     constFour.visibility = View.INVISIBLE
                 }
-                3 -> {
+                2 -> {
                     profile.visibility = View.INVISIBLE
                     constTwo.visibility = View.VISIBLE
                     constThree.visibility = View.INVISIBLE
                     constFour.visibility = View.INVISIBLE
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[0]))
+                        .load(databaseHelper.getImage(mailList[0]))
                         .into(binding.rvChatRoomTwo1)
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[1]))
+                        .load(databaseHelper.getImage(mailList[1]))
                         .into(binding.rvChatRoomTwo2)
                     binding.rvChatRoomTwo1.clipToOutline = true
                     binding.rvChatRoomTwo2.clipToOutline = true
                     databaseHelper.getImage(list.mails[0])
                     databaseHelper.getImage(list.mails[1])
                 }
-                4 -> {
+                3 -> {
                     profile.visibility = View.INVISIBLE
                     constTwo.visibility = View.INVISIBLE
                     constThree.visibility = View.VISIBLE
                     constFour.visibility = View.INVISIBLE
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[0]))
+                        .load(databaseHelper.getImage(mailList[0]))
                         .into(binding.rvChatRoomThree1)
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[1]))
+                        .load(databaseHelper.getImage(mailList[1]))
                         .into(binding.rvChatRoomThree2)
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[2]))
+                        .load(databaseHelper.getImage(mailList[2]))
                         .into(binding.rvChatRoomThree3)
                     binding.rvChatRoomThree1.clipToOutline = true
                     binding.rvChatRoomThree2.clipToOutline = true
@@ -90,13 +93,13 @@ class AdapterChatRoom(private val roomList : MutableList<Retrofit.Chatroom>,
                     constThree.visibility = View.INVISIBLE
                     constFour.visibility = View.VISIBLE
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[0]))
+                        .load(databaseHelper.getImage(mailList[0]))
                         .into(binding.rvChatRoomFour1)
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[1]))
+                        .load(databaseHelper.getImage(mailList[1]))
                         .into(binding.rvChatRoomFour1)
                     Glide.with(context)
-                        .load(databaseHelper.getImage(list.mails[2]))
+                        .load(databaseHelper.getImage(mailList[2]))
                         .into(binding.rvChatRoomFour1)
                     binding.rvChatRoomFour1.clipToOutline = true
                     binding.rvChatRoomFour2.clipToOutline = true
