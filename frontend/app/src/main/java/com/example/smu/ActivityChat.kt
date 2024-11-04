@@ -76,6 +76,7 @@ class ActivityChat : AppCompatActivity() {
     private val compositeDisposable = CompositeDisposable()
     private var open = false
     private val user = Application.user
+    private val nick = user.getString("nick","")
     private val sender = user.getString("mail","")
     private val token= user.getString("accessToken","")
     private val headers = listOf(StompHeader("Authorization", "Bearer $token"))
@@ -155,6 +156,7 @@ class ActivityChat : AppCompatActivity() {
                                 data.put("senderMail", "$sender")
                                 data.put("time", currentTime)
                                 data.put("flag", 1)
+                                data.put("nick", nick)
                                 stompClient.send("/app/send", data.toString()).subscribe()
                                 Log.d("이미지 추적 : 이미지 url 다운 및 url 송신", LocalDateTime.now().toString())
                             }
@@ -187,7 +189,6 @@ class ActivityChat : AppCompatActivity() {
 
     //DataBase 가져옴
     private val databaseChat: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext) }
-    private val databaseImage: DatabaseChatImage by lazy { DatabaseChatImage.getInstance(applicationContext) }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
     @SuppressLint("CheckResult")

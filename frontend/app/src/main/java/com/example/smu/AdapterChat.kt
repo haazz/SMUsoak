@@ -20,7 +20,8 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
     private val context : Context) : RecyclerView.Adapter<AdapterChat.ViewHolder>() {
 
     private val user = Application.user
-    private val senderMail = user.getString("mail","")
+    private val userMail = user.getString("mail","")
+    private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(context)}
 
     inner class ViewHolder(binding: RvChattingBinding) : RecyclerView.ViewHolder(binding.root){
 
@@ -67,7 +68,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
 
             when (list.flag) {
                 2 -> { //연속 문자
-                    if(list.sender == senderMail){
+                    if(list.sender == userMail){
                         myChatting()
                     }else{
                         myChatConst.visibility= View.GONE
@@ -79,7 +80,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                     }
                 }
                 12 -> { // 연속 이미지
-                    if(list.sender == senderMail){
+                    if(list.sender == userMail){
                         myImageChatting()
                         val widthPx = dpToPx(context, 300)
                         Glide.with(context)
@@ -91,19 +92,23 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                     }
                 }
                 0 -> { // 다른 문자
-                    if(list.sender == senderMail){
+                    if(list.sender == userMail){
                         myChatting()
                     }else{
                         myChatConst.visibility= View.GONE
                         otherConst1.visibility= View.VISIBLE
                         otherConst2.visibility= View.GONE
                         dateChatConst.visibility= View.GONE
+                        profile.clipToOutline = true
+                        Glide.with(context)
+                            .load(databaseHelper.getImage(list.sender))
+                            .into(profile)
                         otherChat1.text=list.message
                         otherTime1.text=list.time.substring(9)
                     }
                 }
                 10 -> { // 다른 이미지
-                    if(list.sender == senderMail){
+                    if(list.sender == userMail){
                         myImage.clipToOutline = true
                         val widthPx = dpToPx(context, 300)
                         Glide.with(context)
