@@ -29,6 +29,8 @@ class FirebaseMessag : FirebaseMessagingService() {
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
 
+        Log.d("FireMessage" ,"감지")
+
         val roomId = message.data["roomId"]!!
         val flag = message.data["flag"]!!.toInt()
         val mail = message.data["mail"]!!

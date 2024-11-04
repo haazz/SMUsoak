@@ -34,6 +34,7 @@ class ActivityLogin : AppCompatActivity() {
 
         if(loginStatus){
             startActivity(Intent(this, ActivityMain::class.java))
+            finish()
         }else{
             binding.loginConstBack.visibility = View.GONE
         }
