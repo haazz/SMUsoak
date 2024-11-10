@@ -69,8 +69,8 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var menu: ImageButton
     private lateinit var drawerRecyclerView: RecyclerView
     private lateinit var drawerAdapter: AdapterDrawer
-    private lateinit var userNick: MutableList<String>
-    private lateinit var userMail: MutableList<String>
+    private lateinit var userNickList: MutableList<String>
+    private lateinit var userMailList: MutableList<String>
     private lateinit var imagePart: MultipartBody.Part
     private lateinit var mediaType: MediaType
     private val compositeDisposable = CompositeDisposable()
@@ -156,7 +156,7 @@ class ActivityChat : AppCompatActivity() {
                                 data.put("senderMail", "$sender")
                                 data.put("time", currentTime)
                                 data.put("flag", 1)
-                                data.put("nick", nick)
+                                data.put("senderName", nick)
                                 stompClient.send("/app/send", data.toString()).subscribe()
                                 Log.d("이미지 추적 : 이미지 url 다운 및 url 송신", LocalDateTime.now().toString())
                             }
@@ -200,12 +200,12 @@ class ActivityChat : AppCompatActivity() {
         drawerView = binding.chatDrawer
         menu = binding.chatBtnMenu
 
-        userNick = intent.getStringArrayListExtra("userNick")!!
-        userMail = intent.getStringArrayListExtra("userMail")!!
+        userNickList = intent.getStringArrayListExtra("userNick")!!
+        userMailList = intent.getStringArrayListExtra("userMail")!!
 
         drawerRecyclerView = findViewById(R.id.chat_drawer_rv)
         drawerRecyclerView.layoutManager = LinearLayoutManager(this)
-        drawerAdapter = AdapterDrawer(userNick, userMail, this)
+        drawerAdapter = AdapterDrawer(userNickList, userMailList, this)
         drawerRecyclerView.adapter = drawerAdapter
 
         setupView() //키보드 열린지 체크
@@ -227,39 +227,40 @@ class ActivityChat : AppCompatActivity() {
                 val sender = jsonObject.getString("senderMail")
                 val time = jsonObject.getString("time")
                 val flag = jsonObject.getInt("flag")
+                val nick = jsonObject.getString("senderName")
 
                 val currentTime=getCurrentTime()
                 val currentDate=getCurrentDate()
 
 
                 if(chatList.size == 0) {
-                    chatList.add(ChatMessage("system", currentDate, currentTime, 3))
-                    databaseChat.insertMessage(roomId,"system",currentDate,currentTime, 3)
+                    chatList.add(ChatMessage("system","system", currentDate, currentTime, 3))
+                    databaseChat.insertMessage(roomId,"system","system",currentDate,currentTime, 3)
                 }else{
                     val lTime = chatList[chatList.size-1].time.split(" ")
                     val cTime = currentTime.split(" ")
                     if(lTime[0]!=cTime[0]) {
-                        chatList.add(ChatMessage("system", currentDate, currentTime, 3))
-                        databaseChat.insertMessage(roomId, "system", currentDate, currentTime, 3)
+                        chatList.add(ChatMessage("system","system", currentDate, currentTime, 3))
+                        databaseChat.insertMessage(roomId, "system","system", currentDate, currentTime, 3)
                     }
                 }
 
                 // flag 앞이 0이면 문자 1이면 이미지
                 if(chatList[chatList.size-1].sender == sender){ // 같은 사용자가 연속으로 보낼 때
                     if(flag == 0){
-                        chatList.add(ChatMessage(sender, message, time, 2))
-                        databaseChat.insertMessage(roomId,sender,message,time, 2)
+                        chatList.add(ChatMessage(nick, sender, message, time, 2))
+                        databaseChat.insertMessage(roomId,nick,sender,message,time, 2)
                     }else{
-                        chatList.add(ChatMessage(sender, message, time, 12))
-                        databaseChat.insertMessage(roomId,sender,message,time, 12)
+                        chatList.add(ChatMessage(nick, sender, message, time, 12))
+                        databaseChat.insertMessage(roomId,nick,sender,message,time, 12)
                     }
                 }else{ // 다른 사용자가 보낼 때
                     if(flag == 0){
-                        chatList.add(ChatMessage(sender, message, time, 0))
-                        databaseChat.insertMessage(roomId,sender,message,time, 0)
+                        chatList.add(ChatMessage(nick, sender, message, time, 0))
+                        databaseChat.insertMessage(roomId,nick,sender,message,time, 0)
                     }else{
-                        chatList.add(ChatMessage(sender, message, time, 10))
-                        databaseChat.insertMessage(roomId,sender,message,time, 10)
+                        chatList.add(ChatMessage(nick, sender, message, time, 10))
+                        databaseChat.insertMessage(roomId,nick,sender,message,time, 10)
                     }
                 }
 
@@ -336,6 +337,7 @@ class ActivityChat : AppCompatActivity() {
                     data.put("senderMail", "$sender")
                     data.put("time", currentTime)
                     data.put("flag", 0)
+                    data.put("senderName", nick)
                     stompClient.send("/app/send", data.toString()).subscribe()
                     chatEdit.text = null
                 }

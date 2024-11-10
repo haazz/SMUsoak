@@ -29,9 +29,19 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
         private val myChat = binding.rvChattingTextMy
         private val myChatTime = binding.rvChattingTimeMy
 
+        private val otherImageConst1 = binding.rvChattingConstOtherImage1
+        private val otherImageProfile = binding.rvChattingOtherImageProfile
+        private val otherImage1 = binding.rvChattingOtherImage1
+        private val otherImageTime1 = binding.rvChattingOtherImageTime1
+
+        private val otherImageConst2 = binding.rvChattingConstOtherImage2
+        private val otherImage2 = binding.rvChattingOtherImage2
+        private val otherImageTime2 = binding.rvChattingOtherImageTime2
+
         private val otherConst1 = binding.rvChattingConst1
         private val otherChat1 = binding.rvChattingChat1
         private val otherTime1 = binding.rvChattingTime1
+        private val otherNick = binding.rvChattingNick
         private val profile = binding.rvChattingProfile
 
         private val otherConst2 = binding.rvChattingConst2
@@ -49,19 +59,11 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
 
             fun myChatting(){
                 myChatConst.visibility= View.VISIBLE
-                otherConst1.visibility= View.GONE
-                otherConst2.visibility= View.GONE
-                dateChatConst.visibility= View.GONE
-                myImageConst.visibility= View.GONE
                 myChat.text=list.message
                 myChatTime.text=list.time.substring(9)
             }
 
             fun myImageChatting(){
-                myChatConst.visibility= View.GONE
-                otherConst1.visibility= View.GONE
-                otherConst2.visibility= View.GONE
-                dateChatConst.visibility= View.GONE
                 myImageConst.visibility= View.VISIBLE
                 myImageTime.text=list.time.substring(9)
             }
@@ -71,10 +73,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                     if(list.sender == userMail){
                         myChatting()
                     }else{
-                        myChatConst.visibility= View.GONE
-                        otherConst1.visibility= View.GONE
                         otherConst2.visibility= View.VISIBLE
-                        dateChatConst.visibility= View.GONE
                         otherChat2.text=list.message
                         otherTime2.text=list.time.substring(9)
                     }
@@ -95,10 +94,8 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                     if(list.sender == userMail){
                         myChatting()
                     }else{
-                        myChatConst.visibility= View.GONE
                         otherConst1.visibility= View.VISIBLE
-                        otherConst2.visibility= View.GONE
-                        dateChatConst.visibility= View.GONE
+                        otherNick.text = list.senderNick
                         profile.clipToOutline = true
                         Glide.with(context)
                             .load(databaseHelper.getImage(list.sender))
@@ -121,9 +118,6 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 }
                 3 -> { // 시스템
                     dateChatConst.visibility= View.VISIBLE
-                    otherConst1.visibility= View.GONE
-                    otherConst2.visibility= View.GONE
-                    myChatConst.visibility= View.GONE
                     dateChat.text=list.message
                 }
             }

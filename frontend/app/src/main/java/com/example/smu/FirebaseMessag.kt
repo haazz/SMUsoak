@@ -34,6 +34,7 @@ class FirebaseMessag : FirebaseMessagingService() {
         val roomId = message.data["roomId"]!!
         val flag = message.data["flag"]!!.toInt()
         val mail = message.data["mail"]!!
+        val senderNick = message.notification!!.title.toString()
         val mes = message.notification!!.body.toString()
 
         chatList = databaseHelper.getAllMessages(roomId)
@@ -42,28 +43,28 @@ class FirebaseMessag : FirebaseMessagingService() {
         val currentDate = getCurrentDate()
 
         if(chatList.size == 0) {
-            chatList.add(ChatMessage("system", currentDate, currentTime, flag))
-            databaseHelper.insertMessage(roomId,"system",currentDate,currentTime, flag)
+            chatList.add(ChatMessage("system", "system", currentDate, currentTime, flag))
+            databaseHelper.insertMessage(roomId,"system", "system",currentDate,currentTime, flag)
         }else{
             val lTime = chatList[chatList.size-1].time.split(" ")
             val cTime = currentTime.split(" ")
             if(lTime[0]!=cTime[0]) {
-                chatList.add(ChatMessage("system", currentDate, currentTime, flag))
-                databaseHelper.insertMessage(roomId, "system", currentDate, currentTime, flag)
+                chatList.add(ChatMessage("system", "system", currentDate, currentTime, flag))
+                databaseHelper.insertMessage(roomId, "system", "system", currentDate, currentTime, flag)
             }
         }
 
         if(chatList[chatList.size-1].sender == mail){
             if(flag != 1){
-                databaseHelper.insertMessage(roomId, mail, mes, currentTime, 2)
+                databaseHelper.insertMessage(roomId, senderNick, mail, mes, currentTime, 2)
             }else{
-                databaseHelper.insertMessage(roomId, mail, mes, currentTime, 12)
+                databaseHelper.insertMessage(roomId, senderNick, mail, mes, currentTime, 12)
             }
         }else{
             if(flag != 1){
-                databaseHelper.insertMessage(roomId, mail, mes, currentTime, 0)
+                databaseHelper.insertMessage(roomId, senderNick, mail, mes, currentTime, 0)
             }else{
-                databaseHelper.insertMessage(roomId, mail, mes, currentTime, 10)
+                databaseHelper.insertMessage(roomId, senderNick, mail, mes, currentTime, 10)
             }
         }
 

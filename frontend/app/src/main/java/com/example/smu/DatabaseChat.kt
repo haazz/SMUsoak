@@ -14,6 +14,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
         private const val TABLE_NAME = "chat_messages"
         private const val COLUMN_ID = "id"
         private const val COLUMN_ROOM_ID = "room_id"
+        private const val COLUMN_SENDER_NICK = "senderNick"
         private const val COLUMN_SENDER = "sender"
         private const val COLUMN_MESSAGE = "message"
         private const val COLUMN_TIME = "time"
@@ -31,7 +32,7 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
     }
 
     override fun onCreate(db: SQLiteDatabase) {
-        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_ROOM_ID TEXT, $COLUMN_SENDER TEXT, $COLUMN_MESSAGE TEXT, $COLUMN_TIME TEXT, $COLUMN_FLAG INTEGER)"
+        val createTableQuery = "CREATE TABLE $TABLE_NAME ($COLUMN_ID INTEGER PRIMARY KEY, $COLUMN_ROOM_ID TEXT, $COLUMN_SENDER_NICK TEXT, $COLUMN_SENDER TEXT, $COLUMN_MESSAGE TEXT, $COLUMN_TIME TEXT, $COLUMN_FLAG INTEGER)"
         db.execSQL(createTableQuery)
     }
 
@@ -42,10 +43,11 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
         }
     }
 
-    fun insertMessage(roomId: String, sender: String, message: String, timestamp: String, flag: Int) {
+    fun insertMessage(roomId: String, senderNick: String, sender: String, message: String, timestamp: String, flag: Int) {
         val db = this.writableDatabase
         val contentValues = ContentValues().apply{
             put(COLUMN_ROOM_ID, roomId)
+            put(COLUMN_SENDER_NICK, senderNick)
             put(COLUMN_SENDER, sender)
             put(COLUMN_MESSAGE, message)
             put(COLUMN_TIME, timestamp)
@@ -71,11 +73,12 @@ class DatabaseChat private constructor(context: Context) : SQLiteOpenHelper(cont
 
         cursor.use {
             while (it.moveToNext()) {
-                val sender = it.getString(2)
-                val message = it.getString(3)
-                val timestamp = it.getString(4)
-                val flag = it.getInt(5)
-                val chatMessage = ChatMessage(sender, message, timestamp, flag)
+                val senderNick = it.getString(2)
+                val sender = it.getString(3)
+                val message = it.getString(4)
+                val timestamp = it.getString(5)
+                val flag = it.getInt(6)
+                val chatMessage = ChatMessage(senderNick, sender, message, timestamp, flag)
                 messages.add(chatMessage)
             }
         }
