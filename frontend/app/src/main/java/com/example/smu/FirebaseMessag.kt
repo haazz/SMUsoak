@@ -43,14 +43,14 @@ class FirebaseMessag : FirebaseMessagingService() {
         val currentDate = getCurrentDate()
 
         if(chatList.size == 0) {
-            chatList.add(ChatMessage("system", "system", currentDate, currentTime, flag))
-            databaseHelper.insertMessage(roomId,"system", "system",currentDate,currentTime, flag)
+            chatList.add(ChatMessage("system", "system", currentDate, currentTime, 3))
+            databaseHelper.insertMessage(roomId,"system", "system",currentDate,currentTime, 3)
         }else{
             val lTime = chatList[chatList.size-1].time.split(" ")
             val cTime = currentTime.split(" ")
             if(lTime[0]!=cTime[0]) {
-                chatList.add(ChatMessage("system", "system", currentDate, currentTime, flag))
-                databaseHelper.insertMessage(roomId, "system", "system", currentDate, currentTime, flag)
+                chatList.add(ChatMessage("system", "system", currentDate, currentTime, 3))
+                databaseHelper.insertMessage(roomId, "system", "system", currentDate, currentTime, 3)
             }
         }
 

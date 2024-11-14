@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.example.smu.databinding.RvChattingBinding
 import java.time.LocalDateTime
@@ -30,6 +32,7 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
         private val myChatTime = binding.rvChattingTimeMy
 
         private val otherImageConst1 = binding.rvChattingConstOtherImage1
+        private val otherImageNick = binding.rvChattingOtherImageNick
         private val otherImageProfile = binding.rvChattingOtherImageProfile
         private val otherImage1 = binding.rvChattingOtherImage1
         private val otherImageTime1 = binding.rvChattingOtherImageTime1
@@ -55,25 +58,50 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
         private val dateChatConst = binding.rvChattingDay
         private val dateChat = binding.rvChattingDayText
 
+        private val widthPx = ViewUtils.dpToPx(context, 300)
+
+        private fun resetViewVisibility() {
+            listOf(
+                dateChatConst, myImageConst, myChatConst, otherChat1, otherChat2,
+                otherImageConst1, otherImageConst2
+            ).forEach { it.visibility = View.GONE }
+        }
+
         fun bind(list : ChatMessage) {
 
+            resetViewVisibility()
+
             fun myChatting(){
-                myChatConst.visibility= View.VISIBLE
+                myChatConst.visibility=View.VISIBLE
                 myChat.text=list.message
                 myChatTime.text=list.time.substring(9)
             }
 
-            fun myImageChatting(){
-                myImageConst.visibility= View.VISIBLE
-                myImageTime.text=list.time.substring(9)
+            fun loadImage(imageView: ImageView, url: String) {
+                Glide.with(context)
+                    .load(url)
+                    .format(DecodeFormat.PREFER_ARGB_8888)
+                    .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)
+                    .transform(FitCenter())
+                    .into(imageView)
+                imageView.clipToOutline = true
             }
+
+            fun myImageChatting(){
+                myImageConst.visibility=View.VISIBLE
+                myImageTime.text=list.time.substring(9)
+                loadImage(myImage, list.message)
+            }
+
+
+            Log.d("flag", list.flag.toString())
 
             when (list.flag) {
                 2 -> { //연속 문자
                     if(list.sender == userMail){
                         myChatting()
                     }else{
-                        otherConst2.visibility= View.VISIBLE
+                        otherConst2.visibility=View.VISIBLE
                         otherChat2.text=list.message
                         otherTime2.text=list.time.substring(9)
                     }
@@ -81,20 +109,17 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 12 -> { // 연속 이미지
                     if(list.sender == userMail){
                         myImageChatting()
-                        val widthPx = dpToPx(context, 300)
-                        Glide.with(context)
-                            .load(list.message)
-                            .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)  // 가로를 300dp로 제한
-                            .transform(FitCenter())  // 세로 비율 유지
-                            .into(myImage)
-                        myImage.clipToOutline = true
+                    }else{
+                        otherImageConst2.visibility=View.VISIBLE
+                        loadImage(otherImage2, list.message)
+                        otherImageTime2.text=list.time.substring(9)
                     }
                 }
                 0 -> { // 다른 문자
                     if(list.sender == userMail){
                         myChatting()
                     }else{
-                        otherConst1.visibility= View.VISIBLE
+                        otherConst1.visibility=View.VISIBLE
                         otherNick.text = list.senderNick
                         profile.clipToOutline = true
                         Glide.with(context)
@@ -106,15 +131,17 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
                 }
                 10 -> { // 다른 이미지
                     if(list.sender == userMail){
-                        myImage.clipToOutline = true
-                        val widthPx = dpToPx(context, 300)
+                        myImageChatting()
+                    }else{
+                        otherImageConst1.visibility=View.VISIBLE
+                        otherImageNick.text=list.senderNick
+                        otherImageProfile.clipToOutline = true
                         Glide.with(context)
-                            .load(list.message)
-                            .override(widthPx, ViewGroup.LayoutParams.WRAP_CONTENT)  // 가로를 300dp로 제한
-                            .transform(FitCenter())  // 세로 비율 유지
-                            .into(myImage)
+                            .load(databaseHelper.getImage(list.sender))
+                            .into(otherImageProfile)
+                        loadImage(otherImage1, list.message)
+                        otherImageTime1.text=list.time.substring(9)
                     }
-                    myImageChatting()
                 }
                 3 -> { // 시스템
                     dateChatConst.visibility= View.VISIBLE
@@ -164,13 +191,13 @@ class AdapterChat(private val chatList : MutableList<ChatMessage>,
 
     override fun onBindViewHolder(holder: AdapterChat.ViewHolder, position: Int) {
         holder.bind(chatList[position])
-        Log.d("이미지 추적 : 화면 업데이트", LocalDateTime.now().toString())
     }
 
     override fun getItemCount() = chatList.size
 
-    private fun dpToPx(context: Context, dp: Int): Int {
-        val density = context.resources.displayMetrics.density
-        return (dp * density).toInt()
+    object ViewUtils {
+        fun dpToPx(context: Context, dp: Int): Int {
+            return (dp * context.resources.displayMetrics.density).toInt()
+        }
     }
 }

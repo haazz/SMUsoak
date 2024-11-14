@@ -44,7 +44,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/rv_chatting_other_nick"
+            android:id="@+id/rv_chatting_other_image_nick"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
@@ -67,7 +67,7 @@
             android:layout_marginStart="5dp"
             android:layout_marginTop="5dp"
             app:layout_constraintStart_toEndOf="@+id/rv_chatting_other_image_profile"
-            app:layout_constraintTop_toBottomOf="@+id/rv_chatting_other_nick"
+            app:layout_constraintTop_toBottomOf="@+id/rv_chatting_other_image_nick"
             tools:srcCompat="@drawable/svg_no_image" />
 
         <TextView
