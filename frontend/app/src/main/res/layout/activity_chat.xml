@@ -65,37 +65,47 @@
                 android:layout_marginEnd="5dp"
                 android:background="@drawable/radius_30_solid_chat_gray"
                 app:layout_constraintBottom_toBottomOf="@+id/chat_btn_plus"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintEnd_toStartOf="@+id/chat_btn_send"
                 app:layout_constraintStart_toEndOf="@+id/chat_btn_plus"
                 app:layout_constraintTop_toTopOf="@+id/chat_btn_plus">
-
-                <ImageButton
-                    android:id="@+id/chat_btn_send"
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:layout_marginEnd="8dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:srcCompat="@drawable/svg_pluschat" />
 
                 <EditText
                     android:id="@+id/chat_edit"
                     android:layout_width="0dp"
                     android:layout_height="30dp"
-                    android:layout_marginStart="15dp"
+                    android:layout_marginStart="10dp"
                     android:layout_marginEnd="5dp"
                     android:background="@android:color/transparent"
                     android:ems="10"
+                    android:hint="메시지 입력"
                     android:inputType="textMultiLine"
                     android:scrollHorizontally="false"
-                    android:textSize="18sp"
-                    app:layout_constraintBottom_toBottomOf="@+id/chat_btn_send"
-                    app:layout_constraintEnd_toStartOf="@+id/chat_btn_send"
+                    android:textSize="16sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toStartOf="@+id/chat_emotion"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@+id/chat_btn_send" />
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/chat_emotion"
+                    android:layout_width="25dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintBottom_toBottomOf="@+id/chat_const"
+                    app:layout_constraintEnd_toEndOf="@+id/chat_const"
+                    app:layout_constraintTop_toTopOf="@+id/chat_const"
+                    app:srcCompat="@drawable/sumung" />
             </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <ImageButton
+                android:id="@+id/chat_btn_send"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/svg_pluschat" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <ImageButton
