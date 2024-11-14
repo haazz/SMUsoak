@@ -9,6 +9,7 @@ import com.smusoak.restapi.response.ApiResponseEntity;
 import com.smusoak.restapi.services.ChatService;
 import com.smusoak.restapi.services.S3Service;
 import lombok.RequiredArgsConstructor;
+import okhttp3.Response;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -50,5 +51,11 @@ public class ChatController {
         return ApiResponseEntity.toResponseEntity(ImgDto.ImgNameResponse.builder()
                 .downloadUrl(downloadUrl)
                 .build());
+    }
+
+    @PostMapping(value = "/leave")
+    public ResponseEntity<ApiResponseEntity> updateChatImg(@RequestBody ChatDto.ChatRoomLeaveRequest chatRoomLeaveRequest) {
+        chatService.leaveChatRoom(chatRoomLeaveRequest);
+        return ApiResponseEntity.toResponseEntity();
     }
 }

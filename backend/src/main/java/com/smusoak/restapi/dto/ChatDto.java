@@ -47,4 +47,11 @@ public class ChatDto {
         @NotBlank
         private Long chatRoomId;
     }
+
+    @Data
+    @NoArgsConstructor
+    public static class ChatRoomLeaveRequest {
+        private Long roomId;
+        private String mail;
+    }
 }
