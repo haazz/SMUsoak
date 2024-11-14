@@ -31,14 +31,9 @@ public class ChatRoom {
             joinColumns = @JoinColumn(name = "chat_room_id"),
             inverseJoinColumns = @JoinColumn(name = "user_id"))
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler", "chatRooms"})
-    private Set<User> users;
+    private List<User> users;
 
     @OneToOne
     @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     private OpenGroupChat OpenGroupChat;
-
-    @Getter
-    private List<User> userList;
-//    @OneToMany(mappedBy = "chatRoom", cascade = CascadeType.ALL)
-//    private List<Message> messageList = new ArrayList<>();
 }

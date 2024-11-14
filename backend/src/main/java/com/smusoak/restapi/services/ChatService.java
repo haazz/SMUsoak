@@ -4,19 +4,22 @@ import com.google.firebase.messaging.FirebaseMessagingException;
 import com.smusoak.restapi.dto.ChatDto;
 import com.smusoak.restapi.models.ChatRoom;
 import com.smusoak.restapi.models.User;
+import com.smusoak.restapi.models.UserChatRoom;
 import com.smusoak.restapi.repositories.ChatRoomRepository;
+import com.smusoak.restapi.repositories.UserChatRoomRepository;
 import com.smusoak.restapi.repositories.UserRepository;
 import com.smusoak.restapi.response.CustomException;
 import com.smusoak.restapi.response.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.*;
 import java.util.*;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class ChatService {
@@ -25,6 +28,7 @@ public class ChatService {
     private final RedisService redisService;
     private final FirebaseCloudMessageService firebaseCloudMessageService;
     private final S3Service s3Service;
+    private final UserChatRoomRepository userChatRoomRepository;
 
     @Value("${cloud.aws.s3.url}")
     private String downloadUrl;
@@ -80,7 +84,7 @@ public class ChatService {
             throw new CustomException(ErrorCode.MIN_USER_CREATE_CHATROOM);
         }
 
-        Set<User> userList = new HashSet<>();
+        List<User> userList = new ArrayList<>();
         for(String mail: userMailList) {
             userList.add(userRepository.findByMail(mail).get());
         }
@@ -120,14 +124,18 @@ public class ChatService {
     }
 
     public Long putUserToChatRoom(List<String> mails) {
-        Set<User> userList = new HashSet<>();
+        List<User> userList = new ArrayList<>();
+
         for(String mail: mails) {
             Optional<User> user = userRepository.findByMail(mail);
             if(user.isPresent()) {
                 userList.add(user.get());
             }
         }
-        Long roomId = chatRoomRepository.save(ChatRoom.builder().users(userList).build()).getId();
+        System.out.println(userList);
+        Long roomId = chatRoomRepository.save(ChatRoom.builder()
+                .users(userList)
+                .build()).getId();
         return roomId;
     }
 
@@ -136,5 +144,25 @@ public class ChatService {
         s3Service.updateImg(fileName, file);
         String presignedGetUrl =  s3Service.createPresignedGetUrl(fileName);
         return presignedGetUrl;
+    }
+
+    @Transactional
+    public void leaveChatRoom(ChatDto.ChatRoomLeaveRequest chatRoomLeaveRequest) {
+        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findById(chatRoomLeaveRequest.getRoomId());
+        Optional<User> userOptional = userRepository.findByMail(chatRoomLeaveRequest.getMail());
+        if(!chatRoomOptional.isPresent() || !userOptional.isPresent()) {
+            throw new CustomException(ErrorCode.NOT_FOUND);
+        }
+
+        ChatRoom chatRoom = chatRoomOptional.get();
+        User user = userOptional.get();
+
+        log.info("chatRoomId : " + chatRoom.getId().toString() + " userId : " + user.getId().toString());
+
+        for (int i = 0; i < chatRoom.getUsers().size(); i++) {
+            if (chatRoom.getUsers().get(i).equals(user)) {
+                chatRoom.getUsers().remove(i);
+            }
+        }
     }
 }
