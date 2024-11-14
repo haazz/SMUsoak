@@ -15,6 +15,7 @@ public enum ErrorCode {
     WRONG_PASSWORD_RULE(HttpStatus.BAD_REQUEST, "패스워드 규칙을 다시 확인해주세요."),
     MIN_USER_CREATE_CHATROOM(HttpStatus.BAD_REQUEST, "채팅룸 생성을 위해서는 최소 2명의 유저가 있어야 합니다."),
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "유저를 찾지 못 하였습니다."),
+    NOT_FOUND(HttpStatus.NOT_FOUND, "데이터를 찾지 못 하였습니다."),
     REDIS_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "Redis 데이터가 존재하지 않거나 만료되었습니다."),
     S3_DATA_NOT_FOUND(HttpStatus.NOT_FOUND, "S3 데이터가 존재하지 않거나 만료되었습니다."),
     NO_SUCH_ALGORITHM(HttpStatus.INTERNAL_SERVER_ERROR, "알고리즘을 사용할 수 없습니다."),
