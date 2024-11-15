@@ -86,7 +86,7 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <ImageView
+                <ImageButton
                     android:id="@+id/chat_emotion"
                     android:layout_width="25dp"
                     android:layout_height="30dp"
