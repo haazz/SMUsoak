@@ -16,7 +16,6 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DecodeFormat
 import com.bumptech.glide.load.resource.bitmap.FitCenter
 import com.example.smu.databinding.RvChattingBinding
-import java.time.LocalDateTime
 
 class AdapterChat(private val chatList : MutableList<ChatMessage>,
     private val context : Context) : RecyclerView.Adapter<AdapterChat.ViewHolder>() {

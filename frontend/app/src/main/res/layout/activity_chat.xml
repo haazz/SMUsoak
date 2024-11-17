@@ -39,6 +39,22 @@
             tools:layout_editor_absoluteX="1dp" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/chat_const_emotion"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:background="@color/light_gray"
+            android:visibility="gone"
+            app:layout_constraintTop_toBottomOf="@+id/chat_rv"
+            app:layout_constraintBottom_toTopOf="@+id/chat_main_const">
+
+            <!-- 이모티콘을 표시할 RecyclerView 또는 GridView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/emotion_rv"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chat_main_const"
             android:layout_width="match_parent"
             android:layout_height="50dp"
@@ -82,19 +98,32 @@
                     android:scrollHorizontally="false"
                     android:textSize="16sp"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toStartOf="@+id/chat_emotion"
+                    app:layout_constraintEnd_toStartOf="@+id/chat_btn_emotion"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/chat_emotion"
-                    android:layout_width="25dp"
-                    android:layout_height="30dp"
+                    android:id="@+id/chat_btn_emotion"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:layout_marginEnd="10dp"
+                    android:background="@android:color/transparent"
                     app:layout_constraintBottom_toBottomOf="@+id/chat_const"
                     app:layout_constraintEnd_toEndOf="@+id/chat_const"
                     app:layout_constraintTop_toTopOf="@+id/chat_const"
                     app:srcCompat="@drawable/sumung" />
+
+                <ImageButton
+                    android:id="@+id/chat_btn_keyboard"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="10dp"
+                    android:background="@android:color/transparent"
+                    android:visibility="gone"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:srcCompat="@drawable/keyboard" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <ImageButton

@@ -17,6 +17,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.activity.result.PickVisualMediaRequest
@@ -73,6 +74,10 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var userMailList: MutableList<String>
     private lateinit var imagePart: MultipartBody.Part
     private lateinit var mediaType: MediaType
+    private lateinit var emotionBtn: ImageButton
+    private lateinit var emotionConst: ConstraintLayout
+    private lateinit var keyboardBtn: ImageButton
+    private var isEmotionViewVisible = false
     private val compositeDisposable = CompositeDisposable()
     private var open = false
     private val user = Application.user
@@ -199,6 +204,10 @@ class ActivityChat : AppCompatActivity() {
         drawerLayout = binding.chatDrawLayout
         drawerView = binding.chatDrawer
         menu = binding.chatBtnMenu
+
+        emotionBtn = binding.chatBtnEmotion
+        emotionConst = binding.chatConstEmotion
+        keyboardBtn = binding.chatBtnKeyboard
 
         userNickList = intent.getStringArrayListExtra("userNick")!!
         userMailList = intent.getStringArrayListExtra("userMail")!!
@@ -364,6 +373,36 @@ class ActivityChat : AppCompatActivity() {
                 }
             }
         }
+
+        emotionBtn.setOnClickListener {
+            if (isKeyboardOpen()) {
+                adjustEmotionConstHeight()
+                hideKeyboard()
+                showEmotionView()
+            } else {
+                showKeyboard()
+                adjustEmotionConstHeight()
+                hideKeyboard()
+                showEmotionView()
+            }
+            emotionBtn.visibility = View.GONE
+            keyboardBtn.visibility = View.VISIBLE
+        }
+
+        keyboardBtn.setOnClickListener {
+            hideEmotionView()
+            showKeyboard()
+
+            keyboardBtn.visibility = View.GONE
+            emotionBtn.visibility = View.VISIBLE
+        }
+
+        chatEdit.setOnClickListener {
+            if (!isKeyboardOpen() && isEmotionViewVisible){
+                hideEmotionView()
+                showKeyboard()
+            }
+        }
     }
 
     override fun onDestroy() {
@@ -396,6 +435,57 @@ class ActivityChat : AppCompatActivity() {
                 isKeyboardOpened = false
             }
         }
+    }
+    private fun showEmotionView() {
+        emotionConst.visibility = View.VISIBLE
+        isEmotionViewVisible = true
+    }
+
+    private fun hideEmotionView() {
+        emotionConst.visibility = View.GONE
+        isEmotionViewVisible = false
+    }
+
+    private fun hideKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(chatEdit.windowToken, 0)
+    }
+
+
+    private fun isKeyboardOpen(): Boolean {
+        val rect = Rect()
+        drawerLayout.getWindowVisibleDisplayFrame(rect)
+        val screenHeight = drawerLayout.rootView.height
+        val keypadHeight = screenHeight - rect.height()
+        return keypadHeight > screenHeight * 0.25
+    }
+
+    private fun showKeyboard() {
+        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        chatEdit.requestFocus()
+        imm.showSoftInput(chatEdit, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    private fun getKeyboardHeight(): Int {
+        val rect = Rect()
+        drawerLayout.getWindowVisibleDisplayFrame(rect) // 현재 가시 영역 가져오기
+        val screenHeight = drawerLayout.rootView.height // 화면 전체 높이
+        return screenHeight - rect.height() // 키보드 높이 계산
+    }
+
+    @SuppressLint("CommitPrefEdits")
+    private fun adjustEmotionConstHeight() {
+        var keyboardHeight = user.getInt("keyboard", 0)
+        if(keyboardHeight == 0){
+            keyboardHeight = getKeyboardHeight()
+            user.edit().putInt("keyboard", keyboardHeight)
+            user.edit().apply()
+        }
+
+        val layoutParams = emotionConst.layoutParams
+        layoutParams.height = keyboardHeight
+        emotionConst.layoutParams = layoutParams
+        emotionConst.visibility = View.VISIBLE
     }
 
     //날짜를 yyyy 년 mm 월 dd 일로 가져옴
