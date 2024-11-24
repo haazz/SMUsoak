@@ -16,22 +16,29 @@ import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
+import android.view.Gravity
 import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.PopupWindow
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.ActivityChatBinding
 import io.reactivex.disposables.CompositeDisposable
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -76,7 +83,10 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var mediaType: MediaType
     private lateinit var emotionBtn: ImageButton
     private lateinit var emotionConst: ConstraintLayout
+    private lateinit var chatMainConst: ConstraintLayout
     private lateinit var keyboardBtn: ImageButton
+    private lateinit var popupWindow: PopupWindow
+    private lateinit var popupView: View
     private var isEmotionViewVisible = false
     private val compositeDisposable = CompositeDisposable()
     private var open = false
@@ -196,7 +206,7 @@ class ActivityChat : AppCompatActivity() {
     private val databaseChat: DatabaseChat by lazy{ DatabaseChat.getInstance(applicationContext) }
 
     @RequiresApi(Build.VERSION_CODES.UPSIDE_DOWN_CAKE)
-    @SuppressLint("CheckResult")
+    @SuppressLint("CheckResult", "InflateParams")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -207,6 +217,7 @@ class ActivityChat : AppCompatActivity() {
 
         emotionBtn = binding.chatBtnEmotion
         emotionConst = binding.chatConstEmotion
+        chatMainConst = binding.chatMainConst
         keyboardBtn = binding.chatBtnKeyboard
 
         userNickList = intent.getStringArrayListExtra("userNick")!!
@@ -374,33 +385,40 @@ class ActivityChat : AppCompatActivity() {
             }
         }
 
+        popupView = layoutInflater.inflate(R.layout.emotion, null)
+
+        popupWindow = PopupWindow(
+            popupView,
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        popupWindow.animationStyle = 0 // 애니메이션 비활성화
+
         emotionBtn.setOnClickListener {
-            if (isKeyboardOpen()) {
-                adjustEmotionConstHeight()
-                hideKeyboard()
-                showEmotionView()
-            } else {
+            if(!isKeyboardOpened){
                 showKeyboard()
-                adjustEmotionConstHeight()
-                hideKeyboard()
-                showEmotionView()
+                Handler(Looper.getMainLooper()).postDelayed({
+                    openEmotionView()
+                }, 100) // 5000ms = 5초
+            }else{
+                openEmotionView()
             }
             emotionBtn.visibility = View.GONE
             keyboardBtn.visibility = View.VISIBLE
         }
 
         keyboardBtn.setOnClickListener {
-            hideEmotionView()
-            showKeyboard()
-
+            popupWindow.dismiss()
             keyboardBtn.visibility = View.GONE
             emotionBtn.visibility = View.VISIBLE
         }
 
         chatEdit.setOnClickListener {
-            if (!isKeyboardOpen() && isEmotionViewVisible){
-                hideEmotionView()
-                showKeyboard()
+            if (popupWindow.isShowing) {
+                popupWindow.dismiss()
+                keyboardBtn.visibility = View.GONE
+                emotionBtn.visibility = View.VISIBLE
             }
         }
     }
@@ -436,21 +454,6 @@ class ActivityChat : AppCompatActivity() {
             }
         }
     }
-    private fun showEmotionView() {
-        emotionConst.visibility = View.VISIBLE
-        isEmotionViewVisible = true
-    }
-
-    private fun hideEmotionView() {
-        emotionConst.visibility = View.GONE
-        isEmotionViewVisible = false
-    }
-
-    private fun hideKeyboard() {
-        val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(chatEdit.windowToken, 0)
-    }
-
 
     private fun isKeyboardOpen(): Boolean {
         val rect = Rect()
@@ -467,25 +470,28 @@ class ActivityChat : AppCompatActivity() {
     }
 
     private fun getKeyboardHeight(): Int {
-        val rect = Rect()
-        drawerLayout.getWindowVisibleDisplayFrame(rect) // 현재 가시 영역 가져오기
-        val screenHeight = drawerLayout.rootView.height // 화면 전체 높이
-        return screenHeight - rect.height() // 키보드 높이 계산
+        val visibleFrame = Rect()
+        drawerLayout.getWindowVisibleDisplayFrame(visibleFrame) // 현재 가시 영역
+        val screenHeight = drawerLayout.rootView.height // 전체 화면 높이
+        val keyboardHeight = screenHeight - visibleFrame.bottom // 키보드 높이 계산
+        return keyboardHeight
     }
 
-    @SuppressLint("CommitPrefEdits")
-    private fun adjustEmotionConstHeight() {
-        var keyboardHeight = user.getInt("keyboard", 0)
-        if(keyboardHeight == 0){
-            keyboardHeight = getKeyboardHeight()
-            user.edit().putInt("keyboard", keyboardHeight)
-            user.edit().apply()
-        }
+    private fun openEmotionView() {
+        val height = getKeyboardHeight()
 
-        val layoutParams = emotionConst.layoutParams
-        layoutParams.height = keyboardHeight
-        emotionConst.layoutParams = layoutParams
-        emotionConst.visibility = View.VISIBLE
+        val params = binding.chatConstEmotion.layoutParams as ConstraintLayout.LayoutParams
+        params.height = height
+        binding.chatConstEmotion.layoutParams = params
+        binding.chatConstEmotion.requestLayout()
+
+        popupWindow.height = height - chatMainConst.height
+        popupWindow.showAtLocation(
+            binding.chatDrawer, // 부모 뷰
+            Gravity.BOTTOM, // 하단에 표시
+            0,
+            0
+        )
     }
 
     //날짜를 yyyy 년 mm 월 dd 일로 가져옴
