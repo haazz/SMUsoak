@@ -110,23 +110,6 @@
                     app:srcCompat="@drawable/keyboard" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/chat_const_emotion"
-                android:layout_width="match_parent"
-                android:layout_height="400dp"
-                android:background="@color/light_gray"
-                android:visibility="visible"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/chat_main_const">
-
-                <!-- 이모티콘을 표시할 RecyclerView 또는 GridView -->
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/emotion_rv"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
             <ImageButton
                 android:id="@+id/chat_btn_send"
                 android:layout_width="32dp"

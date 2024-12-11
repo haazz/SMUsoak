@@ -82,12 +82,10 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var imagePart: MultipartBody.Part
     private lateinit var mediaType: MediaType
     private lateinit var emotionBtn: ImageButton
-    private lateinit var emotionConst: ConstraintLayout
     private lateinit var chatMainConst: ConstraintLayout
     private lateinit var keyboardBtn: ImageButton
     private lateinit var popupWindow: PopupWindow
     private lateinit var popupView: View
-    private var isEmotionViewVisible = false
     private val compositeDisposable = CompositeDisposable()
     private var open = false
     private val user = Application.user
@@ -216,7 +214,6 @@ class ActivityChat : AppCompatActivity() {
         menu = binding.chatBtnMenu
 
         emotionBtn = binding.chatBtnEmotion
-        emotionConst = binding.chatConstEmotion
         chatMainConst = binding.chatMainConst
         keyboardBtn = binding.chatBtnKeyboard
 
@@ -393,7 +390,7 @@ class ActivityChat : AppCompatActivity() {
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
 
-        popupWindow.animationStyle = 0 // 애니메이션 비활성화
+        popupWindow.animationStyle = 0
 
         emotionBtn.setOnClickListener {
             if(!isKeyboardOpened){
@@ -455,14 +452,6 @@ class ActivityChat : AppCompatActivity() {
         }
     }
 
-    private fun isKeyboardOpen(): Boolean {
-        val rect = Rect()
-        drawerLayout.getWindowVisibleDisplayFrame(rect)
-        val screenHeight = drawerLayout.rootView.height
-        val keypadHeight = screenHeight - rect.height()
-        return keypadHeight > screenHeight * 0.25
-    }
-
     private fun showKeyboard() {
         val imm = getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         chatEdit.requestFocus()
@@ -479,11 +468,6 @@ class ActivityChat : AppCompatActivity() {
 
     private fun openEmotionView() {
         val height = getKeyboardHeight()
-
-        val params = binding.chatConstEmotion.layoutParams as ConstraintLayout.LayoutParams
-        params.height = height
-        binding.chatConstEmotion.layoutParams = params
-        binding.chatConstEmotion.requestLayout()
 
         popupWindow.height = height - chatMainConst.height
         popupWindow.showAtLocation(
