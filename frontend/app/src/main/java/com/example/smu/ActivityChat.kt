@@ -31,6 +31,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.smu.connection.Retrofit
@@ -389,6 +390,11 @@ class ActivityChat : AppCompatActivity() {
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
+
+        val recyclerView: RecyclerView = popupView.findViewById(R.id.emotion_rv)
+
+        recyclerView.layoutManager = GridLayoutManager(this, 4) // 3열 그리드
+        recyclerView.adapter = AdapterEmotion(Application.emotionList)
 
         popupWindow.animationStyle = 0
 

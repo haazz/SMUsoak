@@ -23,13 +23,14 @@ class FragmentHome : Fragment() {
     private val mailList = mutableListOf<String>()
     private val userMail = user.getString("mail", "").toString()
 
-    private val databaseHelper: DatabaseProfileImage by lazy{ DatabaseProfileImage.getInstance(requireContext())}
+    private lateinit var databaseHelper: DatabaseProfileImage
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentHomeBinding.inflate(layoutInflater)
+        databaseHelper = DatabaseProfileImage.getInstance(requireContext())
 
         myInfo()
 

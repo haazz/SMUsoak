@@ -4,17 +4,40 @@ import android.app.Application
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 
 class Application : Application(){
     companion object {
         lateinit var user: SharedPreferences
+        lateinit var emotionList: List<Int>
     }
 
     override fun onCreate() {
         super.onCreate()
         user = getSharedPreferences("user", Context.MODE_PRIVATE)
+        emotionList = listOf(
+            R.drawable.emotion_1,
+            R.drawable.emotion_2,
+            R.drawable.emotion_3,
+            R.drawable.emotion_4,
+            R.drawable.emotion_5,
+            R.drawable.emotion_6,
+            R.drawable.emotion_7,
+            R.drawable.emotion_8,
+            R.drawable.emotion_9,
+            R.drawable.emotion_10,
+            R.drawable.emotion_11,
+            R.drawable.emotion_12,
+            R.drawable.emotion_13,
+            R.drawable.emotion_14,
+            R.drawable.emotion_15,
+            R.drawable.emotion_16,
+            R.drawable.emotion_17,
+            R.drawable.emotion_18,
+            R.drawable.emotion_19,
+            R.drawable.emotion_20,
+            R.drawable.emotion_21
+        )
 
         val name = getString(R.string.alarm_name)                    // 채널명
         val channelId = getString(R.string.channel_id)
