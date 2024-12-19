@@ -22,8 +22,10 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
+import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -87,7 +89,12 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var keyboardBtn: ImageButton
     private lateinit var popupWindow: PopupWindow
     private lateinit var popupView: View
+    private lateinit var emotionConst: ConstraintLayout
+    private lateinit var emotionImg: ImageView
+    private lateinit var emotionClose: ImageButton
     private val compositeDisposable = CompositeDisposable()
+    private var emotionId = 0
+    private var selectEmotion = false
     private var open = false
     private val user = Application.user
     private val nick = user.getString("nick","")
@@ -225,6 +232,10 @@ class ActivityChat : AppCompatActivity() {
         drawerRecyclerView.layoutManager = LinearLayoutManager(this)
         drawerAdapter = AdapterDrawer(userNickList, userMailList, this)
         drawerRecyclerView.adapter = drawerAdapter
+
+        emotionConst = binding.chatEmotionConst
+        emotionImg = binding.chatEmotionImg
+        emotionClose = binding.chatCloseEmotion
 
         setupView() //키보드 열린지 체크
 
@@ -394,7 +405,25 @@ class ActivityChat : AppCompatActivity() {
         val recyclerView: RecyclerView = popupView.findViewById(R.id.emotion_rv)
 
         recyclerView.layoutManager = GridLayoutManager(this, 4) // 3열 그리드
-        recyclerView.adapter = AdapterEmotion(Application.emotionList)
+        recyclerView.adapter = AdapterEmotion(
+            Application.emotionList,
+            onItemClick = { clickedEmotion ->
+                emotionConst.visibility = View.VISIBLE
+                emotionImg.setImageResource(clickedEmotion)
+                emotionId = clickedEmotion
+                selectEmotion = true
+            },
+            onDoubleClick = { doubleClickedEmotion ->
+                emotionConst.visibility = View.GONE
+                selectEmotion = false
+            }
+        )
+
+        emotionClose.setOnClickListener {
+            emotionConst.visibility = View.GONE
+            selectEmotion = false
+        }
+
 
         popupWindow.animationStyle = 0
 
@@ -453,6 +482,9 @@ class ActivityChat : AppCompatActivity() {
                 }
                 isKeyboardOpened = true
             } else if (!isOpen && isKeyboardOpened) {
+                popupWindow.dismiss()
+                keyboardBtn.visibility = View.GONE
+                emotionBtn.visibility = View.VISIBLE
                 isKeyboardOpened = false
             }
         }
