@@ -87,7 +87,6 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var keyboardBtn: ImageButton
     private lateinit var popupWindow: PopupWindow
     private lateinit var popupView: View
-    private var isEmotionViewVisible = false
     private val compositeDisposable = CompositeDisposable()
     private var open = false
     private val user = Application.user
