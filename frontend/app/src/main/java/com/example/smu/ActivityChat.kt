@@ -18,21 +18,18 @@ import android.text.TextWatcher
 import android.util.Log
 import android.view.Gravity
 import android.view.View
-import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.PopupWindow
-import android.widget.Toast
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.drawerlayout.widget.DrawerLayout
-import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -40,8 +37,6 @@ import com.example.smu.connection.Retrofit
 import com.example.smu.connection.RetrofitObject
 import com.example.smu.databinding.ActivityChatBinding
 import io.reactivex.disposables.CompositeDisposable
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -56,9 +51,8 @@ import ua.naiksoftware.stomp.StompClient
 import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 import java.io.File
-import java.text.SimpleDateFormat
 import java.time.LocalDateTime
-import java.util.Calendar
+import com.example.smu.util.DateTimeUtils
 
 class ActivityChat : AppCompatActivity() {
 
@@ -93,6 +87,7 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var emotionImg: ImageView
     private lateinit var emotionClose: ImageButton
 
+    private val currentTime = DateTimeUtils.getCurrentTime()
     private val compositeDisposable = CompositeDisposable()
     private var emotionId = 0
     private var selectEmotion = false
@@ -150,7 +145,6 @@ class ActivityChat : AppCompatActivity() {
             val json = JSONObject()
             json.put("roomId", roomId)
             val room = json.toString().toRequestBody("application/json".toMediaType())
-            val currentTime = getCurrentTime()
 
             //jpg, jpeg, png 인지 확인
             if(file.toString().endsWith("jpg") || file.toString().endsWith("jpeg")){
@@ -259,8 +253,7 @@ class ActivityChat : AppCompatActivity() {
                 val flag = jsonObject.getInt("flag")
                 val nick = jsonObject.getString("senderName")
 
-                val currentTime=getCurrentTime()
-                val currentDate=getCurrentDate()
+                val currentDate=DateTimeUtils.getCurrentDate()
 
 
                 if(chatList.size == 0) {
@@ -357,8 +350,6 @@ class ActivityChat : AppCompatActivity() {
                 const.requestLayout()
                 chatConst.requestLayout()
                 chatEdit.requestLayout()
-
-                val currentTime = getCurrentTime()
 
                 if(open) {
                     val data = JSONObject()
@@ -515,22 +506,6 @@ class ActivityChat : AppCompatActivity() {
             0,
             0
         )
-    }
-
-    //날짜를 yyyy 년 mm 월 dd 일로 가져옴
-    @SuppressLint("SimpleDateFormat")
-    fun getCurrentDate(): String {
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyy년 MM월 dd일")
-        return dateFormat.format(calendar.time)
-    }
-
-    //오전 or 오후 몇 시인지 변환
-    @SuppressLint("SimpleDateFormat")
-    fun getCurrentTime(): String {
-        val calendar = Calendar.getInstance()
-        val dateFormat = SimpleDateFormat("yyyyMMdd a hh:mm")
-        return dateFormat.format(calendar.time)
     }
 
     //이미지 저장 주소 가져오기

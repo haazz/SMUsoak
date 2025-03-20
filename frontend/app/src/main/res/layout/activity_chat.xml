@@ -40,8 +40,8 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/chat_emotion_const"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="130dp"
+            android:layout_height="110dp"
             android:background="@drawable/radius_10_solid_black"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="@+id/chat_rv"
@@ -62,8 +62,8 @@
                 android:id="@+id/chat_close_emotion"
                 android:layout_width="15dp"
                 android:layout_height="15dp"
-                android:layout_marginTop="5dp"
-                android:layout_marginEnd="5dp"
+                android:layout_marginTop="7dp"
+                android:layout_marginEnd="7dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/svg_close" />
