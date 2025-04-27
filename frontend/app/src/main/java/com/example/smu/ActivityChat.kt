@@ -52,7 +52,7 @@ import ua.naiksoftware.stomp.dto.LifecycleEvent
 import ua.naiksoftware.stomp.dto.StompHeader
 import java.io.File
 import java.time.LocalDateTime
-import com.example.smu.util.DateTimeUtils
+import com.example.smu.util.TimeUtils
 
 class ActivityChat : AppCompatActivity() {
 
@@ -87,7 +87,7 @@ class ActivityChat : AppCompatActivity() {
     private lateinit var emotionImg: ImageView
     private lateinit var emotionClose: ImageButton
 
-    private val currentTime = DateTimeUtils.getCurrentTime()
+    private val currentTime = TimeUtils.getCurrentTime()
     private val compositeDisposable = CompositeDisposable()
     private var emotionId = 0
     private var selectEmotion = false
@@ -253,7 +253,7 @@ class ActivityChat : AppCompatActivity() {
                 val flag = jsonObject.getInt("flag")
                 val nick = jsonObject.getString("senderName")
 
-                val currentDate=DateTimeUtils.getCurrentDate()
+                val currentDate=TimeUtils.getCurrentDate()
 
 
                 if(chatList.size == 0) {

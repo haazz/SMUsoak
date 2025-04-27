@@ -36,7 +36,10 @@ class Application : Application(){
             R.drawable.emotion_18,
             R.drawable.emotion_19,
             R.drawable.emotion_20,
-            R.drawable.emotion_21
+            R.drawable.emotion_21,
+            R.drawable.emotion_22,
+            R.drawable.emotion_23,
+            R.drawable.emotion_24
         )
 
         val name = getString(R.string.alarm_name)                    // 채널명

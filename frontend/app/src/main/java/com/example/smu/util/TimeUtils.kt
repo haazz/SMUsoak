@@ -4,7 +4,7 @@ import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.Calendar
 
-object DateTimeUtils {
+object TimeUtils {
     @SuppressLint("SimpleDateFormat")
     fun getCurrentDate(): String {
         val calendar = Calendar.getInstance()
